@@ -1,5 +1,6 @@
 package com.example.docarc;
 
+import com.example.docarc.gui.HelloApplication;
 import javafx.application.Application;
 
 public class Launcher {

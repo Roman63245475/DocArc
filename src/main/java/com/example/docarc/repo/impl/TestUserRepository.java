@@ -1,0 +1,50 @@
+package com.example.docarc.repo.impl;
+
+import com.example.docarc.be.Admin;
+import com.example.docarc.be.ParentUser;
+import com.example.docarc.be.Role;
+import com.example.docarc.be.User;
+import com.example.docarc.custom_exceptions.LoginException;
+import com.example.docarc.repo.repositories.IUserRepository;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class TestUserRepository implements IUserRepository {
+    private List<HashMap<String, String>> userData;
+
+    public TestUserRepository(){
+        HashMap<String, String> admin = new HashMap<>();
+        admin.put("id", "1");
+        admin.put("username", "roman_admin");
+        admin.put("password", "$2a$10$J3Ioaufs7oOjCP4iTMRQ6.YZvw7c24qFOL/CVN52sID.1.Kiy99kC"); //yumma4444
+        admin.put("role", "ADMIN");
+        HashMap<String, String> user = new HashMap<>();
+        user.put("id", "2");
+        user.put("username", "kalivan_user");
+        user.put("password", "$2a$10$UY5KhyIt6Jvr7mVEkbb9NOis.Ug/ULfKeMB8m3TWWmO4gcnAb6uYW"); //kalivanskiy_password
+        user.put("role", "USER");
+        List<HashMap<String, String>> userData = new ArrayList<>();
+        userData.add(admin);
+        userData.add(user);
+        this.userData = userData;
+    }
+    @Override
+    public ParentUser findUser(String username) throws LoginException {
+        for (HashMap<String, String> h : this.userData) {
+            if (h.get("username").equals(username)) {
+                try {
+                    int id = Integer.parseInt(h.get("id"));
+                    String us_name = h.get("username");
+                    String password = h.get("password");
+                    ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(id, username, password) : new User(id, username, password, "hey");
+                    return parentUser;
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("developer screwed up");
+                }
+            }
+        }
+        throw new LoginException("User not found");
+    }
+}

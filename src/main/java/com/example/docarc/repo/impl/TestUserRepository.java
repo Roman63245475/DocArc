@@ -48,3 +48,11 @@ public class TestUserRepository implements IUserRepository {
         throw new LoginException("User not found");
     }
 }
+
+
+//map
+// key -> value
+// 2 -> privet
+//map.get()
+// "2" (str) -> int 2
+// "s2" (str) -> no way

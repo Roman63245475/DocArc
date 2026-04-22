@@ -9,18 +9,20 @@ import com.example.docarc.repo.repositories.IUserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AuthService {
-    BCryptPasswordEncoder passwordEncoder;
-    IUserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder; //kalivan -> $2ajnkse;rkljp7287346
+    private IUserRepository userRepository;
 
     public AuthService(IUserRepository userRepository){
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
+
     public AuthService(){
         // put here real repository, not the one I use as mock
         this.userRepository = new TestUserRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
+
     public ParentUser login(String username, String password) throws MyException {
         ParentUser usr = null;
         try {
@@ -34,7 +36,7 @@ public class AuthService {
             if (ex instanceof DataBaseConnectionException) {
                 System.out.println("do some job");
             } else {
-                System.out.println("do some otehr job");
+                System.out.println("do some other job");
             }
             throw new MyException(ex.getMessage());
         }

@@ -3,6 +3,7 @@ package com.example.docarc.be;
 import java.util.Objects;
 
 public class Admin extends ParentUser{
+
     public Admin(int id, String username, String password){
         super(id, username, password);
     }

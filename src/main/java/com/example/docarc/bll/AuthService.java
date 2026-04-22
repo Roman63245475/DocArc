@@ -17,6 +17,7 @@ public class AuthService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
     public AuthService(){
+        // put here real repository, not the one I use as mock
         this.userRepository = new TestUserRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
     }

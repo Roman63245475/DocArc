@@ -1,110 +1,404 @@
-
-.button{
-    -fx-background-color: transparent;
-    -fx-cursor: hand;
+.root {
+    -fx-font-family: "Montserrat";
+    -fx-font-size: 12px;
+    -fx-background-color: #F5F5F5;
 }
 
-.white-c-text {
-    -fx-text-fill: #e4e4f1;
+.sidebar {
+    -fx-background-color: #2D3D4F;
+    -fx-pref-width: 192px;
+    -fx-min-width: 192px;
 }
 
-.bg-gradient{
-    -fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);
+.sidebar-brand {
+    -fx-padding: 15px;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.08) transparent;
+    -fx-border-width: 0 0 1 0;
 }
 
-.bg-top-bar-gradient{
-    -fx-background-color: linear-gradient(to right, #8b5cf6, #ec4899);
+.sidebar-weblager-row {
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.08) transparent;
+    -fx-border-width: 0 0 1 0;
 }
 
-.button-secondary{
-    -fx-background-color: rgba(131, 131, 131, 0.1);
-    -fx-border-color: #5c45ae;
-    -fx-text-fill: #8b5cf6;
-    -fx-border-radius: 4px;
-    -fx-border-width: 1px;
-}
-
-.button-delete{
-    -fx-background-color: rgba(223, 66, 98, 0.1);
-    -fx-border-color: #df4262;
-    -fx-text-fill: #e11d48;
-    -fx-border-radius: 4px;
-    -fx-border-width: 1px;
-}
-
-.button-delete:hover{
-    -fx-background-color: #e11d48;
-    -fx-text-fill: white;
-}
-
-.white-c{
-    -fx-background-color: #ffffff;
-}
-
-.gray-c{
-    -fx-background-color: #8d8ea1;
-}
-
-.table-view{
-    -fx-background-color: transparent;
-    -fx-border-color: #e0e0e0;
-    -fx-border-radius: 5px;
-    -fx-padding: 0;
-}
-
-.table-view .column-header-background{
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: transparent transparent #e0e0e0 transparent;
-}
-
-.table-view .column-header, .table-view .filler{
-    -fx-background-color: transparent;
-    -fx-size: 30px;
-}
-
-.table-view .column-header .label{
+.sidebar-weblager-name {
+    -fx-text-fill: rgba(255,255,255,0.5);
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
 }
 
-.table-cell{
+.sidebar-admin-row {
+    -fx-padding: 10px 0 0 0;
+}
+
+.sidebar-admin-avatar {
+    -fx-background-color: #415060;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-background-radius: 18px;
     -fx-alignment: center;
 }
 
-.table-row-cell{
-    -fx-cell-size: 50px;
+.sidebar-admin-name {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-admin-role {
+    -fx-text-fill: rgba(255,255,255,0.4);
+    -fx-font-size: 10px;
+}
+
+.sidebar-nav-label {
+    -fx-text-fill: rgba(255,255,255,0.3);
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 15px 4px 15px;
+}
+
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 0 3;
+    -fx-pref-height: 38px;
+    -fx-cursor: hand;
+}
+
+.nav-item:hover {
+    -fx-background-color: #415060;
+}
+
+.nav-item-active {
+    -fx-background-color: #415060;
+    -fx-border-color: transparent transparent transparent #24C79F;
+    -fx-border-width: 0 0 0 3;
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.5);
+    -fx-font-size: 12px;
+    -fx-font-family: "Montserrat";
+    -fx-font-weight: normal;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 0 0 9px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.nav-btn:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.nav-btn:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.5);
+}
+
+.nav-btn:armed {
+    -fx-background-color: transparent;
+}
+
+.nav-item-active .nav-btn {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.nav-item:hover .nav-btn {
+    -fx-text-fill: white;
+}
+
+.nav-icon {
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: 16px 16px;   /* lock the image to 16×16, do NOT use 'contain' */
+}
+
+/* Per-icon background images */
+#users-icon {
+    -fx-background-image: url("../images/users.png");
+}
+#metadata-icon {
+    -fx-background-image: url("../images/metadata.png");
+}
+#logs-icon {
+    -fx-background-image: url("../images/logs.png");
+}
+
+/* The button: kill internal left padding so the HBox 'spacing' is the only gap */
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 6 8 6 0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-content-display: LEFT;
+    -fx-text-fill: #d1d5db;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.nav-btn:hover {
+    -fx-text-fill: white;
+}
+
+/* The row: stable height, consistent vertical centering */
+.nav-item {
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.nav-icon {
+    -fx-background-color: rgba(255,255,255,0.4);
+}
+
+.nav-item-active .nav-icon {
     -fx-background-color: white;
-    -fx-border-color: transparent transparent #eeeeee transparent;
 }
 
-.table-row-cell:odd{
+.nav-item:hover .nav-icon {
     -fx-background-color: white;
 }
 
-.table-row-cell:selected{
-    -fx-background-color: #ece6e6;
+#users-icon {
+    -fx-shape: "M9 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z";
 }
 
-.table-row-cell:selected .text{
-    -fx-fill: #000000;
+#metadata-icon {
+    -fx-shape: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z";
 }
 
-#users-icon{
-    -fx-shape: "M96-192v-92q0-25.78 12.5-47.39T143-366q54-32 114.5-49T384-432q66 0 126.5 17T625-366q22 13 34.5 34.61T672-284v92H96Zm648 0v-92q0-42-19.5-78T672-421q39 8 75.5 21.5T817-366q22 13 34.5 34.67Q864-309.65 864-284v92H744ZM282-522q-42-42-42-102t42-102q42-42 102-42t102 42q42 42 42 102t-42 102q-42 42-102 42t-102-42Zm396 0q-42 42-102 42-8 0-15-.5t-15-2.5q25-29 39.5-64.5T600-624q0-41-14.5-76.5T546-765q8-2 15-2.5t15-.5q60 0 102 42t42 102q0 60-42 102ZM168-264h432v-20q0-6.47-3.03-11.76-3.02-5.3-7.97-8.24-47-27-99-41.5T384-360q-54 0-106 14t-99 42q-4.95 2.83-7.98 7.91-3.02 5.09-3.02 12V-264Zm267-309.21q21-21.21 21-51T434.79-675q-21.21-21-51-21T333-674.79q-21 21.21-21 51T333.21-573q21.21 21 51 21T435-573.21ZM384-264Zm0-360Z";
+#logs-icon {
+    -fx-shape: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z";
 }
 
-#calendar-icon{
-    -fx-shape: "M216-96q-29.7 0-50.85-21.5Q144-139 144-168v-528q0-29 21.15-50.5T216-768h72v-96h72v96h240v-96h72v96h72q29.7 0 50.85 21.5Q816-725 816-696v528q0 29-21.15 50.5T744-96H216Zm0-72h528v-360H216v360Zm0-432h528v-96H216v96Zm0 0v-96 96Zm264.21 216q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5ZM298.5-394.29q-10.5-10.29-10.5-25.5t10.29-25.71q10.29-10.5 25.5-10.5t25.71 10.29q10.5 10.29 10.5 25.5t-10.29 25.71q-10.29 10.5-25.5 10.5t-25.71-10.29ZM636.21-384q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm-156 144q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5ZM298.5-250.29q-10.5-10.29-10.5-25.5t10.29-25.71q10.29-10.5 25.5-10.5t25.71 10.29q10.5 10.29 10.5 25.5t-10.29 25.71q-10.29 10.5-25.5 10.5t-25.71-10.29ZM636.21-240q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Z";
+.btn-icon-edit {
+    -fx-background-color: #2D3D4F;
+    -fx-scale-shape: true;
+    -fx-shape: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z";
 }
 
-#shield-icon{
-    -fx-shape: "M714.5-305.5Q732-323 732-348t-17.5-42.5Q697-408 672-408t-42.5 17.5Q612-373 612-348t17.5 42.5Q647-288 672-288t42.5-17.5ZM671.91-168Q704-168 731-184t43-42q-23-13-48.72-19.5t-53.5-6.5q-27.78 0-53.28 7T570-226q16 26 42.91 42 26.91 16 59 16ZM480-96q-133-30-222.5-150.5T168-515v-229l312-120 312 120v221q-22-10-39-16t-33-8v-148l-240-92-240 92v180q0 49 12.5 96t36.5 88.5q24 41.5 58.5 76T425-194q8 23 25.5 48.5T489-98l-4.5 1-4.5 1Zm191.77 0Q592-96 536-152.23q-56-56.22-56-136Q480-368 536.23-424q56.22-56 136-56Q752-480 808-423.77q56 56.22 56 136Q864-208 807.77-152q-56.22 56-136 56ZM480-480Z";
+.btn-icon-delete {
+    -fx-background-color: white;
+    -fx-scale-shape: true;
+    -fx-shape: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z";
 }
 
-#menu-icon{
+#menu-icon {
+    -fx-background-color: #64748B;
     -fx-shape: "M144-264v-72h672v72H144Zm0-180v-72h672v72H144Zm0-180v-72h672v72H144Z";
 }
 
-#admin-icon{
-    -fx-shape: "M237-285q54-38 115.5-56.5T480-360q66 0 127.5 18.5T723-285q35-41 52-91t17-104q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 54 17 104t52 91Zm141-165q-42-42-42-102t42-102q42-42 102-42t102 42q42 42 42 102t-42 102q-42 42-102 42t-102-42ZM480-96q-79 0-149-30t-122.5-82.5Q156-261 126-331T96-480q0-80 30-149.5t82.5-122Q261-804 331-834t149-30q80 0 149.5 30t122 82.5Q804-699 834-629.5T864-480q0 79-30 149t-82.5 122.5Q699-156 629.5-126T480-96Zm100-88.5q48-16.5 90-48.5-43-27-91-41t-99-14q-51 0-99.5 13.5T290-233q42 32 90 48.5T480-168q52 0 100-16.5ZM531-501q21-21 21-51t-21-51q-21-21-51-21t-51 21q-21 21-21 51t21 51q21 21 51 21t51-21Zm-51-51Zm0 319Z";
+.topbar {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #E2E4E8 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 51px;
+    -fx-pref-height: 51px;
+}
+
+.topbar-welcome {
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 12px;
+    -fx-font-family: "Montserrat";
+}
+
+.menu-icon {
+    -fx-background-color: #2D3D4F;
+    -fx-scale-shape: true;
+    -fx-shape: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z";
+    -fx-cursor: hand;
+}
+
+.content-area {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+}
+
+.panel-title {
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+}
+
+.btn-primary {
+    -fx-background-color: #2D3D4F;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 0 12px;
+    -fx-pref-height: 30px;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1C252F;
+}
+
+.btn-outline {
+    -fx-background-color: white;
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+    -fx-background-radius: 6px;
+    -fx-border-color: #E2E4E8;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 33px;
+    -fx-cursor: hand;
+}
+
+.btn-outline:hover {
+    -fx-background-color: #F1F5F9;
+}
+
+.btn-destructive {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 33px;
+    -fx-cursor: hand;
+}
+
+.btn-destructive:hover {
+    -fx-background-color: #DC2626;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #E2E4E8;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #F9F9F9;
+    -fx-border-color: transparent transparent #E2E4E8 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 36px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+}
+
+.table-row-cell {
+    -fx-cell-size: 38px;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #E2E4E8 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-font-size: 12px;
+    -fx-font-family: "Montserrat";
+    -fx-text-fill: #2D3D4F;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #F1F5F9;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #F1F5F9;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #2D3D4F;
+}
+
+.table-cell {
+    -fx-padding: 9px 12px;
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 12px;
+    -fx-font-family: "Montserrat";
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #E2E4E8;
+    -fx-background-radius: 3px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #CBD5E1;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}
+.topbar-admin-name {
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+}
+
+.sidebar-admin-name {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Montserrat";
+}
+
+.sidebar-admin-role {
+    -fx-text-fill: rgba(255,255,255,0.4);
+    -fx-font-size: 10px;
+    -fx-font-family: "Montserrat";
+}
+
+.sidebar-brand {
+    -fx-padding: 15px 20px;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.08) transparent;
+    -fx-border-width: 0 0 1 0;
 }

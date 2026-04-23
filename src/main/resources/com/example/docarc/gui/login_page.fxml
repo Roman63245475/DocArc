@@ -2,26 +2,21 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
 
-<StackPane styleClass="page_background" stylesheets="@css/login-styles.css"
-           xmlns="http://javafx.com/javafx/17.0.12"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.docarc.gui.LoginController">
+<StackPane styleClass="page_background" stylesheets="@css/login-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.LoginController">
     <children>
         <VBox alignment="CENTER" styleClass="page_background">
             <children>
 
-                <VBox alignment="TOP_CENTER" maxWidth="400.0" prefWidth="400.0"
-                      styleClass="login_card">
+                <VBox alignment="TOP_CENTER" maxWidth="400.0" prefWidth="400.0" styleClass="login_card">
 
-                    <VBox alignment="CENTER" styleClass="page_background" maxHeight="Infinity" maxWidth="Infinity">
+                    <VBox alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="page_background">
                         <children>
 
-                            <ImageView fitHeight="44.0" preserveRatio="true"
-                                       pickOnBounds="true">
+                            <ImageView fitHeight="66.0" fitWidth="315.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="@images/LogoBlueH.png" />
                                 </image>
@@ -34,8 +29,7 @@
                                 <font><Font name="Montserrat" size="18.0" /></font>
                             </Label>
 
-                            <Label styleClass="card_subtitle"
-                                   text="Enter your credentials to access your account">
+                            <Label styleClass="card_subtitle" text="Enter your credentials to access your account">
                                 <VBox.margin>
                                     <Insets top="4.0" />
                                 </VBox.margin>
@@ -44,70 +38,52 @@
 
                         </children>
                         <padding>
-                            <Insets top="32.0" bottom="24.0" left="32.0" right="32.0" />
+                            <Insets bottom="24.0" left="32.0" right="32.0" top="32.0" />
                         </padding>
                     </VBox>
 
-                    <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0"
-                            styleClass="divider" />
+                    <Region maxHeight="1.0" minHeight="1.0" prefHeight="1.0" styleClass="divider" />
 
-                    <VBox styleClass="card_body" spacing="0.0">
+                    <VBox spacing="0.0" styleClass="card_body">
                         <children>
 
                             <Label styleClass="field_label" text="Username">
                                 <font><Font size="12.0" /></font>
                             </Label>
-                            <TextField fx:id="usernameField"
-                                       styleClass="field_input"
-                                       promptText="Enter your username">
-                                <VBox.margin><Insets top="6.0" bottom="14.0" /></VBox.margin>
+                            <TextField fx:id="usernameField" promptText="Enter your username" styleClass="field_input">
+                                <VBox.margin><Insets bottom="14.0" top="6.0" /></VBox.margin>
                             </TextField>
 
                             <Label styleClass="field_label" text="Password">
                                 <font><Font size="12.0" /></font>
                             </Label>
-                            <HBox alignment="CENTER_LEFT" styleClass="field_input"
-                                  spacing="0.0">
+                            <HBox alignment="CENTER_LEFT" spacing="0.0" styleClass="field_input">
                                 <children>
                                     <StackPane HBox.hgrow="ALWAYS">
                                         <children>
-                                            <PasswordField fx:id="passwordField"
-                                                           styleClass="field_input_inner"
-                                                           promptText="Enter your password" />
-                                            <TextField fx:id="revealField"
-                                                       styleClass="field_input_inner"
-                                                       visible="false" />
+                                            <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="field_input_inner" />
+                                            <TextField fx:id="revealField" styleClass="field_input_inner" visible="false" />
                                         </children>
                                     </StackPane>
-                                    <Region fx:id="eyeIcon" id="open-eye-icon"
-                                            maxHeight="15.0" minHeight="15.0"
-                                            prefWidth="20.0"
-                                            onMouseClicked="#toggleVisibility"
-                                            styleClass="eye_icon" />
+                                    <Region id="open-eye-icon" fx:id="eyeIcon" maxHeight="15.0" minHeight="15.0" onMouseClicked="#toggleVisibility" prefWidth="20.0" styleClass="eye_icon" />
                                 </children>
                                 <padding><Insets right="10.0" /></padding>
                                 <VBox.margin><Insets top="6.0" /></VBox.margin>
                             </HBox>
 
                             <Label fx:id="errorLabel" styleClass="error_label" text="">
-                                <VBox.margin><Insets top="4.0" bottom="4.0" /></VBox.margin>
+                                <VBox.margin><Insets bottom="4.0" top="4.0" /></VBox.margin>
                                 <font><Font size="11.0" /></font>
                             </Label>
 
-                            <Button fx:id="loginButton"
-                                    mnemonicParsing="false"
-                                    onAction="#loginClick"
-                                    prefHeight="33.0"
-                                    maxWidth="Infinity"
-                                    styleClass="login_button"
-                                    text="Log in">
+                            <Button fx:id="loginButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#loginClick" prefHeight="33.0" styleClass="login_button" text="Log in">
                                 <VBox.margin><Insets top="4.0" /></VBox.margin>
                                 <font><Font size="12.0" /></font>
                             </Button>
 
                         </children>
                         <padding>
-                            <Insets top="24.0" bottom="32.0" left="32.0" right="32.0" />
+                            <Insets bottom="32.0" left="32.0" right="32.0" top="24.0" />
                         </padding>
                     </VBox>
 

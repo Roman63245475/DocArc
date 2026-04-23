@@ -19,9 +19,7 @@ public class UIHelper {
             sideBar.setManaged(true);
         }
         KeyValue kvPref = new KeyValue(sideBar.prefWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
-        KeyValue kvMin = new KeyValue(sideBar.minWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
-        KeyValue kvMax = new KeyValue(sideBar.maxWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(250), kvPref, kvMin, kvMax);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(250), kvPref);
         Timeline timeline = new Timeline(keyFrame);
 
         timeline.setOnFinished(e -> {

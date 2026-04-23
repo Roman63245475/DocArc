@@ -1,5 +1,6 @@
 package com.example.docarc.gui;
 
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,11 +13,25 @@ public class UIHelper {
     @FXML
     public static void sideBarAnimation(boolean isMenuOpen, VBox sideBar, Runnable r1) {
         double targetWidth = isMenuOpen ? 0.0 : 210.0;
-        KeyValue keyValue = new KeyValue(sideBar.prefWidthProperty(), targetWidth);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(300), keyValue);
+
+        if (!isMenuOpen) {
+            sideBar.setVisible(true);
+            sideBar.setManaged(true);
+        }
+        KeyValue kvPref = new KeyValue(sideBar.prefWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
+        KeyValue kvMin = new KeyValue(sideBar.minWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
+        KeyValue kvMax = new KeyValue(sideBar.maxWidthProperty(), targetWidth, Interpolator.EASE_BOTH);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(250), kvPref, kvMin, kvMax);
         Timeline timeline = new Timeline(keyFrame);
 
-        timeline.setOnFinished(e -> r1.run());
+        timeline.setOnFinished(e -> {
+            if (isMenuOpen) {
+                sideBar.setVisible(false);
+                sideBar.setManaged(false);
+            }
+            r1.run();
+        });
+
         timeline.play();
     }
 }

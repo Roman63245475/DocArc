@@ -44,3 +44,13 @@ public class AuthService {
 //        return null;
     }
 }
+
+//input_value
+// random salt generates -> (14)
+//some_algorithm(input_value, salt) -> "2a$jhfkshluauhsiu97w3y8yf89e0h97w8geyfct"
+//save to db "2a$jhfkshluauhsiu97w3y814yf89e0h97w8geyfct"
+//input_value2 = input_value
+//mathes (input_value2, input_value)
+//searches for salt in already hashed password which is input_value
+// hashes input_value2 basing on salt which we've got from input_value
+// compares hashed input_value2 with hashed input_value response either true or false

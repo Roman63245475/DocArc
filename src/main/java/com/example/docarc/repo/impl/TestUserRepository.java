@@ -4,7 +4,10 @@ import com.example.docarc.be.Admin;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.be.User;
+import com.example.docarc.custom_exceptions.DataBaseConnectionException;
+import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.LoginException;
+import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.repositories.IUserRepository;
 
 import java.util.ArrayList;
@@ -46,6 +49,16 @@ public class TestUserRepository implements IUserRepository {
             }
         }
         throw new LoginException("User not found");
+    }
+
+    @Override
+    public void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, LoginException, DuplicateException, MyException {
+        System.out.println("chetko");
+    }
+
+    @Override
+    public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
+        return null;
     }
 }
 

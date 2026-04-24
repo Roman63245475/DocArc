@@ -22,4 +22,9 @@ public class Admin extends ParentUser{
     public int hashCode() {
         return Objects.hash(username);
     }
+
+    public Role getRole(){
+        return Role.ADMIN;
+    }
+
 }

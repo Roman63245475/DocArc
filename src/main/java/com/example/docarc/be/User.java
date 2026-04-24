@@ -27,4 +27,9 @@ public class User extends ParentUser{
     public String getInfo(){
         return this.specialInfo;
     }
+
+    @Override
+    public Role getRole() {
+        return Role.USER;
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.docarc.be;
 
-public class ParentUser {
+public abstract class ParentUser {
 
     protected int id;
     protected String username;
@@ -28,4 +28,6 @@ public class ParentUser {
     public String toString(){
         return this.username;
     }
+
+    public abstract Role getRole();
 }

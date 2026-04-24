@@ -28,11 +28,9 @@ public class LoginController implements Initializable {
     @FXML private Button loginButton;
 
     private AuthService authService;
-    private OpenWindow openWindow;
 
     public LoginController(){
         this.authService = new AuthService();
-        this.openWindow = new OpenWindow();
     }
 
 
@@ -64,10 +62,11 @@ public class LoginController implements Initializable {
             try {
                 String fileName = (user instanceof Admin) ? "admin_view.fxml" : "user_view.fxml";
                 String title = (user instanceof Admin) ? "Admin panel" : "User panel";
-                Object obj = openWindow.openNewWindow(fileName, title, false);
+                Object obj = UIHelper.openNewWindow(fileName, title, false);
                 if (user instanceof User){
                     ((UserController) obj).setUser((User) user);
-                }else{
+                }
+                else{
                     ((AdminController) obj).setUser((Admin) user);
                 }
                 Stage currentStage = (Stage) this.usernameField.getScene().getWindow();

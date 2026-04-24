@@ -6,6 +6,7 @@ import com.example.docarc.bll.AuthService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,7 +19,7 @@ import java.util.ResourceBundle;
 public class AddEditUserController implements Initializable {
 
     private AdminController adminController;
-    private ParentUser parentUser;
+    private ParentUser user;
     private AuthService authService;
 
     @FXML private TextField userNameField;
@@ -27,6 +28,7 @@ public class AddEditUserController implements Initializable {
     @FXML private Label errorLabel;
     @FXML private Region eyeIcon;
     @FXML private TextField revealField;
+    @FXML private Button createUserButton;
 
 
     public AddEditUserController(){
@@ -75,6 +77,11 @@ public class AddEditUserController implements Initializable {
     }
 
     @FXML
+    private void editUser(){
+        System.out.println("edit user");
+    }
+
+    @FXML
     private void toggleVisibility() {
         if (passwordField.isVisible()) {
             eyeIcon.setId("closed-eye-icon");
@@ -88,7 +95,15 @@ public class AddEditUserController implements Initializable {
     }
 
     public void setUser(ParentUser usr){
-        this.parentUser = usr;
+        this.user = usr;
+        this.createUserButton.setText("Save");
+        this.createUserButton.setOnAction(event -> {editUser();});
+        fillFields();
+    }
+
+    private void fillFields(){
+        this.userNameField.setText(this.user.getUsername());
+        this.userRoleBox.setValue(this.user.getRole());
     }
 
     public void setController(AdminController adminController) {

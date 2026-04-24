@@ -48,6 +48,8 @@ public class AdminController implements Initializable {
 
     @FXML private Button editBtn;
     @FXML private Button deleteBtn;
+    @FXML private Button addUserButton;
+    @FXML private Button editUserButton;
 
     private Admin user;
     private boolean isMenuOpen = false;
@@ -97,23 +99,33 @@ public class AdminController implements Initializable {
     }
 
     @FXML
-    private void addUser() {
+    private void add_edit_user(ActionEvent actionEvent) {
         String filename = "add_edit_user.fxml";
-        String title = "Add User";
+        String title = (actionEvent.getSource() == addUserButton) ? "Add User" : "Edit User";
         try {
-            Object obj = UIHelper.openNewWindow(filename, title, true);
-            AddEditUserController addEditController = (AddEditUserController) obj;
-            addEditController.setController(this);
+            if (actionEvent.getSource() == addUserButton) {
+                Object obj = UIHelper.openNewWindow(filename, title, true);
+                AddEditUserController addEditController = (AddEditUserController) obj;
+                addEditController.setController(this);
+            }
+            else{
+                ParentUser selectedUser = usersTable.getSelectionModel().getSelectedItem();
+                if (selectedUser == null) {
+                    return;
+                    //must be some alert to notify user what is the problem in
+                }
+                Object obj = UIHelper.openNewWindow(filename, title, true);
+                AddEditUserController addEditController = (AddEditUserController) obj;
+                addEditController.setController(this);
+                addEditController.setUser(selectedUser);
+            }
+
         }
         catch (Exception e) {
             System.out.println("here either needs to be an alert or some error label");
         }
     }
 
-    @FXML
-    private void editUser(ActionEvent actionEvent) {
-        System.out.println("Edit user clicked");
-    }
 
     @FXML
     private void deleteUser(ActionEvent actionEvent) {

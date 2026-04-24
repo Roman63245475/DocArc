@@ -91,7 +91,7 @@ public class UserRepository implements IUserRepository {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 boolean isAdmin = rs.getBoolean("isadmin");
-                ParentUser user = (isAdmin) ? new Admin(id, username, password) : new User(id, username, password, "otherInfo");
+                ParentUser user = (isAdmin) ? new Admin(Id, username, password) : new User(Id, username, password, "otherInfo");
                 users.add(user);
             }
             return users;

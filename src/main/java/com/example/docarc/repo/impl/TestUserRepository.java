@@ -60,6 +60,11 @@ public class TestUserRepository implements IUserRepository {
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
         return null;
     }
+
+    @Override
+    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) {
+        System.out.println("aga nu");
+    }
 }
 
 

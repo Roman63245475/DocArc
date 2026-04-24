@@ -3,6 +3,7 @@ package com.example.docarc.gui;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.bll.AuthService;
+import com.example.docarc.bll.UserService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ public class AddEditUserController implements Initializable {
     private AdminController adminController;
     private ParentUser user;
     private AuthService authService;
+    private UserService userService;
 
     @FXML private TextField userNameField;
     @FXML private TextField passwordField;
@@ -29,10 +31,13 @@ public class AddEditUserController implements Initializable {
     @FXML private Region eyeIcon;
     @FXML private TextField revealField;
     @FXML private Button createUserButton;
+    @FXML private Label titleLabelTop;
+    @FXML private Label titleLabelBottom;
 
 
     public AddEditUserController(){
         this.authService = new AuthService();
+        this.userService = new UserService();
     }
 
     @Override
@@ -55,6 +60,7 @@ public class AddEditUserController implements Initializable {
             this.errorLabel.setOpacity(1.0);
             return;
         }
+        this.createUserButton.setDisable(true);
         Task<Void> createUserTask = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
@@ -72,13 +78,43 @@ public class AddEditUserController implements Initializable {
             Throwable cause = createUserTask.getException();
             this.errorLabel.setText(cause.getMessage());
             this.errorLabel.setOpacity(1.0);
+            this.createUserButton.setDisable(false);
         });
         new Thread(createUserTask).start();
     }
 
     @FXML
     private void editUser(){
-        System.out.println("edit user");
+        String username = userNameField.getText();
+        String password = passwordField.getText();
+        Role role = userRoleBox.getSelectionModel().getSelectedItem();
+        if (username.isEmpty() || role == null){
+            this.errorLabel.setText("Username and Role fields have to be filled out");
+            return;
+        }
+        this.createUserButton.setDisable(true);
+        Task<Void> editUserTask = new Task<Void>(){
+            @Override
+            protected Void call() throws Exception {
+                userService.editUser(user, username, password, role);
+                return null;
+            }
+        };
+        editUserTask.setOnSucceeded(event -> {
+            Stage stage = (Stage) this.errorLabel.getScene().getWindow();
+            stage.close();
+            this.adminController.refreshUserTable();
+        });
+        editUserTask.setOnFailed(event -> {
+            Throwable cause = editUserTask.getException();
+            cause.printStackTrace();
+            this.errorLabel.setText(cause.getMessage());
+            this.errorLabel.setOpacity(1.0);
+            this.createUserButton.setDisable(false);
+        });
+        new Thread(editUserTask).start();
+
+
     }
 
     @FXML
@@ -97,6 +133,8 @@ public class AddEditUserController implements Initializable {
     public void setUser(ParentUser usr){
         this.user = usr;
         this.createUserButton.setText("Save");
+        this.titleLabelTop.setText("Edit User");
+        this.titleLabelBottom.setText("Edit already existing user");
         this.createUserButton.setOnAction(event -> {editUser();});
         fillFields();
     }

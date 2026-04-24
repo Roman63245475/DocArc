@@ -16,4 +16,6 @@ public interface IUserRepository {
 
     List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException;
 
+    void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) throws DataBaseConnectionException, MyException, DuplicateException;
+
 }

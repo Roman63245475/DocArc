@@ -104,5 +104,42 @@ public class UserRepository implements IUserRepository {
         }
     }
 
+    @Override
+    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) throws DataBaseConnectionException, MyException, DuplicateException {
+        Connection con = null;
+        try {
+            PreparedStatement ps = null;
+            con = cm.getConnection();
+            if (sameUsername){
+                con = cm.getConnection();
+                String sqlPrompt = "Update users set password = ?, isadmin = ? where id = ?";
+                ps = con.prepareStatement(sqlPrompt);
+                ps.setString(1, password);
+                ps.setBoolean(2, isAdmin);
+                ps.setInt(3, user.getId());
+            }
+            else{
+                String sqlPrompt = "Update users set username = ?, password = ?, isadmin = ? where id = ?";
+                ps = con.prepareStatement(sqlPrompt);
+                ps.setString(1, username);
+                ps.setString(2, password);
+                ps.setBoolean(3, isAdmin);
+                ps.setInt(4, user.getId());
+            }
+            ps.executeUpdate();
+        }
+        catch (SQLException e){
+            if (con == null){
+                throw new DataBaseConnectionException("Connection failed");
+            }
+            else if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
+                throw new DuplicateException("User with this username already exists");
+            }
+            else {
+                throw new MyException("Sorry something went wrong");
+            }
+        }
+    }
+
     //David you can implement your db queries here for the users table
 }

@@ -6,6 +6,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class UIHelper {
 
@@ -52,4 +54,24 @@ public class UIHelper {
         stage.show();
         return loader.getController();
     }
+
+    //<T> acts as placeholder for any object type. Because we pass our consumer
+    //when executing this method, Java automaticaly understands what type to return.
+    public static <T> T openAndWait(String fileName, String title, Consumer<T> codeToExecute) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource(fileName));
+        T controller = loader.getController();
+        if (codeToExecute != null) {
+            codeToExecute.accept(controller);
+        }
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+        return controller;
+    }
+
+
+
 }

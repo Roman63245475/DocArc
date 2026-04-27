@@ -133,7 +133,7 @@ public class AdminController implements Initializable {
         try {
             Consumer<AlertController> codeToExecute = (controller) -> {
                 //Consumer acts as a small method to execute.
-                // We use consumer so we can pass what needs to be executed before the window opens (f.ex Change the text).
+                //We use consumer so we can pass what needs to be executed before the window opens (f.ex Change the text).
                 controller.setText("Deletion Confirmation", "Are you sure you want to delete " + user.getUsername() + "?");
             };
             AlertController controller = UIHelper.openAndWait("alert-view.fxml", "Confirm Deletion", codeToExecute);

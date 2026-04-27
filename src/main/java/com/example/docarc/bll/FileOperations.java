@@ -1,0 +1,104 @@
+package com.example.docarc.bll;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import com.google.zxing.*;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+
+public class FileOperations {
+    private String DestinationFolder = "unzipped";
+    //private String zipFilePath;
+
+    public void unzipFile(String zipFilePath) {
+        File dir = new File(DestinationFolder);
+        if (!dir.exists()) dir.mkdirs();
+
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath))) {
+            ZipEntry entry;
+
+            while ((entry = zis.getNextEntry()) != null) {
+                File newFile = new File(DestinationFolder, entry.getName());
+
+                if (entry.isDirectory()) {
+                    newFile.mkdirs();
+                } else {
+                    // Create parent directories
+                    new File(newFile.getParent()).mkdirs();
+
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        byte[] buffer = new byte[4096];
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
+                }
+
+                zis.closeEntry();
+            }
+
+            System.out.println("Unzipped successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void read(File file) throws IOException {
+
+        //System.out.println("Open Resource File: " + file.getAbsolutePath());
+        BufferedImage image = ImageIO.read(file);
+
+        LuminanceSource source = new BufferedImageLuminanceSource(image);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        try {
+            Result result = new MultiFormatReader().decode(bitmap);
+            System.out.println("Barcode text: " + result.getText());
+            System.out.println("Format: " + result.getBarcodeFormat());
+            System.out.println(file.getName());
+
+
+        } catch (NotFoundException e) {
+
+        }
+
+
+    }
+
+    public File[] listDirectory() {
+        File dir = new File(DestinationFolder);
+        File[] files = dir.listFiles();
+        return files;
+    }
+
+    public String getDestinationFolder() {
+        return DestinationFolder;
+    }
+
+}
+        /**        Api_request apiRequest = new Api_request("https://studentiffapi-production.up.railway.app/getAllFiles");
+         apiRequest.getZip();
+         FileOperations fileOperations = new FileOperations();
+         fileOperations.unzipFile("FILENAME.zip");
+
+         for (File file : fileOperations.listDirectory()){
+         fileOperations.read(file);
+         }
+
+
+**/
+
+
+

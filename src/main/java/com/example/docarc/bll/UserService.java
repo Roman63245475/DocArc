@@ -46,6 +46,7 @@ public class UserService {
             }
             try {
                 this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+                logger.info("user edited successfully");
             }
             catch (DuplicateException | DataBaseConnectionException ex){
                 String message = ex.getMessage();

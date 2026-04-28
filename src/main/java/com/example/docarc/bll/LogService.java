@@ -44,7 +44,7 @@ public class LogService {
                     if (saved) {
                         if (!file.delete()) {
                             file.deleteOnExit();
-                            logger.warn("Failed to delete a file: {}", fileName);
+                            //logger.warn("Failed to delete a file: {}", fileName);
                         }
                     } else {
                         logger.warn("File not deleted because save failed {}", fileName);
@@ -52,7 +52,8 @@ public class LogService {
 
                 }
                 catch (IOException e) {
-                    logger.error("Failed to process log file", e);
+                    //logger.error("Failed to process log file", e);
+                    System.out.println("omg");
                 }
             }
         }

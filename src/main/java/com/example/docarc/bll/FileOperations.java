@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -56,35 +58,37 @@ public class FileOperations {
     }
 
 
-    public void read(File file) throws IOException {
-
-        //System.out.println("Open Resource File: " + file.getAbsolutePath());
-        BufferedImage image = ImageIO.read(file);
-
-        LuminanceSource source = new BufferedImageLuminanceSource(image);
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-        try {
-            Result result = new MultiFormatReader().decode(bitmap);
-            System.out.println("Barcode text: " + result.getText());
-            System.out.println("Format: " + result.getBarcodeFormat());
-            System.out.println(file.getName());
-
-
-        } catch (NotFoundException e) {
-
-        }
-
-
-    }
-
-    public File[] listDirectory() {
+    public ArrayList<File> checkForBarCodes() {
         File dir = new File(DestinationFolder);
         File[] files = dir.listFiles();
-        return files;
-    }
 
-    public String getDestinationFolder() {
-        return DestinationFolder;
+        ArrayList<File> barcodes = new ArrayList<>();
+        //if (files == null) return;
+
+        Arrays.stream(files)
+                .parallel() // 🔥 parallel processing
+                .forEach(file -> {
+
+                    try {
+                        BufferedImage image = ImageIO.read(file);
+                        if (image == null) return;
+
+                        LuminanceSource source = new BufferedImageLuminanceSource(image);
+                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                        MultiFormatReader reader = new MultiFormatReader();
+
+                        Result result = reader.decode(bitmap);
+
+                        barcodes.add(file);
+                    } catch (NotFoundException e) {
+                        // No barcode → ignore
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                });
+        return barcodes;
     }
 
 }

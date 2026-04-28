@@ -1,39 +1,56 @@
 package com.example.docarc.repo;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.sql.DataSource;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Connection;
 import java.util.Properties;
 
 public class ConnectionManager {
-    private static final String PROP_FILE = "config/db_config.settings";
-    private SQLServerDataSource dataSource;
 
-    public ConnectionManager() throws IOException {
-        Properties databaseProperties = new Properties();
-        databaseProperties.load(new FileInputStream(new File(PROP_FILE)));
+    private static final HikariDataSource dataSource;
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
-        dataSource = new SQLServerDataSource();
-        dataSource.setServerName(databaseProperties.getProperty("Server"));
-        dataSource.setDatabaseName(databaseProperties.getProperty("Database"));
-        dataSource.setUser(databaseProperties.getProperty("User"));
-        dataSource.setPassword(databaseProperties.getProperty("Password"));
-        dataSource.setPortNumber(1433);
-        dataSource.setTrustServerCertificate(true);
-    }
 
-    public Connection getConnection() throws SQLServerException {
-        return dataSource.getConnection();
-    }
 
-    public static void main(String[] args) throws Exception {
-        ConnectionManager databaseConnector = new ConnectionManager();
-        try (Connection connection = databaseConnector.getConnection()) {
-            System.out.println("Is it open? " + !connection.isClosed());
+
+
+    static {
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream("config/db_config.settings"));
+
+            String url = "jdbc:sqlserver://"
+                    + props.getProperty("server")
+                    + ":"
+                    + props.getProperty("port")
+                    + ";databaseName="
+                    + props.getProperty("database")
+                    + ";encrypt="
+                    + props.getProperty("encrypt")
+                    + ";trustServerCertificate="
+                    + props.getProperty("trustServerCertificate");
+
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername(props.getProperty("user"));
+            config.setPassword(props.getProperty("password"));
+
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setLeakDetectionThreshold(2000);
+
+            dataSource = new HikariDataSource(config);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    public static DataSource getDataSource() {
+        return dataSource;
     }
 }

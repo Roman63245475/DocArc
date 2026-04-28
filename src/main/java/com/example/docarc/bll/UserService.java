@@ -30,7 +30,7 @@ public class UserService {
         return this.userRepository.getAllUsers(id);
     }
 
-    public void editUser(ParentUser user, String username, String password, Role role) throws MyException, DataBaseConnectionException, DuplicateException {
+    public void editUser(ParentUser user, String username, String password, Role role) throws MyException {
         if (checkUsername(username, password)){
             String hashedPassword = "";
             if (!password.isEmpty()){
@@ -44,8 +44,15 @@ public class UserService {
                     throw new MyException("Username can't be equal to password");
                 }
             }
-            this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
-            logger.info("user successfully edited");
+            try {
+                this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+            }
+            catch (DuplicateException | DataBaseConnectionException ex){
+                String message = ex.getMessage();
+                logger.error(message);
+            }
+
+
         }
     }
 

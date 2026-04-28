@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,8 @@ public class LogService {
                     }
                     if (saved) {
                         if (!file.delete()) {
-                            logger.error("Cannot delete file {}", fileName);
+                            file.deleteOnExit();
+                            logger.warn("Failed to delete a file: {}", fileName);
                         }
                     } else {
                         logger.warn("File not deleted because save failed {}", fileName);

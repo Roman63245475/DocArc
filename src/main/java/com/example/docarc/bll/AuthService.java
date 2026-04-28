@@ -74,6 +74,7 @@ public class AuthService {
     }
 
     public void createUser(String userName, String password, Role role) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
+        logger.info("ENTER createUser");
         if (checkUsername(userName, password) && checkPassword(password)){
             String hashedPassword = passwordEncoder.encode(password);
             this.userRepository.createUser(userName, hashedPassword, role == Role.ADMIN);

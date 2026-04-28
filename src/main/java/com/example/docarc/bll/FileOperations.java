@@ -92,17 +92,5 @@ public class FileOperations {
     }
 
 }
-        /**        Api_request apiRequest = new Api_request("https://studentiffapi-production.up.railway.app/getAllFiles");
-         apiRequest.getZip();
-         FileOperations fileOperations = new FileOperations();
-         fileOperations.unzipFile("FILENAME.zip");
-
-         for (File file : fileOperations.listDirectory()){
-         fileOperations.read(file);
-         }
-
-
-**/
-
 
 

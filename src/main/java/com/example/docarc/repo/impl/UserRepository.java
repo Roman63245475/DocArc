@@ -48,7 +48,7 @@ public class UserRepository implements IUserRepository {
             }
             throw new LoginException("User not found");
         } catch (SQLServerException e) {
-            throw new DataBaseConnectionException("Connection failed");
+            throw new DataBaseConnectionException("Connection failed. " + e.getMessage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -138,6 +138,21 @@ public class UserRepository implements IUserRepository {
             else {
                 throw new MyException("Sorry something went wrong");
             }
+        }
+    }
+
+    @Override
+    public void deleteUser(int id) throws DataBaseConnectionException, MyException {
+        try(Connection con = cm.getConnection()){
+            try(PreparedStatement ps = con.prepareStatement("delete from users where id = ?")){
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+        } catch (SQLServerException e){
+            throw new DataBaseConnectionException("Connection failed");
+        }
+        catch (SQLException e){
+            throw new MyException("Sorry something went wrong");
         }
     }
 

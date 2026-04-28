@@ -4,26 +4,29 @@ import com.example.docarc.be.Admin;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.be.User;
+import com.example.docarc.bll.LogService;
 import com.example.docarc.bll.UserService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class AdminController implements Initializable {
 
@@ -55,6 +58,8 @@ public class AdminController implements Initializable {
     private boolean isMenuOpen = false;
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
     private UserService userService;
+    private Timeline timeLine;
+    private LogService logService;
 
     public AdminController() {
         this.userService = new UserService();
@@ -63,6 +68,10 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setUpUserTable();
+        this.logService = new LogService();
+        this.timeLine = new Timeline(new KeyFrame(Duration.seconds(14), e -> sendLogs()));
+        this.timeLine.setCycleCount(Timeline.INDEFINITE);
+        this.timeLine.play();
     }
 
     public void setUser(Admin usr) {
@@ -129,7 +138,39 @@ public class AdminController implements Initializable {
 
     @FXML
     private void deleteUser(ActionEvent actionEvent) {
-        System.out.println("Delete user clicked");
+        ParentUser user = usersTable.getSelectionModel().getSelectedItem();
+        if (user == null) return;
+        try {
+            Consumer<AlertController> codeToExecute = (controller) -> {
+                //Consumer acts as a small method to execute.
+                //We use consumer so we can pass what needs to be executed before the window opens (f.ex Change the text).
+                controller.setText("Deletion Confirmation", "Are you sure you want to delete " + user.getUsername() + "?");
+            };
+            AlertController controller = UIHelper.openAndWait("alert-view.fxml", "Confirm Deletion", codeToExecute);
+            if (controller.isConfirmed()){
+                Task<Void> task = new Task<Void>(){
+                    @Override
+                    protected Void call() throws Exception {
+                        userService.deleteUser(user.getId());
+                        return null;
+                    }
+                };
+
+                task.setOnSucceeded(event -> {
+                    refreshUserTable();
+                });
+
+                task.setOnFailed(event -> {
+                    //Notify user if something went wrong
+                });
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void refreshUserTable(){
@@ -149,6 +190,10 @@ public class AdminController implements Initializable {
             getAllUsersTask.getException().printStackTrace();
         });
         new Thread(getAllUsersTask).start();
+    }
+
+    private void sendLogs(){
+        new Thread(() -> {this.logService.sendLogs();}).start();
     }
 
 }

@@ -4,7 +4,10 @@ import com.example.docarc.be.Admin;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.be.User;
+import com.example.docarc.bll.LogService;
 import com.example.docarc.bll.UserService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -20,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.List;
@@ -55,6 +59,8 @@ public class AdminController implements Initializable {
     private boolean isMenuOpen = false;
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
     private UserService userService;
+    private Timeline timeLine;
+    private LogService logService;
 
     public AdminController() {
         this.userService = new UserService();
@@ -63,6 +69,10 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setUpUserTable();
+        this.logService = new LogService();
+        this.timeLine = new Timeline(new KeyFrame(Duration.seconds(14), e -> sendLogs()));
+        this.timeLine.setCycleCount(Timeline.INDEFINITE);
+        this.timeLine.play();
     }
 
     public void setUser(Admin usr) {
@@ -149,6 +159,10 @@ public class AdminController implements Initializable {
             getAllUsersTask.getException().printStackTrace();
         });
         new Thread(getAllUsersTask).start();
+    }
+
+    private void sendLogs(){
+        new Thread(() -> {this.logService.sendLogs();}).start();
     }
 
 }

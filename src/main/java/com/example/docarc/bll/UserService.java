@@ -7,6 +7,8 @@ import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.UserRepository;
 import com.example.docarc.repo.repositories.IUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 public class UserService {
     private IUserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService() {
         userRepository = new UserRepository();
@@ -23,6 +26,7 @@ public class UserService {
 
 
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
+        logger.info("Getting all users");
         return this.userRepository.getAllUsers(id);
     }
 
@@ -35,10 +39,13 @@ public class UserService {
             else{
                 hashedPassword = user.getPassword();
                 if (passwordEncoder.matches(username, hashedPassword)){
+                    String usname = user.getUsername();
+                    logger.warn("unsuccessful attempt to edit user={}", usname);
                     throw new MyException("Username can't be equal to password");
                 }
             }
             this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+            logger.info("user successfully edited");
         }
     }
 

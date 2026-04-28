@@ -69,4 +69,8 @@ public class UserService {
         }
         return true;
     }
+
+    public void deleteUser(int id) throws MyException, DataBaseConnectionException {
+        this.userRepository.deleteUser(id);
+    }
 }

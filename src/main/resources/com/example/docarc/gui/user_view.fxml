@@ -1,14 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.docarc.gui.UserController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.UserController">
+   <children>
+      <HBox prefWidth="600.0" styleClass="title-bar">
+         <children>
+            <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/LogoBlue_Logoicon.png" />
+               </image></ImageView>
+         </children></HBox>
+      <SplitPane dividerPositions="0.36718750000000006" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <items>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <Label styleClass="h3" text="Content" />
+                  <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity">
+                     <children>
+                        <ComboBox fx:id="boxChoice" editable="true" focusTraversable="false" minWidth="-Infinity" prefWidth="150.0" promptText="Select a box.." styleClass="field">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets></ComboBox>
+                        <Region id="box-icon" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="12.0" prefWidth="12.0" styleClass="icon">
+                           <StackPane.margin>
+                              <Insets left="9.0" />
+                           </StackPane.margin></Region>
+                     </children>
+                  </StackPane>
+                  <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity">
+                     <children>
+                        <ComboBox fx:id="folderChoice" editable="true" focusTraversable="false" minWidth="-Infinity" prefWidth="150.0" promptText="Select a folder.." styleClass="field">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </ComboBox>
+                        <Region id="folder-icon" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="12.0" prefWidth="12.0" styleClass="icon">
+                           <StackPane.margin>
+                              <Insets left="9.0" />
+                           </StackPane.margin>
+                        </Region>
+                     </children>
+                  </StackPane>
+                  <ListView fx:id="fileList" prefHeight="267.0" prefWidth="228.0" styleClass="field" VBox.vgrow="ALWAYS" />
+                  <Button maxWidth="Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="17.0" prefWidth="109.0" text="Export" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="4.0" left="9.0" right="9.0" top="4.0" />
+                     </padding>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding></VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <Label styleClass="h3" text="Page Viewer" />
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button contentDisplay="GRAPHIC_ONLY" maxHeight="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRotateLeft" prefHeight="95.0" prefWidth="42.0" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <Region id="arrow-left-icon" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" styleClass="icon" />
+                           </graphic>
+                           <padding>
+                              <Insets bottom="2.0" top="2.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="100.0" top="100.0" />
+                           </HBox.margin></Button>
+                        <VBox fx:id="imageContainer" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ImageView fx:id="pageView" fitHeight="${imageContainer.height}" fitWidth="${imageContainer.width}" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
+                        <Button contentDisplay="GRAPHIC_ONLY" layoutX="10.0" layoutY="123.0" maxHeight="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRotateRight" prefHeight="95.0" prefWidth="42.0" VBox.vgrow="ALWAYS">
+                           <graphic>
+                              <Region id="arrow-right-icon" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #FFFFFF;" styleClass="icon" />
+                           </graphic>
+                           <padding>
+                              <Insets bottom="2.0" top="2.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="100.0" top="100.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding></VBox>
+        </items>
+      </SplitPane>
+   </children>
+</VBox>

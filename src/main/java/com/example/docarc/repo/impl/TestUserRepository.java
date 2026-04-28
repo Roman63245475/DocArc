@@ -65,6 +65,11 @@ public class TestUserRepository implements IUserRepository {
     public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) {
         System.out.println("aga nu");
     }
+
+    @Override
+    public void deleteUser(int id) throws DataBaseConnectionException, MyException {
+        System.out.println("aga nu zaebok");
+    }
 }
 
 

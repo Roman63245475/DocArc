@@ -59,12 +59,15 @@ public class UIHelper {
     //when executing this method, Java automaticaly understands what type to return.
     public static <T> T openAndWait(String fileName, String title, Consumer<T> codeToExecute) throws IOException {
         FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource(fileName));
+        // controller появляется только после loader.load()
+        Parent root = loader.load();
         T controller = loader.getController();
         if (codeToExecute != null) {
             codeToExecute.accept(controller);
         }
+        // повторно loader.load() нельзя: используем уже загруженный root
         Stage stage = new Stage();
-        Scene scene = new Scene(loader.load());
+        Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle(title);
         stage.initModality(Modality.APPLICATION_MODAL);

@@ -138,20 +138,20 @@ public class AdminController implements Initializable {
 
     @FXML
     private void deleteUser(ActionEvent actionEvent) {
-        ParentUser user = usersTable.getSelectionModel().getSelectedItem();
-        if (user == null) return;
+        ParentUser selectedUser = usersTable.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) return;
         try {
             Consumer<AlertController> codeToExecute = (controller) -> {
                 //Consumer acts as a small method to execute.
                 //We use consumer so we can pass what needs to be executed before the window opens (f.ex Change the text).
-                controller.setText("Deletion Confirmation", "Are you sure you want to delete " + user.getUsername() + "?");
+                controller.setText("Deletion Confirmation", "Are you sure you want to delete " + selectedUser.getUsername() + "?");
             };
             AlertController controller = UIHelper.openAndWait("alert-view.fxml", "Confirm Deletion", codeToExecute);
             if (controller.isConfirmed()){
                 Task<Void> task = new Task<Void>(){
                     @Override
                     protected Void call() throws Exception {
-                        userService.deleteUser(user.getId());
+                        userService.deleteUser(selectedUser.getId());
                         return null;
                     }
                 };

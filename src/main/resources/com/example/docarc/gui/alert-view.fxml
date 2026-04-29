@@ -4,39 +4,41 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="321.0" prefWidth="600.0" styleClass="body" stylesheets="@css/alert-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.AlertController">
-   <children>
-      <StackPane alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <Label fx:id="headerLabel" styleClass="h1" text="{header-message}" />
-                  <Label fx:id="descLabel" layoutX="10.0" layoutY="10.0" styleClass="h3" text="{description}" />
-               </children>
-               <StackPane.margin>
-                  <Insets />
-               </StackPane.margin>
-            </VBox>
-            <Region id="question-icon" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" prefWidth="60.0" styleClass="icon" />
-         </children>
-         <padding>
-            <Insets left="50.0" right="50.0" />
-         </padding>
-      </StackPane>
-      <HBox alignment="CENTER_RIGHT" spacing="20.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" text="Cancel">
-               <padding>
-                  <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
-               </padding></Button>
-            <Button mnemonicParsing="false" onAction="#onConfirm" text="Confirm">
-               <padding>
-                  <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
-               </padding></Button>
-         </children>
-      </HBox>
-   </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="440.0" styleClass="body" stylesheets="@css/alert-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.AlertController">
+    <children>
+
+        <VBox alignment="CENTER" spacing="14.0" VBox.vgrow="ALWAYS">
+            <children>
+
+                <StackPane prefHeight="56.0" prefWidth="56.0" styleClass="icon-circle">
+                    <children>
+                        <Region id="trash-icon" maxHeight="28.0" maxWidth="28.0" prefHeight="28.0" prefWidth="28.0" styleClass="icon" />
+                    </children>
+                </StackPane>
+
+                <Label fx:id="headerLabel" styleClass="h1" text="Delete user" />
+                <Label fx:id="descLabel" styleClass="desc" text="Are you sure you want to delete this user? This action cannot be undone." wrapText="true" />
+
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#onCancel" styleClass="btn-cancel" text="Cancel">
+                    <padding>
+                        <Insets bottom="8.0" left="18.0" right="18.0" top="8.0" />
+                    </padding>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#onConfirm" styleClass="btn-delete" text="Delete">
+                    <padding>
+                        <Insets bottom="8.0" left="18.0" right="18.0" top="8.0" />
+                    </padding>
+                </Button>
+            </children>
+        </HBox>
+
+    </children>
+    <padding>
+        <Insets bottom="24.0" left="28.0" right="28.0" top="32.0" />
+    </padding>
 </VBox>

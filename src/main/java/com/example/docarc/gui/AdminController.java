@@ -60,6 +60,8 @@ public class AdminController implements Initializable {
     private UserService userService;
     private Timeline timeLine;
     private LogService logService;
+    private ObservableList<String> appLogsLst = FXCollections.observableArrayList();
+    private ObservableList<String> errorLogsLst = FXCollections.observableArrayList();
 
     public AdminController() {
         this.userService = new UserService();
@@ -69,9 +71,18 @@ public class AdminController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setUpUserTable();
         this.logService = new LogService();
+        setUpTimeline();
+        setUpLogs();
+    }
+
+    private void setUpTimeline() {
         this.timeLine = new Timeline(new KeyFrame(Duration.seconds(14), e -> sendLogs()));
         this.timeLine.setCycleCount(Timeline.INDEFINITE);
         this.timeLine.play();
+    }
+
+    private void setUpLogs() {
+
     }
 
     public void setUser(Admin usr) {

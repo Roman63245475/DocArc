@@ -14,6 +14,8 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -33,9 +35,11 @@ public class AdminController implements Initializable {
     @FXML private VBox sideBar;
     @FXML private VBox userManagementBox;
     @FXML private StackPane contentBox;
+    @FXML private StackPane listContainer;
 
     @FXML private Label adminNameLabel;
     @FXML private Label welcomeUserLabel;
+    @FXML private Label logsLabel;
 
     @FXML private Button userManBtn;
     @FXML private Button metadataBtn;
@@ -49,8 +53,8 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
     @FXML private TableColumn<ParentUser, Role> userRoleColumn;
 
-    @FXML private Button editBtn;
-    @FXML private Button deleteBtn;
+    @FXML private Button appLogsBtn;
+    @FXML private Button errorLogsBtn;
     @FXML private Button addUserButton;
     @FXML private Button editUserButton;
 
@@ -87,9 +91,19 @@ public class AdminController implements Initializable {
         this.usersTable.setItems(usersLst);
     }
 
+    private void changeView(String target, StackPane parent){
+        for(Node n : parent.getChildren()){
+            if (n.getId().equals(target)){
+                n.setVisible(true);
+            }else{
+                n.setVisible(false);
+            }
+        }
+    }
+
     @FXML
     private void onUserManClick(ActionEvent actionEvent) {
-        System.out.println("User Management clicked");
+        changeView("userManagementBox", contentBox);
     }
 
     @FXML
@@ -99,7 +113,23 @@ public class AdminController implements Initializable {
 
     @FXML
     private void onLogsClick(ActionEvent actionEvent) {
-        System.out.println("Activity Log clicked");
+        changeView("activityLogsBox", contentBox);
+    }
+
+    @FXML
+    private void onAppLogsClick() {
+        logsLabel.setText(appLogsBtn.getText());
+        appLogsBtn.setDisable(true);
+        errorLogsBtn.setDisable(false);
+        changeView("appLogsList", listContainer);
+    }
+
+    @FXML
+    private void onErrorLogsClick() {
+        logsLabel.setText(errorLogsBtn.getText());
+        appLogsBtn.setDisable(false);
+        errorLogsBtn.setDisable(true);
+        changeView("errorLogsList", listContainer);
     }
 
     @FXML

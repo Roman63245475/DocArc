@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LogRepository implements ILogRepository {
@@ -72,6 +74,34 @@ public class LogRepository implements ILogRepository {
             logger.error("Failed to save error logs due to: {}", e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public List<String> getAppLogs() {
+        List<String> appLogs = new ArrayList<>();
+        try (Connection con = ds.getConnection()) {
+            try {
+                String sqlPrompt = "select * from app_logs";
+                PreparedStatement ps = con.prepareStatement(sqlPrompt);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    appLogs.add(rs.getString("log"));
+                }
+                return appLogs;
+            } catch (SQLException e) {
+                logger.error("Failed to get app logs due to: {}", e.getMessage());
+                return appLogs;
+            }
+        }
+        catch (SQLException e) {
+            logger.error("Failed to load app logs due to: {}", e.getMessage());
+            return appLogs;
+        }
+    }
+
+    @Override
+    public List<String> getErrorLogs() {
+        return List.of();
     }
 
     private void rollbackQuietly(Connection con) {

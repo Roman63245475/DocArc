@@ -64,8 +64,10 @@ public class AdminController implements Initializable {
     private UserService userService;
     private Timeline timeLine;
     private LogService logService;
-    private ObservableList<String> appLogsLst = FXCollections.observableArrayList();
-    private ObservableList<String> errorLogsLst = FXCollections.observableArrayList();
+    private ObservableList<List<String>> appLogsLst = FXCollections.observableArrayList();
+    private ObservableList<List<String>> errorLogsLst = FXCollections.observableArrayList();
+    private ListView<List<String>> appLogsList = new ListView<>();
+    private ListView<List<String>> errorLogsList = new ListView<>();
 
     public AdminController() {
         this.userService = new UserService();
@@ -77,6 +79,7 @@ public class AdminController implements Initializable {
         this.logService = new LogService();
         setUpTimeline();
         setUpLogs();
+        refreshLogs();
     }
 
     private void setUpTimeline() {
@@ -85,8 +88,14 @@ public class AdminController implements Initializable {
         this.timeLine.play();
     }
 
-    private void setUpLogs() {
+    private void refreshLogs(){
+        appLogsLst.setAll(this.logService.getAppLogs());
+        errorLogsLst.setAll(this.logService.getErrorLogs());
+    }
 
+    private void setUpLogs() {
+        this.appLogsList.setItems(appLogsLst);
+        this.errorLogsList.setItems(errorLogsLst);
     }
 
     public void setUser(Admin usr) {

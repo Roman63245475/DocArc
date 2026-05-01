@@ -87,7 +87,6 @@ public class LogRepository implements ILogRepository {
                 while (rs.next()) {
                     appLogs.add(rs.getString("log"));
                 }
-                return appLogs;
             } catch (SQLException e) {
                 logger.error("Failed to get app logs due to: {}", e.getMessage());
                 return appLogs;
@@ -97,11 +96,29 @@ public class LogRepository implements ILogRepository {
             logger.error("Failed to load app logs due to: {}", e.getMessage());
             return appLogs;
         }
+        return appLogs;
     }
 
     @Override
     public List<String> getErrorLogs() {
-        return List.of();
+        List<String> errorLogs = new ArrayList<>();
+        try (Connection con = ds.getConnection()) {
+            try(PreparedStatement ps = con.prepareStatement("select * from error_logs")){
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String log = rs.getString("error_log");
+                    errorLogs.add(log);
+                }
+            } catch (SQLException e) {
+                logger.error("Failed to get app logs due to: {}", e.getMessage());
+                return errorLogs;
+            }
+        }
+        catch (SQLException e) {
+            logger.error("Failed to load app logs due to: {}", e.getMessage());
+            return errorLogs;
+        }
+        return errorLogs;
     }
 
     private void rollbackQuietly(Connection con) {

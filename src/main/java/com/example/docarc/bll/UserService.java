@@ -23,6 +23,11 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    public UserService(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
 
 
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {

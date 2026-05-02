@@ -59,6 +59,10 @@ public class LogService {
     }
 
     public List<String> getAppLogs() {
+        return logRepository.getAppLogs();
+    }
 
+    public List<String> getErrorLogs() {
+        return logRepository.getErrorLogs();
     }
 }

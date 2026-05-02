@@ -26,6 +26,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -44,8 +45,10 @@ public class AdminController implements Initializable {
     @FXML private Button userManBtn;
     @FXML private Button metadataBtn;
     @FXML private Button ActivityLogBtn;
-
-
+    @FXML private Button appLogsBtn;
+    @FXML private Button errorLogsBtn;
+    @FXML private Button addUserButton;
+    @FXML private Button editUserButton;
 
     @FXML private Region menuToggleBtn;
 
@@ -53,21 +56,19 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
     @FXML private TableColumn<ParentUser, Role> userRoleColumn;
 
-    @FXML private Button appLogsBtn;
-    @FXML private Button errorLogsBtn;
-    @FXML private Button addUserButton;
-    @FXML private Button editUserButton;
+    @FXML private ListView<String> appLogsList;
+    @FXML private ListView<String> errorLogsList;
 
-    private Admin user;
-    private boolean isMenuOpen = false;
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
+    private ObservableList<String> observableAppLogs = FXCollections.observableArrayList();
+    private ObservableList<String> observableErrorLogs = FXCollections.observableArrayList();
+
+    private boolean isMenuOpen = false;
+
     private UserService userService;
-    private Timeline timeLine;
     private LogService logService;
-    private ObservableList<List<String>> appLogsLst = FXCollections.observableArrayList();
-    private ObservableList<List<String>> errorLogsLst = FXCollections.observableArrayList();
-    private ListView<List<String>> appLogsList = new ListView<>();
-    private ListView<List<String>> errorLogsList = new ListView<>();
+    private Timeline timeLine;
+    private Admin user;
 
     public AdminController() {
         this.userService = new UserService();
@@ -75,8 +76,8 @@ public class AdminController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setUpUserTable();
         this.logService = new LogService();
+        setUpUserTable();
         setUpTimeline();
         setUpLogs();
         refreshLogs();
@@ -89,13 +90,34 @@ public class AdminController implements Initializable {
     }
 
     private void refreshLogs(){
-        appLogsLst.setAll(this.logService.getAppLogs());
-        errorLogsLst.setAll(this.logService.getErrorLogs());
+        Task<HashMap<String, List<String>>> task = new Task<>() {
+            @Override
+            protected HashMap<String, List<String>> call() throws Exception {
+                List<String> appLogs = logService.getAppLogs();
+                List<String> errorLogs = logService.getErrorLogs();
+                HashMap<String, List<String>> map = new HashMap<>();
+                map.put("appLogs", appLogs);
+                map.put("errorLogs", errorLogs);
+                return map;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            HashMap<String, List<String>> map = task.getValue();
+            List<String> appLogs = map.get("appLogs");
+            List<String> errorLogs = map.get("errorLogs");
+
+            observableAppLogs.setAll(appLogs);
+            observableErrorLogs.setAll(errorLogs);
+        });
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     private void setUpLogs() {
-        this.appLogsList.setItems(appLogsLst);
-        this.errorLogsList.setItems(errorLogsLst);
+        appLogsList.setItems(observableAppLogs);
+        errorLogsList.setItems(observableErrorLogs);
     }
 
     public void setUser(Admin usr) {
@@ -133,6 +155,7 @@ public class AdminController implements Initializable {
 
     @FXML
     private void onLogsClick(ActionEvent actionEvent) {
+        refreshLogs();
         changeView("activityLogsBox", contentBox);
     }
 

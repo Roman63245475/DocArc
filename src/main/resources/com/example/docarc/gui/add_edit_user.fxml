@@ -7,101 +7,65 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="470.0" stylesheets="@css/create_edit_user.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.AddEditUserController">
     <children>
-        <VBox alignment="CENTER" prefHeight="143.0" prefWidth="470.0" styleClass="background_color_orange">
+
+        <!-- Header -->
+        <VBox alignment="CENTER" prefHeight="143.0" prefWidth="470.0" styleClass="header-banner">
             <children>
-                <Label fx:id="titleLabelTop" styleClass="text" text="Create New User">
-                    <font>
-                        <Font size="23.0" />
-                    </font>
+                <Label fx:id="titleLabelTop" styleClass="text" id="headerTitle" text="Create New User">
                     <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="6.0"/>
                     </VBox.margin>
                 </Label>
-                <Label fx:id="titleLabelBottom" styleClass="text" text="Set up a new account with username and permissions">
-                    <font>
-                        <Font size="16.0" />
-                    </font>
-                </Label>
+                <Label fx:id="titleLabelBottom" styleClass="text,header-subtitle" text="Set up a new account with username and permissions"/>
             </children>
         </VBox>
+
+
         <VBox alignment="CENTER" prefHeight="423.0" prefWidth="470.0" spacing="10.0">
             <children>
+
+
                 <VBox alignment="CENTER" prefWidth="100.0">
                     <children>
-                        <Label text="Username">
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                            <font>
-                                <Font size="16.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="userNameField" maxWidth="410.0" prefHeight="31.0" prefWidth="410.0" promptText="Enter username" styleClass="fields">
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                        </TextField>
+                        <Label text="Username" styleClass="form-label"/>
+                        <TextField fx:id="userNameField" maxWidth="410.0" prefHeight="31.0" prefWidth="410.0" promptText="Enter username" styleClass="fields"/>
                     </children>
                 </VBox>
+
+
                 <VBox alignment="CENTER" prefWidth="100.0">
                     <children>
-                        <Label text="Password">
-                            <font>
-                                <Font size="16.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                        </Label>
-                        <HBox alignment="CENTER_LEFT" maxWidth="410.0" prefWidth="200.0" styleClass="fields">
+                        <Label text="Password" styleClass="form-label"/>
+                        <HBox alignment="CENTER_LEFT" maxWidth="410.0" prefHeight="31.0" prefWidth="410.0" styleClass="fields">
                             <children>
                                 <StackPane prefWidth="200.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <PasswordField fx:id="passwordField" maxWidth="400.0" prefHeight="32.0" prefWidth="370.0" styleClass="fields" />
-                                        <TextField fx:id="revealField" maxWidth="400.0" prefHeight="32.0" prefWidth="370.0" styleClass="fields" visible="false" />
+                                        <PasswordField fx:id="passwordField" maxWidth="400.0" prefHeight="32.0" prefWidth="370.0" promptText="Enter password"/>
+                                        <TextField fx:id="revealField" maxWidth="410.0" prefHeight="31.0" prefWidth="410.0" visible="false"/>
                                     </children>
                                 </StackPane>
-                                <Region id="open-eye-icon" fx:id="eyeIcon" maxHeight="15.0" minHeight="15.0" onMouseClicked="#toggleVisibility" prefHeight="7.0" prefWidth="23.0" styleClass="darken-c" />
+                                <Region id="open-eye-icon" fx:id="eyeIcon" maxHeight="15.0" minHeight="15.0" onMouseClicked="#toggleVisibility" prefHeight="7.0" prefWidth="23.0" styleClass="darken-c"/>
                             </children>
-                            <padding>
-                                <Insets right="5.0" />
-                            </padding>
                         </HBox>
                     </children>
                 </VBox>
+
+
                 <VBox alignment="CENTER" prefWidth="100.0">
                     <children>
-                        <Label text="User Role">
-                            <font>
-                                <Font size="16.0" />
-                            </font>
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                        </Label>
-                        <ComboBox fx:id="userRoleBox" maxWidth="410.0" prefHeight="34.0" prefWidth="410.0" promptText="Select user role" styleClass="fields">
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                        </ComboBox>
+                        <Label text="User Role" styleClass="form-label"/>
+                        <ComboBox fx:id="userRoleBox" maxWidth="410.0" prefHeight="34.0" prefWidth="410.0" promptText="Select user role" styleClass="fields"/>
                     </children>
                 </VBox>
-                <Label fx:id="errorLabel" text="Label">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <Button fx:id="createUserButton" maxWidth="410.0" mnemonicParsing="false" onAction="#createUser" prefHeight="51.0" prefWidth="410.0" styleClass="create_user_button" text="Create user">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                    <font>
-                        <Font size="19.0" />
-                    </font>
-                </Button>
-            </children></VBox>
+
+
+                <Label fx:id="errorLabel" text=""/>
+
+
+                <Button fx:id="createUserButton" maxWidth="410.0" mnemonicParsing="false" onAction="#createUser" prefHeight="51.0" prefWidth="410.0" styleClass="create_user_button" text="Create user"/>
+
+            </children>
+        </VBox>
+
     </children>
 </VBox>

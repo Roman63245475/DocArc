@@ -10,7 +10,11 @@ import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
 import com.example.docarc.repo.repositories.IUserRepository;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
+import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,18 +26,16 @@ import java.util.List;
 public class UserRepository implements IUserRepository {
 
     private ConnectionManager cm;
+    private DataSource ds;
+    private Logger logger =  LoggerFactory.getLogger(UserRepository.class);
 
     public UserRepository() {
-        try {
-            this.cm = new ConnectionManager();
-        } catch (IOException e) {
-            System.out.println("kalivan");
-        }
+        this.ds = ConnectionManager.getDataSource();
     }
 
     @Override
     public ParentUser findUser(String username) throws DataBaseConnectionException, LoginException {
-        try(Connection con = cm.getConnection()){
+        try(Connection con = ds.getConnection()){
             String sqlPrompt = "select * from users where username = ?";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setString(1, username);
@@ -48,7 +50,7 @@ public class UserRepository implements IUserRepository {
             }
             throw new LoginException("User not found");
         } catch (SQLServerException e) {
-            throw new DataBaseConnectionException("Connection failed");
+            throw new DataBaseConnectionException("Connection failed. " + e.getMessage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +59,7 @@ public class UserRepository implements IUserRepository {
     public void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, DuplicateException, MyException {
         Connection con = null;
         try {
-            con = cm.getConnection();
+            con = ds.getConnection();
             String sqlPrompt = "Insert into users (username, password, isadmin) values (?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setString(1, username);
@@ -81,7 +83,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
         List<ParentUser> users = new ArrayList<>();
-        try (Connection con = cm.getConnection()) {
+        try (Connection con = ds.getConnection()) {
             String sqlPrompt = "Select * from users where id != ?";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setInt(1, id);
@@ -109,9 +111,8 @@ public class UserRepository implements IUserRepository {
         Connection con = null;
         try {
             PreparedStatement ps = null;
-            con = cm.getConnection();
+            con = ds.getConnection();
             if (sameUsername){
-                con = cm.getConnection();
                 String sqlPrompt = "Update users set password = ?, isadmin = ? where id = ?";
                 ps = con.prepareStatement(sqlPrompt);
                 ps.setString(1, password);
@@ -138,6 +139,23 @@ public class UserRepository implements IUserRepository {
             else {
                 throw new MyException("Sorry something went wrong");
             }
+        }
+    }
+
+    @Override
+    public void deleteUser(int id) throws DataBaseConnectionException, MyException {
+        try(Connection con = ds.getConnection()){
+            try(PreparedStatement ps = con.prepareStatement("delete from users where id = ?")){
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            }
+        } catch (SQLServerException e){
+            logger.error("Connection failed due to: {}", e.getMessage());
+            throw new DataBaseConnectionException("Connection failed");
+        }
+        catch (SQLException e){
+            logger.error("sql prompt failed");
+            throw new MyException("Sorry something went wrong");
         }
     }
 

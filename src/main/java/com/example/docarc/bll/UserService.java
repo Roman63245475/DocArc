@@ -7,6 +7,8 @@ import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.UserRepository;
 import com.example.docarc.repo.repositories.IUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
@@ -14,19 +16,26 @@ import java.util.List;
 public class UserService {
     private IUserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService() {
         userRepository = new UserRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    public UserService(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
 
 
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
+        logger.info("Getting all users");
         return this.userRepository.getAllUsers(id);
     }
 
-    public void editUser(ParentUser user, String username, String password, Role role) throws MyException, DataBaseConnectionException, DuplicateException {
+    public void editUser(ParentUser user, String username, String password, Role role) throws MyException {
         if (checkUsername(username, password)){
             String hashedPassword = "";
             if (!password.isEmpty()){
@@ -35,10 +44,21 @@ public class UserService {
             else{
                 hashedPassword = user.getPassword();
                 if (passwordEncoder.matches(username, hashedPassword)){
+                    String usname = user.getUsername();
+                    logger.warn("unsuccessful attempt to edit user={}", usname);
                     throw new MyException("Username can't be equal to password");
                 }
             }
-            this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+            try {
+                this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+                logger.info("user edited successfully");
+            }
+            catch (DuplicateException | DataBaseConnectionException ex){
+                String message = ex.getMessage();
+                logger.error(message);
+            }
+
+
         }
     }
 
@@ -61,5 +81,9 @@ public class UserService {
             throw new MyException("Password must not contain spaces");
         }
         return true;
+    }
+
+    public void deleteUser(int id) throws MyException, DataBaseConnectionException {
+        this.userRepository.deleteUser(id);
     }
 }

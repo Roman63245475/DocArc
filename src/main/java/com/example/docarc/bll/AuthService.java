@@ -9,11 +9,14 @@ import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.TestUserRepository;
 import com.example.docarc.repo.impl.UserRepository;
 import com.example.docarc.repo.repositories.IUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AuthService {
     private BCryptPasswordEncoder passwordEncoder; //kalivan -> $2ajnkse;rkljp7287346
     private IUserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     public AuthService(IUserRepository userRepository){
         this.userRepository = userRepository;
@@ -31,15 +34,17 @@ public class AuthService {
         try {
             usr = userRepository.findUser(username);
             if (passwordEncoder.matches(password, usr.getPassword())){
+                logger.info("{} logged in successfully", username);
                 return usr;
             }
-            throw new LoginException("Username os password is incorrect");
+            logger.warn("Login failed: invalid password for user={}",  username);
+            throw new MyException("Username os password is incorrect");
         }
         catch (DataBaseConnectionException | LoginException ex) {
             if (ex instanceof DataBaseConnectionException) {
-                System.out.println("do some job");
+                logger.error("Login failed due to: {}", ex.getMessage());
             } else {
-                System.out.println("do some other job");
+                logger.warn("Login failed: user not found (username={})", username);
             }
             throw new MyException(ex.getMessage());
         }
@@ -69,9 +74,14 @@ public class AuthService {
     }
 
     public void createUser(String userName, String password, Role role) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
+        logger.info("ENTER createUser");
         if (checkUsername(userName, password) && checkPassword(password)){
             String hashedPassword = passwordEncoder.encode(password);
             this.userRepository.createUser(userName, hashedPassword, role == Role.ADMIN);
+            logger.info("User '{}' created successfully", userName);
+        }
+        else{
+            logger.warn("Failed to create user: invalid username or password");
         }
     }
 }

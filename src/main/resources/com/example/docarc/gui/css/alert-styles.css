@@ -1,0 +1,65 @@
+.body {
+    -fx-font-family: "Montserrat";
+    -fx-background-color: white;
+}
+
+.h1 {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2D3D4F;
+}
+
+.desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+    -fx-max-width: 340;
+}
+
+.icon-circle {
+    -fx-background-color: #FCEBEB;
+    -fx-background-radius: 28;
+    -fx-min-width: 56;
+    -fx-min-height: 56;
+    -fx-max-width: 56;
+    -fx-max-height: 56;
+}
+
+.icon {
+    -fx-background-color: #EF4444;
+}
+
+#trash-icon {
+    -fx-shape: "M20,8.7H4A.75.75,0,1,1,4,7.2H20a.75.75,0,0,1,0,1.5Z M16.44,20.75H7.56A2.4,2.4,0,0,1,5,18.49V8a.75.75,0,0,1,1.5,0V18.49c0,.41.47.76,1,.76h8.88c.56,0,1-.35,1-.76V8A.75.75,0,1,1,19,8V18.49A2.4,2.4,0,0,1,16.44,20.75Zm.12-13A.74.74,0,0,1,15.81,7V5.51c0-.41-.48-.76-1-.76H9.22c-.55,0-1,.35-1,.76V7a.75.75,0,1,1-1.5,0V5.51A2.41,2.41,0,0,1,9.22,3.25h5.56a2.41,2.41,0,0,1,2.53,2.26V7A.75.75,0,0,1,16.56,7.76Z M10.22,17a.76.76,0,0,1-.75-.75V11.72a.75.75,0,0,1,1.5,0v4.52A.75.75,0,0,1,10.22,17Z M13.78,17a.75.75,0,0,1-.75-.75V11.72a.75.75,0,0,1,1.5,0v4.52A.76.76,0,0,1,13.78,17Z";
+    -fx-scale-shape: true;
+}
+
+.btn-cancel {
+    -fx-background-color: white;
+    -fx-text-fill: #2D3D4F;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-color: #E2E4E8;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+}
+
+.btn-cancel:hover {
+    -fx-background-color: #F1F5F9;
+}
+
+.btn-delete {
+    -fx-background-color: #EF4444;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #DC2626;
+}

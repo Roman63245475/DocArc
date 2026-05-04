@@ -28,4 +28,6 @@ class AuthServiceTest {
         assertEquals(user, authService.login("kalivan_user", "kalivanskiy_password"));
         assertThrows(MyException.class, () -> authService.login("kalivan_usr", "kalivanskiy"));
     }
+
+
 }

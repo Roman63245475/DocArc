@@ -280,6 +280,10 @@
     -fx-cursor: hand;
 }
 
+.destructive-c{
+    -fx-background-color: #EF4444;
+}
+
 .btn-destructive:hover {
     -fx-background-color: #DC2626;
 }

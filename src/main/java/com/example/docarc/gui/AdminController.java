@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class AdminController implements Initializable {
     @FXML private Button editUserButton;
 
     @FXML private Region menuToggleBtn;
+    @FXML private Button logOutButton;
 
     @FXML private TableView<ParentUser> usersTable;
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
@@ -123,6 +125,18 @@ public class AdminController implements Initializable {
         adminNameLabel.setText(usr.getUsername());
         welcomeUserLabel.setText(usr.getUsername());
         refreshUserTable();
+    }
+
+    @FXML
+    private void logOut(){
+        Stage st = (Stage) logOutButton.getScene().getWindow();
+        st.close();
+        try {
+            UIHelper.logOut();
+        } catch (IOException e) {
+            return;
+        }
+
     }
 
     private void setUpUserTable(){

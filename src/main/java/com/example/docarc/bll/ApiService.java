@@ -13,26 +13,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ApiService {
-
-    private final String destinationFolder = "zipDocuments";
+    private final String tempZipDocuments = "zipDocuments";
+    private final String destinationFolder = "unzippedFiles";
     private final String stringUrl = "https://studentiffapi-production.up.railway.app/getRandomFile";
 
-    public String unzipFile(String zipFilePath) throws IOException {
+    public File unzipFile(File fetchedZipFile) {
 
-        File dir = new File(destinationFolder);
-        String filename = "dst/";
-        if (!dir.exists()) dir.mkdirs();
+        File dir = new File(tempZipDocuments);
+        //if (!dir.exists()) dir.mkdirs();
 
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath))) {
+
+        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(fetchedZipFile.toPath()))) {
             ZipEntry entry;
-
+            File newFile = null;
             while ((entry = zis.getNextEntry()) != null) {
-                File newFile = new File(destinationFolder, entry.getName());
-                filename += entry.getName();
+                 newFile = new File(destinationFolder, entry.getName());
 
 
                 try (FileOutputStream fos = new FileOutputStream(newFile)) {
@@ -48,60 +49,47 @@ public class ApiService {
 
             }
             zis.close();
-
-
-            System.out.println("Unzipped successfully!");
+            return newFile;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
-        return filename;
     }
 
-    public void deleteZip(String zip) throws IOException {
-
-        Path zipFile = Paths.get(zip);
+    public void deleteZip(File zipFile) {
+        String fileName = zipFile.getName();
+        Path filePath = zipFile.toPath();
         try {
-            Files.delete(zipFile);
 
-            System.out.println("ZIP deleted");
+            Files.delete(filePath);
+
+            System.out.println(fileName + " was deleted");
 
         } catch (Exception ex) {
-            System.out.println("Failed to delete ZIP");
+            System.out.println("Failed to delete " + fileName);
             System.out.println(ex.getMessage());
         }
     }
 
-    public void read(File file) throws IOException {
+    public BufferedImage convert(File file) throws IOException {
 
         //System.out.println("Open Resource File: " + file.getAbsolutePath());
-        BufferedImage image = ImageIO.read(file);
-
-        LuminanceSource source = new BufferedImageLuminanceSource(image);
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-        try {
-            Result result = new MultiFormatReader().decode(bitmap);
-            System.out.println("Barcode text: " + result.getText());
-            System.out.println("Format: " + result.getBarcodeFormat());
-            System.out.println(file.getName());
-        }
-        catch(NotFoundException e) {
-            System.out.println("No Barcode found");
-        }
+        return null;
     }
 
 
-        public void getZip() {
+        public File getZip() {
             try {
                 InputStream in = new URL(this.stringUrl).openStream();
-                Path tempFile = Files.createTempFile(Paths.get(this.destinationFolder), "fetched_file", ".zip");
+                Path tempFile = Files.createTempFile(Paths.get(this.tempZipDocuments), "fetched_file", ".zip");
                 Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                return tempFile.toFile();
             } catch (MalformedURLException e) {
                 System.out.println("http protocol is not secure");
+                throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         }
 
 
@@ -109,11 +97,36 @@ public class ApiService {
 //            return filename;
 //        }
 
-    public void loadFiles(){
-        boolean barCodeFound = false;
-         while (!barCodeFound){
+    private boolean hasBarCode(BufferedImage img){
+        LuminanceSource source = new BufferedImageLuminanceSource(img);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        try {
+            new MultiFormatReader().decode(bitmap);
+            return true;
+        }
+        catch(NotFoundException e) {
+            return false;
+        }
+    }
 
-         }
+    public void loadFiles() {
+        boolean barCodeFound = false;
+        List<BufferedImage> files = new ArrayList<>();
+        try {
+            while (!barCodeFound){
+                File fetchedZipFile = getZip();
+                File unzippedFile = unzipFile(fetchedZipFile);
+                deleteZip(fetchedZipFile);
+                BufferedImage convertedFile = ImageIO.read(unzippedFile);
+                files.add(convertedFile);
+                barCodeFound = hasBarCode(convertedFile);
+            }
+            System.out.println(files);
+        }
+        catch (IOException ex){
+            System.out.println("kapec");
+        }
+
     }
 
 }

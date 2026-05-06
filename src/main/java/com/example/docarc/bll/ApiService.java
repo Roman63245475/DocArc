@@ -3,8 +3,10 @@ package com.example.docarc.bll;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import javafx.embed.swing.SwingFXUtils;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -25,8 +27,8 @@ public class ApiService {
 
     public File unzipFile(File fetchedZipFile) {
 
-        File dir = new File(tempZipDocuments);
-        //if (!dir.exists()) dir.mkdirs();
+        File dir = new File(destinationFolder);
+        if (!dir.exists()) dir.mkdirs();
 
 
         try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(fetchedZipFile.toPath()))) {
@@ -52,6 +54,7 @@ public class ApiService {
             return newFile;
 
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException();
         }
     }
@@ -66,8 +69,7 @@ public class ApiService {
             System.out.println(fileName + " was deleted");
 
         } catch (Exception ex) {
-            System.out.println("Failed to delete " + fileName);
-            System.out.println(ex.getMessage());
+            zipFile.delete();
         }
     }
 
@@ -80,14 +82,23 @@ public class ApiService {
 
         public File getZip() {
             try {
+                File file = new File(this.tempZipDocuments);
+                if  (!file.exists()) {
+                    file.mkdirs();
+                }
                 InputStream in = new URL(this.stringUrl).openStream();
                 Path tempFile = Files.createTempFile(Paths.get(this.tempZipDocuments), "fetched_file", ".zip");
                 Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
                 return tempFile.toFile();
             } catch (MalformedURLException e) {
                 System.out.println("http protocol is not secure");
+                e.printStackTrace();
+                System.out.println("this");
                 throw new RuntimeException(e);
+
             } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("this");
                 throw new RuntimeException(e);
             }
         }
@@ -109,7 +120,7 @@ public class ApiService {
         }
     }
 
-    public void loadFiles() {
+    public List<BufferedImage> loadFiles() {
         boolean barCodeFound = false;
         List<BufferedImage> files = new ArrayList<>();
         try {
@@ -121,10 +132,10 @@ public class ApiService {
                 files.add(convertedFile);
                 barCodeFound = hasBarCode(convertedFile);
             }
-            System.out.println(files);
+            return files;
         }
         catch (IOException ex){
-            System.out.println("kapec");
+            throw new RuntimeException(ex);
         }
 
     }

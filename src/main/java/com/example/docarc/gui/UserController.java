@@ -3,6 +3,7 @@ import com.example.docarc.be.Box;
 import com.example.docarc.be.Folder;
 import com.example.docarc.be.Tiff;
 import com.example.docarc.be.User;
+import com.example.docarc.bll.ApiService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,11 +31,13 @@ public class UserController implements Initializable {
     @FXML private ListView<Tiff> fileList;
 
     private User user;
+    private ApiService apiService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
         //ComboBoxHelper.makeSearchable(folderChoice, [ObservableList]);
+        this.apiService = new ApiService();
     }
 
     public void onRotateLeft(){
@@ -62,7 +65,8 @@ public class UserController implements Initializable {
     }
 
     @FXML
-    private void test_user(){
-
+    private void loadFiles(){
+        this.apiService.loadFiles();
     }
+
 }

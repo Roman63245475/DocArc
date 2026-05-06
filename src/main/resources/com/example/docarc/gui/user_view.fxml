@@ -7,7 +7,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="868.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.UserController">
    <children>
-      <HBox prefWidth="600.0" spacing="10.0" styleClass="title-bar">
+      <HBox alignment="CENTER_LEFT" prefWidth="600.0" spacing="10.0" styleClass="title-bar">
          <children>
             <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                <image>

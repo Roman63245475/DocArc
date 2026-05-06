@@ -60,4 +60,9 @@ public class UserController implements Initializable {
             return;
         }
     }
+
+    @FXML
+    private void test_user(){
+
+    }
 }

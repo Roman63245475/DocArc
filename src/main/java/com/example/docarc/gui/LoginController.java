@@ -60,11 +60,11 @@ public class LoginController implements Initializable {
         loginTask.setOnSucceeded(event -> {
             ParentUser user = loginTask.getValue();
             try {
-                String fileName = (user instanceof Admin) ? "admin_view.fxml" : "template_uploading.fxml";
+                String fileName = (user instanceof Admin) ? "admin_view.fxml" : "user_view.fxml";
                 String title = (user instanceof Admin) ? "Admin panel" : "User panel";
                 Object obj = UIHelper.openNewWindow(fileName, title, false);
                 if (user instanceof User){
-                    ((UploadTemplateCont) obj).setUser((User) user);//changed
+                    ((UserController) obj).setUser((User) user);//changed
                 }
                 else{
                     ((AdminController) obj).setUser((Admin) user);

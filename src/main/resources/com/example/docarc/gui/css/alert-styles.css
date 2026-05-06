@@ -35,6 +35,16 @@
     -fx-scale-shape: true;
 }
 
+.btn-save{
+    -fx-background-color: #2d3d4f;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-cursor: hand;
+}
+
 .btn-cancel {
     -fx-background-color: white;
     -fx-text-fill: #2D3D4F;

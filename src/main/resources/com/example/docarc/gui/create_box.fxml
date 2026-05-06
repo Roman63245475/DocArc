@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="228.0" prefWidth="429.0" styleClass="body" stylesheets="@css/alert-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateBoxController">
+    <children>
+
+        <VBox alignment="CENTER" spacing="14.0" VBox.vgrow="ALWAYS">
+            <children>
+
+                <Label fx:id="headerLabel" styleClass="h1" text="Create a Box" />
+                <Label fx:id="descLabel" alignment="CENTER" prefHeight="19.0" prefWidth="255.0" styleClass="desc" text="Please give a name to the box" textAlignment="CENTER" wrapText="true" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="38.0" text="Name: " />
+                  <TextField fx:id="boxName" prefHeight="26.0" prefWidth="200.0" />
+               </children>
+            </HBox>
+            <Label fx:id="errorLabel" opacity="0.0" text="errorLabel" />
+
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT" spacing="50.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#onCancel" styleClass="btn-cancel" text="Cancel">
+                    <padding>
+                        <Insets bottom="8.0" left="18.0" right="18.0" top="8.0" />
+                    </padding>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#onSave" styleClass="btn-save" text="Save">
+                    <padding>
+                        <Insets bottom="8.0" left="18.0" right="18.0" top="8.0" />
+                    </padding>
+                </Button>
+            </children>
+        </HBox>
+
+    </children>
+    <padding>
+        <Insets bottom="24.0" left="28.0" right="28.0" top="32.0" />
+    </padding>
+</VBox>

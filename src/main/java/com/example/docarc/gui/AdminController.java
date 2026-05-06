@@ -5,7 +5,9 @@ import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.bll.LogService;
 import com.example.docarc.bll.UserService;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,10 +17,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -35,6 +40,8 @@ public class AdminController implements Initializable {
     @FXML private StackPane contentBox;
     @FXML private StackPane listContainer;
 
+    @FXML private Region questionIcon;
+
     @FXML private Label adminNameLabel;
     @FXML private Label welcomeUserLabel;
     @FXML private Label logsLabel;
@@ -48,6 +55,7 @@ public class AdminController implements Initializable {
     @FXML private Button editUserButton;
 
     @FXML private Region menuToggleBtn;
+    @FXML private Button logOutButton;
 
     @FXML private TableView<ParentUser> usersTable;
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
@@ -75,10 +83,66 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.logService = new LogService();
+        setUpTooltip();
         setUpUserTable();
         setUpTimeline();
         setUpLogs();
         refreshLogs();
+
+        //Shortcuts
+        sideBar.sceneProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
+            newValue.setOnKeyPressed(event -> {
+                ParentUser selectedUser = usersTable.getSelectionModel().getSelectedItem();
+                if (event.getCode() == KeyCode.A) {
+                    onAddUser();
+                }
+
+                if (event.getCode() == KeyCode.U) {
+                    onUserManClick();
+                }
+
+                if (event.getCode() == KeyCode.L) {
+                    onLogsClick();
+                }
+
+                if (selectedUser != null) {
+                    if (event.getCode() == KeyCode.E){
+                        onEditUser(selectedUser);
+                    }
+                    if (event.getCode() == KeyCode.D){
+                        deleteUser(selectedUser);
+                    }
+                }
+            });
+        });
+    }
+
+    private void setUpTooltip() {
+        Tooltip tooltip = new Tooltip();
+        Label operationsLabel = new Label("Useful Shortcuts:\n" +
+                "[ A ] Add a new user.\n" +
+                "[ E ] Edit the selected user.\n" +
+                "[ D ] Delete the selected user.\n" +
+                "━━━━━━━━━━━━━━━\n" +
+                "[ U ] Open user management tab.\n" +
+                "[ L ] Open activity logs tab.");
+
+        operationsLabel.getStyleClass().add("tooltip-label");
+
+        tooltip.setGraphic(operationsLabel);
+        tooltip.setShowDelay(Duration.ZERO);
+        tooltip.setShowDuration(Duration.INDEFINITE);
+
+        tooltip.setOnShown(event -> {
+            operationsLabel.setOpacity(0.0);
+            KeyValue value = new KeyValue(operationsLabel.opacityProperty(), 1, Interpolator.EASE_BOTH);
+            KeyFrame keyFrame = new KeyFrame(Duration.millis(300), value);
+            Timeline timeline = new Timeline(keyFrame);
+            timeline.play();
+        });
+
+        Tooltip.install(questionIcon, tooltip);
     }
 
     private void setUpTimeline() {
@@ -123,6 +187,18 @@ public class AdminController implements Initializable {
         adminNameLabel.setText(usr.getUsername());
         welcomeUserLabel.setText(usr.getUsername());
         refreshUserTable();
+    }
+
+    @FXML
+    private void logOut(){
+        Stage st = (Stage) logOutButton.getScene().getWindow();
+        st.close();
+        try {
+            UIHelper.logOut();
+        } catch (IOException e) {
+            return;
+        }
+
     }
 
     private void setUpUserTable(){
@@ -186,17 +262,17 @@ public class AdminController implements Initializable {
     }
 
     @FXML
-    private void onUserManClick(ActionEvent actionEvent) {
+    private void onUserManClick() {
         changeView("userManagementBox", contentBox);
     }
 
     @FXML
-    private void onMetadataClick(ActionEvent actionEvent) {
+    private void onMetadataClick() {
         System.out.println("Metadata clicked");
     }
 
     @FXML
-    private void onLogsClick(ActionEvent actionEvent) {
+    private void onLogsClick() {
         refreshLogs();
         changeView("activityLogsBox", contentBox);
     }

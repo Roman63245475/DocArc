@@ -75,6 +75,15 @@ public class UIHelper {
         return controller;
     }
 
+    public static void logOut() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(UIHelper.class.getResource("login_page.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        Stage stage = new Stage();
+        stage.setTitle("Login");
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
 
 }

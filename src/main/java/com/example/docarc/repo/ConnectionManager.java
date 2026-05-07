@@ -14,10 +14,7 @@ public class ConnectionManager {
     private static final HikariDataSource dataSource;
     private static final Logger logger = LoggerFactory.getLogger(ConnectionManager.class);
 
-
-
-
-
+    
     static {
         try {
             Properties props = new Properties();

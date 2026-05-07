@@ -12,6 +12,7 @@
         <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
 
+
     <!-- Заголовок -->
     <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Adding Documents" />
 

@@ -1,11 +1,10 @@
 package com.example.docarc.gui;
 import com.example.docarc.be.Box;
-import com.example.docarc.be.Folder;
+import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.ApiService;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.example.docarc.bll.DataService;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -13,12 +12,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class UserController implements Initializable {
     @FXML private ImageView pageView;
     @FXML private Label userLabel;
     @FXML private ComboBox<Box> boxChoice;
-    @FXML private ComboBox<Folder> folderChoice;
+    @FXML private ComboBox<Document> folderChoice;
     @FXML private Button logOutButton;
 
     @FXML private List<Image> currentDocumentFiles;
@@ -39,13 +36,29 @@ public class UserController implements Initializable {
 
     private User user;
     private ApiService apiService;
+    private DataService boxService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
         //ComboBoxHelper.makeSearchable(folderChoice, [ObservableList]);
         this.apiService = new ApiService();
+        this.boxService = new DataService();
+        displayBoxes();
     }
+
+    private void displayBoxes(){
+        Task<List<Box>> getBoxes= new Task<List<Box>>(){
+            @Override
+            protected List<Box> call() throws Exception {
+                return boxService.getUserBoxes(user);
+            }
+        };
+        getBoxes.setOnSucceeded((e) -> System.out.println("yest"));
+        getBoxes.setOnFailed((e) -> System.out.println("ne yest"));
+        new Thread(getBoxes).start();
+    }
+
 
     public void onRotateLeft(){
         pageView.setRotate(pageView.getRotate() - 90);

@@ -1,6 +1,8 @@
 package com.example.docarc.repo.impl;
 
+import com.example.docarc.be.Box;
 import com.example.docarc.be.User;
+import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
 import com.example.docarc.repo.repositories.IBoxRepository;
 import org.slf4j.Logger;
@@ -46,5 +48,27 @@ public class BoxRepository implements IBoxRepository {
     @Override
     public void renameBox(int boxId, String name) {
         System.out.println("renaming box");
+    }
+
+    @Override
+    public List<Box> getUserBoxes(User user) throws MyException {
+        List<Box> userBoxes = new ArrayList<>();
+        try (Connection con = ds.getConnection()) {
+            String sqlPrompt = "select * from boxes where user_id = ?";
+            PreparedStatement ps = con.prepareStatement(sqlPrompt);
+            ps.setInt(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+            logger.info("Boxes successfully observed for user {}", user.getUsername());
+            while (rs.next()){
+                int boxId = rs.getInt("box_id");
+                String boxName = rs.getString("box_name");
+                userBoxes.add(new Box(boxId, boxName, user));
+            }
+            return userBoxes;
+        }
+        catch (SQLException e) {
+            logger.error("Failed to observe user's boxes dut to: {}", e.getMessage());
+            throw new MyException(e.getMessage());
+        }
     }
 }

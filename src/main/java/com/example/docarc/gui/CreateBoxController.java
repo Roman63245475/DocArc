@@ -1,7 +1,7 @@
 package com.example.docarc.gui;
 
 import com.example.docarc.be.User;
-import com.example.docarc.bll.BoxService;
+import com.example.docarc.bll.DataService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,11 +16,11 @@ public class CreateBoxController implements Initializable {
 
     @FXML private TextField boxName;
     @FXML private Label errorLabel;
-    private BoxService boxService;
+    private DataService boxService;
     private User responsibleUser;
 
     public CreateBoxController() {
-        boxService = new BoxService();
+        boxService = new DataService();
     }
 
     public void setUser(User responsibleUser) {

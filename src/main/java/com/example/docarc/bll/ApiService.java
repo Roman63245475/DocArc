@@ -1,5 +1,6 @@
 package com.example.docarc.bll;
 
+import com.example.docarc.be.Tiff;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
@@ -120,24 +121,25 @@ public class ApiService {
         }
     }
 
-    public List<BufferedImage> loadFiles() {
+    public List<Tiff> loadFiles() {
         boolean barCodeFound = false;
-        List<BufferedImage> files = new ArrayList<>();
+        List<Tiff> files = new ArrayList<>();
+        int reference_id = 0;
         try {
             while (!barCodeFound){
                 File fetchedZipFile = getZip();
                 File unzippedFile = unzipFile(fetchedZipFile);
                 deleteZip(fetchedZipFile);
                 BufferedImage convertedFile = ImageIO.read(unzippedFile);
-                files.add(convertedFile);
+                files.add(new Tiff(unzippedFile.getName(), reference_id, unzippedFile));
                 barCodeFound = hasBarCode(convertedFile);
+                reference_id++;
             }
             return files;
         }
         catch (IOException ex){
             throw new RuntimeException(ex);
         }
-
     }
 
 }

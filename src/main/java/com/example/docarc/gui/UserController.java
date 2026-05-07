@@ -73,9 +73,9 @@ public class UserController implements Initializable {
 
     @FXML
     private void loadFiles(){
-        Task<List<BufferedImage>> task = new Task<List<BufferedImage>>() {
+        Task<List<Tiff>> task = new Task<List<Tiff>>() {
             @Override
-            protected List<BufferedImage> call() throws Exception {
+            protected List<Tiff> call() throws Exception {
                 return apiService.loadFiles();
             }
         };
@@ -90,15 +90,15 @@ public class UserController implements Initializable {
         new Thread(task).start();
     }
 
-    private void displayImages(List<BufferedImage> images){
-        List<Image> imgs = new ArrayList<>();
-        for (BufferedImage bi : images){
-            Image img = SwingFXUtils.toFXImage(bi, null);
-            imgs.add(img);
+    private void displayImages(List<Tiff> files){
+        List<Image> images = new ArrayList<>();
+        for (Tiff file : files){
+            Image image = SwingFXUtils.toFXImage(file.getConvertedBufferedImage(), null);
+            images.add(image);
         }
-        currentDocumentFiles = imgs;
+        currentDocumentFiles = images;
         this.imageIndex = 0;
-        pageView.setImage(imgs.get(this.imageIndex));
+        pageView.setImage(images.get(this.imageIndex));
     }
 
     @FXML

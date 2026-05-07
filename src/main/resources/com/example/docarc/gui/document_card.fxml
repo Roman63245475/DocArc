@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.DocumentCardController" style="-fx-border-color: #ecf0f1; -fx-border-radius: 8; -fx-padding: 10;">
+    <Label fx:id="documentName" style="-fx-font-weight: bold;"/>
+    <Label fx:id="filesAmount" style="-fx-text-fill: #27ae60; -fx-font-size: 12px;"/>
+    <Label fx:id="createdDate" style="-fx-text-fill: #95a5a6; -fx-font-size: 11px;"/>
+</VBox>

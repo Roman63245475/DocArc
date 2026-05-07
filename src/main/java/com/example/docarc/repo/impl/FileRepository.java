@@ -29,8 +29,11 @@ public class FileRepository implements IFileRepository {
 
     @Override
     public List<Tiff> getFilesByDocumentsIds(List<Document> documents) throws MyException {
+        if (documents.isEmpty()){
+            return List.of();
+        }
         List<Tiff> files = new ArrayList<>();
-        String placeholder = documents.stream().map(box -> "?").collect(Collectors.joining(","));
+        String placeholder = documents.stream().map(doc -> "?").collect(Collectors.joining(","));
         try (Connection con = ds.getConnection()) {
             String sqlPrompt = "select * from files where documentId in (" + placeholder + ")";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
@@ -41,11 +44,11 @@ public class FileRepository implements IFileRepository {
             logger.info("Files successfully observed");
             while (rs.next()){
                 int file_id = rs.getInt("id");
-                String fila_name = rs.getString("name");
-                int box_reference = rs.getInt("box_id");
+                String file_name = rs.getString("name");
+                int document_id = rs.getInt("box_id");
                 int order_id = rs.getInt("orderId");
                 String file_content = rs.getString("file_content");
-                //files.add(new Tiff(document_id, document_name, box_reference));
+                files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
             }
             return files;
         }

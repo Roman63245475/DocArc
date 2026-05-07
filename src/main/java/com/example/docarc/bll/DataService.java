@@ -1,9 +1,6 @@
 package com.example.docarc.bll;
 
-import com.example.docarc.be.Box;
-import com.example.docarc.be.Document;
-import com.example.docarc.be.Tiff;
-import com.example.docarc.be.User;
+import com.example.docarc.be.*;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.BoxRepository;
 import com.example.docarc.repo.impl.DocumentRepository;
@@ -13,6 +10,8 @@ import com.example.docarc.repo.repositories.IDocumentRepository;
 import com.example.docarc.repo.repositories.IFileRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DataService {
 
@@ -46,7 +45,18 @@ public class DataService {
     public List<Box> getUserBoxes(User user) throws MyException {
         List<Box> userBoxes = this.boxRepository.getUserBoxes(user);
         List<Document> documents = this.documentRepository.getDocumentsByBoxIds(userBoxes);
-        //List<Tiff> files =
-        return null;
+        List<Tiff> files = this.fileRepository.getFilesByDocumentsIds(documents);
+        Map<Integer, List<Tiff>> filesByDocsId = files.stream().collect(Collectors.groupingBy(Tiff::getDocumentId));
+        relateData(documents, filesByDocsId);
+        Map<Integer, List<Document>> documentsByBoxIds = documents.stream().collect(Collectors.groupingBy(Document::getBoxId));
+        relateData(userBoxes, documentsByBoxIds);
+        return userBoxes;
+    }
+
+    private <T extends Data> void relateData(List<? extends IDataSettable<T>> to, Map<Integer, List<T>> data){
+        for (IDataSettable<T> obj : to){
+            List<T> lst = data.getOrDefault(obj.getId(), List.of());
+            obj.setData(lst);
+        }
     }
 }

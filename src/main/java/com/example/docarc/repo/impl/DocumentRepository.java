@@ -27,6 +27,9 @@ public class DocumentRepository implements IDocumentRepository {
     }
     @Override
     public List<Document> getDocumentsByBoxIds(List<Box> boxes) throws MyException {
+        if (boxes.isEmpty()){
+            return List.of();
+        }
         List<Document> documents = new ArrayList<>();
         String placeholder = boxes.stream().map(box -> "?").collect(Collectors.joining(","));
         try (Connection con = ds.getConnection()) {

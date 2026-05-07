@@ -60,8 +60,8 @@ public class BoxRepository implements IBoxRepository {
             ResultSet rs = ps.executeQuery();
             logger.info("Boxes successfully observed for user {}", user.getUsername());
             while (rs.next()){
-                int boxId = rs.getInt("box_id");
-                String boxName = rs.getString("box_name");
+                int boxId = rs.getInt("id");
+                String boxName = rs.getString("name");
                 userBoxes.add(new Box(boxId, boxName, user));
             }
             return userBoxes;

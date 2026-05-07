@@ -3,7 +3,7 @@ package com.example.docarc.be;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Document {
+public class Document extends Data implements IDataSettable<Tiff> {
     private int id;
     private String name;
     private int box_reference;
@@ -14,6 +14,11 @@ public class Document {
         this.name = name;
         this.box_reference = box_id;
         this.files = new ArrayList<>();
+    }
+
+    @Override
+    public void setData(List<Tiff> data) {
+        this.files = data;
     }
 
     public int getId(){
@@ -37,4 +42,10 @@ public class Document {
     public String toString() {
         return name;
     }
+
+    public String getCreatedDate(){
+        return "07/05/2026";
+    }
+
+
 }

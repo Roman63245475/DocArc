@@ -7,16 +7,29 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Tiff {
+public class Tiff extends Data{
     private int id;
     private String fileName;
+    private int documentId;
     private int reference_id;
-    private File fileContent;
+    private String fileContent;
+    private File file;
 
-    public Tiff(String fileName, int reference_id, File fileContent) {
+    public Tiff(int id, String fileName, int documentId, int referenceId, String fileContent) {
+        this.id = id;
         this.fileName = fileName;
-        this.reference_id = reference_id;
+        this.documentId = documentId;
+        this.reference_id = referenceId;
         this.fileContent = fileContent;
+    }
+
+    public Tiff(String fileName, int referenceId, File file) {
+        this.fileName = fileName;
+        this.reference_id = referenceId;
+        this.file = file;
+    }
+    public int getId() {
+        return id;
     }
 
     public String getFileName() {
@@ -29,11 +42,17 @@ public class Tiff {
 
     public BufferedImage getConvertedBufferedImage() {
         BufferedImage image = null;
-        try {
-            image = ImageIO.read(fileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return image;
+//        try {
+//            image = ImageIO.read(fileContent);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        return null;
     }
+
+    public int getDocumentId() {
+        return documentId;
+    }
+
+
 }

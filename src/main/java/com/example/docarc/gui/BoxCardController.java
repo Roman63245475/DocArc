@@ -2,6 +2,8 @@ package com.example.docarc.gui;
 
 import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
+import com.example.docarc.bll.ApiService;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,8 +23,16 @@ public class BoxCardController {
     @FXML private ScrollPane documentsArea;
 
     private Box box;
+    private ApiService apiService;
 
-    public void setBox(Box box) throws IOException {
+    public BoxCardController(){
+        this.apiService = new ApiService();
+    }
+
+    MainUserController parentController;
+
+    public void setData(Box box, MainUserController parentController) throws IOException {
+        this.parentController = parentController;
         this.box = box;
         fillCard();
         displayDocuments();
@@ -46,6 +56,19 @@ public class BoxCardController {
     }
     @FXML
     private void loadDocument(){
-        System.out.println("I will");
+        Task<Document> scanDocument = new Task<Document>() {
+            @Override
+            protected Document call() throws Exception {
+                return apiService.loadDocument("default", box.getDocuments().size(), box.getId());
+            }
+        };
+        scanDocument.setOnSucceeded((e) -> parentController.displayUploadedDocument(scanDocument.getValue()));
+        scanDocument.setOnFailed( (e) ->{
+                Throwable exception = scanDocument.getException();
+                System.out.println(exception.getMessage());
+            }
+        );
+        new Thread(scanDocument).start();
     }
+
 }

@@ -16,6 +16,12 @@ public class Document extends Data implements IDataSettable<Tiff> {
         this.files = new ArrayList<>();
     }
 
+    public Document(String fileName, int boxId, List<Tiff> files){
+        this.name = fileName;
+        this.box_reference = boxId;
+        this.files = files;
+    }
+
     @Override
     public void setData(List<Tiff> data) {
         this.files = data;

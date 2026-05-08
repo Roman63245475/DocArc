@@ -1,5 +1,6 @@
 package com.example.docarc.bll;
 
+import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
@@ -121,10 +122,12 @@ public class ApiService {
         }
     }
 
-    public List<Tiff> loadFiles() {
+    public Document loadDocument(String profileName, int amountOfDocs, int boxId) {
         boolean barCodeFound = false;
+        String fileName = profileName + amountOfDocs;
         List<Tiff> files = new ArrayList<>();
         int reference_id = 0;
+        int scanningOrderId = 0;
         try {
             while (!barCodeFound){
                 File fetchedZipFile = getZip();
@@ -133,9 +136,10 @@ public class ApiService {
                 BufferedImage convertedFile = ImageIO.read(unzippedFile);
                 files.add(new Tiff(unzippedFile.getName(), reference_id, unzippedFile));
                 barCodeFound = hasBarCode(convertedFile);
+                scanningOrderId++;
                 reference_id++;
             }
-            return files;
+            return new Document(fileName, boxId, files);
         }
         catch (IOException ex){
             throw new RuntimeException(ex);

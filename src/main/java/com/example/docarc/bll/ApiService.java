@@ -126,8 +126,8 @@ public class ApiService {
         boolean barCodeFound = false;
         String fileName = profileName + amountOfDocs;
         List<Tiff> files = new ArrayList<>();
-        int reference_id = 0;
-        int scanningOrderId = 0;
+        int reference_id = 1;
+        int scanningOrderId = 1;
         try {
             while (!barCodeFound){
                 File fetchedZipFile = getZip();

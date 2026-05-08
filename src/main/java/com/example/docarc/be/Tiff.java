@@ -41,18 +41,23 @@ public class Tiff extends Data{
     }
 
     public BufferedImage getConvertedBufferedImage() {
-        BufferedImage image = null;
-//        try {
-//            image = ImageIO.read(fileContent);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+        try {
+            BufferedImage image = ImageIO.read(this.file);
+            return image;
+        }
+        catch (IOException e) {
+            System.out.println("file couldn't have been converted to bufferedImage");
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+        }
     }
 
     public int getDocumentId() {
         return documentId;
     }
 
+    @Override
+    public String toString() {
+        return this.fileName;
+    }
 
 }

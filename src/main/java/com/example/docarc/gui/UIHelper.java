@@ -1,5 +1,6 @@
 package com.example.docarc.gui;
 
+import com.example.docarc.be.Document;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -53,6 +54,17 @@ public class UIHelper {
         stage.setTitle(title);
         stage.show();
         return loader.getController();
+    }
+
+    public static void displayDocument(Document doc) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("document_view_page.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        DocumentViewController documentViewController = loader.getController();
+        documentViewController.setDocument(doc);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
     //<T> acts as placeholder for any object type. Because we pass our consumer

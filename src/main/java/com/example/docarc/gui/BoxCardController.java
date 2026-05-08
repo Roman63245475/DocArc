@@ -29,10 +29,8 @@ public class BoxCardController {
         this.apiService = new ApiService();
     }
 
-    MainUserController parentController;
 
-    public void setData(Box box, MainUserController parentController) throws IOException {
-        this.parentController = parentController;
+    public void setData(Box box) throws IOException {
         this.box = box;
         fillCard();
         displayDocuments();
@@ -56,13 +54,19 @@ public class BoxCardController {
     }
     @FXML
     private void loadDocument(){
-        Task<Document> scanDocument = new Task<Document>() {
+        Task<Document> scanDocument = new Task<>() {
             @Override
             protected Document call() throws Exception {
                 return apiService.loadDocument("default", box.getDocuments().size(), box.getId());
             }
         };
-        scanDocument.setOnSucceeded((e) -> parentController.displayUploadedDocument(scanDocument.getValue()));
+        scanDocument.setOnSucceeded((e) -> {
+            try {
+                UIHelper.displayDocument(scanDocument.getValue());
+            } catch (IOException ex) {
+                System.out.println("sorry couldn't display document");
+            }
+        });
         scanDocument.setOnFailed( (e) ->{
                 Throwable exception = scanDocument.getException();
                 System.out.println(exception.getMessage());

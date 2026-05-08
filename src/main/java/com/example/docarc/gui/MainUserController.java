@@ -104,15 +104,20 @@ public class MainUserController implements Initializable {
         }
     }
 
-    public void displayUploadedDocument(Document doc){
-        System.out.println(doc.getName());
-    }
+//    public void displayUploadedDocument(Document doc){
+//        try {
+//            UIHelper.displayDocument(doc);
+//        }
+//        catch (Exception e){
+//            System.out.println("sorry");
+//        }
+//    }
 
     private VBox createBoxCard(Box box) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("box_card.fxml"));
         Parent node = loader.load();
         BoxCardController boxCardController = loader.getController();
-        boxCardController.setData(box, this);
+        boxCardController.setData(box);
         return (VBox) node;
     }
 

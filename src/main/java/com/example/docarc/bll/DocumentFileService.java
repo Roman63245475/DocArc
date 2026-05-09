@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class DocumentFileService {
 
@@ -39,7 +40,7 @@ public class DocumentFileService {
         try {
             con = ConnectionManager.getDataSource().getConnection();
             con.setAutoCommit(false);
-            int id = this.documentRepository.insertDocument(con, document);
+            int id = this.documentRepository.insertDocument(con, document, UUID.randomUUID().toString());
             if (id < 0){
                 throw new MyException("Failed to insert document");
             }

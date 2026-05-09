@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -37,7 +38,7 @@ public class ApiService {
             ZipEntry entry;
             File newFile = null;
             while ((entry = zis.getNextEntry()) != null) {
-                 newFile = new File(destinationFolder, entry.getName());
+                 newFile = new File(destinationFolder, entry.getName() + "_" + UUID.randomUUID().toString());
 
 
                 try (FileOutputStream fos = new FileOutputStream(newFile)) {

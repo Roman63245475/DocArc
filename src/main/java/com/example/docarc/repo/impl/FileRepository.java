@@ -45,7 +45,7 @@ public class FileRepository implements IFileRepository {
             while (rs.next()){
                 int file_id = rs.getInt("id");
                 String file_name = rs.getString("name");
-                int document_id = rs.getInt("box_id");
+                int document_id = rs.getInt("documentId");
                 int order_id = rs.getInt("orderId");
                 byte[] file_content = rs.getBytes("file_content");
                 files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
@@ -53,6 +53,8 @@ public class FileRepository implements IFileRepository {
             return files;
         }
         catch (SQLException e) {
+            System.out.println("file repository " + e.getMessage());
+            e.printStackTrace();
             logger.error("Failed to observe documents due to: {}", e.getMessage());
             throw new MyException(e.getMessage());
         }
@@ -72,6 +74,8 @@ public class FileRepository implements IFileRepository {
             ps.executeBatch();
         }
         catch (SQLException e) {
+            System.out.println("file repository " + e.getMessage());
+            e.printStackTrace();
             logger.error("Failed to save files due to: {}", e.getMessage());
             throw e;
         }

@@ -10,6 +10,6 @@ import java.util.List;
 public interface IDocumentRepository {
 
     List<Document> getDocumentsByBoxIds(List<Box> boxes) throws MyException;
-    int insertDocument(Connection con, Document document) throws MyException, SQLException;
+    int insertDocument(Connection con, Document document, String reg) throws MyException, SQLException;
     //void saveDocument(Document document) throws MyException;
 }

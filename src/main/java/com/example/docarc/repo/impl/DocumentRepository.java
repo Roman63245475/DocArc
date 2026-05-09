@@ -41,7 +41,7 @@ public class DocumentRepository implements IDocumentRepository {
             while (rs.next()){
                 int document_id = rs.getInt("id");
                 String document_name = rs.getString("name");
-                int box_reference = rs.getInt("box_id");
+                int box_reference = rs.getInt("boxId");
                 documents.add(new Document(document_id, document_name, box_reference));
             }
             return documents;
@@ -111,11 +111,11 @@ public class DocumentRepository implements IDocumentRepository {
 //        }
 //    }
 
-    public int insertDocument(Connection con, Document document) throws MyException, SQLException {
+    public int insertDocument(Connection con, Document document, String reg) throws MyException, SQLException {
         String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
         try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1, document.getName());
-            ps.setString(2, "");
+            ps.setString(2, reg);
             ps.setInt(3, document.getBoxId());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()){
@@ -130,6 +130,8 @@ public class DocumentRepository implements IDocumentRepository {
             }
         }
         catch (SQLException e) {
+            System.out.println("document repository " + e.getMessage());
+            e.printStackTrace();
             logger.error("Failed to create a document due to: {}", e.getMessage());
             throw e;
         }

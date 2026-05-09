@@ -47,7 +47,7 @@ public class FileRepository implements IFileRepository {
                 String file_name = rs.getString("name");
                 int document_id = rs.getInt("box_id");
                 int order_id = rs.getInt("orderId");
-                String file_content = rs.getString("file_content");
+                byte[] file_content = rs.getBytes("file_content");
                 files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
             }
             return files;
@@ -55,6 +55,25 @@ public class FileRepository implements IFileRepository {
         catch (SQLException e) {
             logger.error("Failed to observe documents due to: {}", e.getMessage());
             throw new MyException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException {
+        String sqlPrompt = "insert into files (documentId, name, orderId, file_content) values (?,?,?,?)";
+        try (PreparedStatement ps = con.prepareStatement(sqlPrompt)){
+            for (Tiff file : files) {
+                ps.setInt(1, documentId);
+                ps.setString(2, file.getFileName());
+                ps.setInt(3, file.getReference_id());
+                ps.setBytes(4, file.getFileContent());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+        catch (SQLException e) {
+            logger.error("Failed to save files due to: {}", e.getMessage());
+            throw e;
         }
     }
 }

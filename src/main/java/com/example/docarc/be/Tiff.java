@@ -12,16 +12,17 @@ public class Tiff extends Data{
     private String fileName;
     private int documentId;
     private int reference_id;
-    private String fileContent;
+    private byte[] fileContent;
     private File file;
 
-    public Tiff(int id, String fileName, int documentId, int referenceId, String fileContent) {
+    public Tiff(int id, String fileName, int documentId, int referenceId, byte[] fileContent) {
         this.id = id;
         this.fileName = fileName;
         this.documentId = documentId;
         this.reference_id = referenceId;
         this.fileContent = fileContent;
     }
+
 
     public Tiff(String fileName, int referenceId, File file) {
         this.fileName = fileName;
@@ -30,6 +31,10 @@ public class Tiff extends Data{
     }
     public int getId() {
         return id;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public String getFileName() {
@@ -60,4 +65,15 @@ public class Tiff extends Data{
         return this.fileName;
     }
 
+    public void setReference_id(int reference_id) {
+        this.reference_id = reference_id;
+    }
+
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
+    }
+
+    public byte[] getFileContent() {
+        return fileContent;
+    }
 }

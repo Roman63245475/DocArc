@@ -5,6 +5,7 @@ import com.example.docarc.be.Tiff;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.ApiService;
 import com.example.docarc.bll.DataService;
+import com.example.docarc.bll.DocumentFileService;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,12 +13,12 @@ import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -37,24 +38,98 @@ public class DocumentViewController implements Initializable {
     @FXML private ListView<Tiff> listOfFiles;
 
     private User user;
-    private ApiService apiService;
-    private DataService boxService;
     private Document document;
     private ObservableList<Tiff> files =  FXCollections.observableArrayList();
+    private Tiff draggedItem;
+    private int draggedIndex;
+    private DocumentFileService service;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
         //ComboBoxHelper.makeSearchable(folderChoice, [ObservableList]);
-        this.apiService = new ApiService();
-        this.boxService = new DataService();
+        this.service = new DocumentFileService();
         this.listOfFiles.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 System.out.println(newVal.getReference_id());
                 displayImage(newVal);
             }
         });
+        setListViewBehaviour();
         listOfFiles.setItems(files);
+    }
+
+    private void setListViewBehaviour() {
+        listOfFiles.setCellFactory(lv -> {
+
+            ListCell<Tiff> cell = new ListCell<>() {
+
+                @Override
+                protected void updateItem(Tiff item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getFileName());
+                    }
+                }
+            };
+
+            // START DRAG
+            cell.setOnDragDetected(event -> {
+
+                if (cell.isEmpty())
+                    return;
+
+                draggedItem = cell.getItem();
+                draggedIndex = cell.getIndex();
+
+                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+
+                ClipboardContent content = new ClipboardContent();
+                content.putString("tiff");
+
+                db.setContent(content);
+
+                event.consume();
+            });
+
+            // DRAG OVER
+            cell.setOnDragOver(event -> {
+
+                if (draggedItem != null && !cell.isEmpty()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+
+                event.consume();
+            });
+
+            // DROP
+            cell.setOnDragDropped(event -> {
+
+                if (draggedItem == null)
+                    return;
+
+                ObservableList<Tiff> items = listOfFiles.getItems();
+
+                int targetIndex = cell.getIndex();
+
+                items.remove(draggedIndex);
+
+                items.add(targetIndex, draggedItem);
+
+                listOfFiles.getSelectionModel().select(targetIndex);
+
+                event.setDropCompleted(true);
+
+                draggedItem = null;
+
+                event.consume();
+            });
+
+            return cell;
+        });
     }
 
     public void setDocument(Document document) {
@@ -114,7 +189,35 @@ public class DocumentViewController implements Initializable {
 
     @FXML
     private void saveDocument(){
-        System.out.println("I will");
+        List<Tiff> finalOrder = new ArrayList<>();
+        int orderId = 1;
+        for (Tiff t : listOfFiles.getItems()) {
+            t.setReference_id(orderId);
+            finalOrder.add(t);
+            orderId++;
+        }
+        this.document.setData(finalOrder);
+        saveDocumentSecondPart();
+    }
+
+    private void saveDocumentSecondPart(){
+        Task<Void> save_document_task = new  Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                service.saveDocument(document);
+                return null;
+            }
+        };
+        save_document_task.setOnSucceeded(event -> {
+            onCancel();
+        });
+        save_document_task.setOnFailed(event -> {
+            Throwable exception = save_document_task.getException();
+            System.out.println("have to do something special with this");
+            System.out.println(exception.getMessage());
+            onCancel();
+        });
+        new Thread(save_document_task).start();
     }
 
     @FXML

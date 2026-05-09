@@ -5,6 +5,8 @@ import com.example.docarc.be.Document;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.DataService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ public class MainUserController implements Initializable {
 
     private User user;
     private DataService dataService;
+    private Timeline timeline;
 
     public void setUser(User usr){
         this.user = usr;
@@ -61,7 +66,9 @@ public class MainUserController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initialize in MainUserController is empty for now");
+        this.timeline = new Timeline(new KeyFrame(Duration.seconds(15), ev -> loadData()));
+        this.timeline.setCycleCount(Timeline.INDEFINITE);
+        this.timeline.play();
     }
 
     private void loadData(){
@@ -86,6 +93,7 @@ public class MainUserController implements Initializable {
     }
 
     private void displayBoxCards(List<Box> boxes) throws IOException {
+        this.boxCardsArea.getChildren().clear();
         boxesArea.setContent(boxCardsArea);
         int i = 1;
         HBox hBox = new HBox(70);

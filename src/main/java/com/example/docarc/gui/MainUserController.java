@@ -129,6 +129,7 @@ public class MainUserController implements Initializable {
         return (VBox) node;
     }
 
+
     private VBox createDocumentCard(Document document){
         VBox documentCard = new VBox(15);
         documentCard.setPrefWidth(280);

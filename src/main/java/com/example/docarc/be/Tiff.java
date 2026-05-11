@@ -5,6 +5,8 @@ import org.apache.commons.logging.Log;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Tiff extends Data{
@@ -14,6 +16,7 @@ public class Tiff extends Data{
     private int reference_id;
     private byte[] fileContent;
     private File file;
+    private final String destinationFolder = "unzippedFiles";
 
     public Tiff(int id, String fileName, int documentId, int referenceId, byte[] fileContent) {
         this.id = id;
@@ -21,6 +24,18 @@ public class Tiff extends Data{
         this.documentId = documentId;
         this.reference_id = referenceId;
         this.fileContent = fileContent;
+        convertFileContentToFile();
+    }
+
+    private void convertFileContentToFile(){
+        this.file = new File(destinationFolder, fileName);
+        try (FileOutputStream fos = new FileOutputStream(this.file)) {
+            fos.write(fileContent);
+
+        } catch (IOException e) {
+            System.out.println("needs to be logged");
+        }
+
     }
 
 

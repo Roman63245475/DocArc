@@ -4,6 +4,8 @@ import com.example.docarc.be.Document;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+import java.io.IOException;
+
 public class DocumentCardController {
 
 
@@ -17,6 +19,7 @@ public class DocumentCardController {
         this.document = document;
         fillFields();
     }
+
 
     private void fillFields() {
         documentName.setText(document.getName());

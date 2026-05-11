@@ -4,12 +4,13 @@ import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
 import com.example.docarc.bll.ApiService;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -48,8 +49,17 @@ public class BoxCardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("document_card.fxml"));
             Parent node = loader.load();
             DocumentCardController documentController = loader.getController();
+            node.setOnMouseClicked(e -> displayClickedDocument(document));
             documentController.setDocument(document);
             vBox.getChildren().add(node);
+        }
+    }
+
+    private void displayClickedDocument(Document document){
+        try {
+            UIHelper.displayDocument(document);
+        } catch (IOException e) {
+            System.out.println("needs to be logged likely");
         }
     }
     @FXML

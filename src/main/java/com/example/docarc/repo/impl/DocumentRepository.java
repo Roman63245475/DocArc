@@ -136,4 +136,34 @@ public class DocumentRepository implements IDocumentRepository {
             throw e;
         }
     }
+
+    @Override
+    public void updateDocument(Document document) {
+        try(Connection con = ds.getConnection()){
+            con.setAutoCommit(false);
+            try{
+                try(PreparedStatement ps = con.prepareStatement("DELETE FROM files WHERE documentId = ?")){
+                    ps.setInt(1, document.getId());
+                    ps.executeUpdate();
+                }
+                try(PreparedStatement ps = con.prepareStatement("INSERT INTO files(documentId, name, orderId, file_content) VALUES (?,?,?,?)")){
+                    ps.setInt(1, document.getId());
+                    for (Tiff t : document.getFiles()){
+                        ps.setString(2, t.getFileName());
+                        ps.setInt(3, t.getReference_id());
+                        ps.setBytes(4, t.getFileContent());
+                        ps.addBatch();
+                        //System.out.println(t.getFileName() + " Position: " + t.getReference_id());
+                    }
+                    ps.executeBatch();
+                }
+                con.commit();
+            }catch (SQLException e){
+                con.rollback();
+                throw new RuntimeException("Transaction Failed, rolling back..", e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -11,5 +11,7 @@ public interface IDocumentRepository {
 
     List<Document> getDocumentsByBoxIds(List<Box> boxes) throws MyException;
     int insertDocument(Connection con, Document document, String reg) throws MyException, SQLException;
+
+    void updateDocument(Document document);
     //void saveDocument(Document document) throws MyException;
 }

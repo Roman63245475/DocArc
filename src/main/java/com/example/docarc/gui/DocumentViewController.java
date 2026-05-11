@@ -44,6 +44,8 @@ public class DocumentViewController implements Initializable {
     private int draggedIndex;
     private DocumentFileService service;
 
+    private boolean edit = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
@@ -55,8 +57,8 @@ public class DocumentViewController implements Initializable {
                 displayImage(newVal);
             }
         });
-        setListViewBehaviour();
         listOfFiles.setItems(files);
+        setListViewBehaviour();
     }
 
     private void setListViewBehaviour() {
@@ -112,7 +114,6 @@ public class DocumentViewController implements Initializable {
                     return;
 
                 ObservableList<Tiff> items = listOfFiles.getItems();
-
                 int targetIndex = cell.getIndex();
 
                 items.remove(draggedIndex);
@@ -120,6 +121,10 @@ public class DocumentViewController implements Initializable {
                 items.add(targetIndex, draggedItem);
 
                 listOfFiles.getSelectionModel().select(targetIndex);
+
+                if (draggedIndex != targetIndex) {
+                    edit = true;
+                }
 
                 event.setDropCompleted(true);
 
@@ -197,7 +202,11 @@ public class DocumentViewController implements Initializable {
             orderId++;
         }
         this.document.setData(finalOrder);
-        saveDocumentSecondPart();
+        if (edit){
+            onEditDocument();
+        }else{
+            saveDocumentSecondPart();
+        }
     }
 
     private void saveDocumentSecondPart(){
@@ -218,6 +227,28 @@ public class DocumentViewController implements Initializable {
             onCancel();
         });
         new Thread(save_document_task).start();
+    }
+
+    private void onEditDocument(){
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                service.onEditDocument(document);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            onCancel();
+        });
+
+        task.setOnFailed(event -> {
+            System.out.println("Error soobshenie: " + task.getException().getMessage());
+            onCancel();
+        });
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     @FXML

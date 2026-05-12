@@ -89,4 +89,36 @@ public class ProfileRepository implements IProfileRepository {
             return List.of();
         }
     }
+
+
+    @Override
+    public List<Profile> getProfilesByUserId(int userId) {
+        String sqlPrompt = "SELECT p.* FROM profiles p " +
+                "INNER JOIN profile_user pu ON p.id = pu.profileId " +
+                "WHERE pu.userId = ?";
+        List<Profile> profiles = new ArrayList<>();
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlPrompt)){
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double brightness = rs.getDouble("brightness");
+                double contrast = rs.getDouble("contrast");
+                double rotation = rs.getDouble("rotation");
+                boolean grayscale = rs.getBoolean("grayscale");
+                profiles.add(new Profile(id,  name, brightness, contrast, rotation, grayscale));
+            }
+            logger.info("Profiles for user {} successfully selected", userId);
+        }
+        catch (SQLException e) {
+            logger.error("Failed to get profiles for user {} due to: {}", userId, e.getMessage());
+        }
+
+        // Всегда добавляем Default профайл в начало списка
+        Profile defaultProfile = new Profile(0, "Default", 0.0, 0.0, 0.0, false);
+        profiles.add(0, defaultProfile);
+
+        return profiles;
+    }
 }

@@ -1,31 +1,40 @@
 package com.example.docarc.bll;
 
 import com.example.docarc.be.ParentUser;
+import com.example.docarc.be.Profile;
 import com.example.docarc.be.Role;
+import com.example.docarc.be.User;
 import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.LoginException;
 import com.example.docarc.custom_exceptions.MyException;
+import com.example.docarc.repo.impl.ProfileRepository;
 import com.example.docarc.repo.impl.TestUserRepository;
 import com.example.docarc.repo.impl.UserRepository;
+import com.example.docarc.repo.repositories.IProfileRepository;
 import com.example.docarc.repo.repositories.IUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
+
 public class AuthService {
     private BCryptPasswordEncoder passwordEncoder; //kalivan -> $2ajnkse;rkljp7287346
     private IUserRepository userRepository;
+    private IProfileRepository profileRepository;
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     public AuthService(IUserRepository userRepository){
         this.userRepository = userRepository;
+        this.profileRepository = new ProfileRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public AuthService(){
         // put here real repository, not the one I use as mock
         this.userRepository = new UserRepository();
+        this.profileRepository = new ProfileRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -35,6 +44,15 @@ public class AuthService {
             usr = userRepository.findUser(username);
             if (passwordEncoder.matches(password, usr.getPassword())){
                 logger.info("{} logged in successfully", username);
+
+                // Если пользователь является экземпляром User, загружаем его профайлы
+                if (usr instanceof User) {
+                    User user = (User) usr;
+                    List<Profile> userProfiles = profileRepository.getProfilesByUserId(user.getId());
+                    user.setProfiles(userProfiles);
+                    logger.info("Loaded profiles for user {}", username);
+                }
+
                 return usr;
             }
             logger.warn("Login failed: invalid password for user={}",  username);
@@ -72,6 +90,7 @@ public class AuthService {
         }
         return true;
     }
+
 
     public void createUser(String userName, String password, Role role) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
         logger.info("ENTER createUser");

@@ -1,17 +1,22 @@
 package com.example.docarc.be;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class User extends ParentUser{
     private String specialInfo;
+    private List<Profile> profiles;
 
     public User(int id, String username, String password, String specialInfo){
         super(id, username, password);
         this.specialInfo = specialInfo;
+        this.profiles = new ArrayList<>();
     }
 
     public User(int id, String username, String password){
         super(id, username, password);
+        this.profiles = new ArrayList<>();
     }
 
     @Override
@@ -35,5 +40,13 @@ public class User extends ParentUser{
     @Override
     public Role getRole() {
         return Role.USER;
+    }
+
+    public List<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
     }
 }

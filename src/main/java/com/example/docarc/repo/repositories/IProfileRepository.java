@@ -11,4 +11,5 @@ public interface IProfileRepository {
     void updateProfile(Profile profile);
     void deleteProfile(Profile profile);
     List<Profile> getProfiles();
+    List<Profile> getProfilesByUserId(int userId);
 }

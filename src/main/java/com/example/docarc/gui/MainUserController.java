@@ -132,6 +132,7 @@ public class MainUserController implements Initializable {
         }
     }
 
+
 //    public void displayUploadedDocument(Document doc){
 //        try {
 //            UIHelper.displayDocument(doc);
@@ -146,6 +147,7 @@ public class MainUserController implements Initializable {
         VBox node = loader.load();
         BoxCardController boxCardController = loader.getController();
         boxCardController.setData(box);
+        boxCardController.setCurrentUser(user);
         node.setMinHeight(300);
         HBox.setHgrow(node, Priority.ALWAYS);
         return node;

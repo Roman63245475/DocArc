@@ -69,6 +69,7 @@ public class AdminController implements Initializable {
     @FXML private ListView<String> errorLogsList;
 
     @FXML private TableView<Profile> profilesTable;
+    @FXML private Button assignProfileToUserBtn;
     @FXML private TableColumn<Profile, String> profileNameColumn;
     @FXML private TableColumn<Profile, Double> rotationProfileColumn;
     @FXML private TableColumn<Profile, Double> brightnessProfileColumn;
@@ -102,6 +103,8 @@ public class AdminController implements Initializable {
         setUpTimeline();
         setUpLogs();
         setUpProfilesTable();
+        assignProfileToUserBtn.disableProperty().bind(
+                profilesTable.getSelectionModel().selectedItemProperty().isNull());
         refreshLogs();
         displayProfiles();
 
@@ -314,6 +317,21 @@ public class AdminController implements Initializable {
     private void onLogsClick() {
         refreshLogs();
         changeView("activityLogsBox", contentBox);
+    }
+
+    @FXML
+    private void onAssignProfileToUser() {
+        Profile selected = profilesTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            return;
+        }
+        try {
+            AssignProfileToUserController controller = (AssignProfileToUserController) UIHelper.openNewWindow(
+                    "assign_profile_to_user_view.fxml", "Assign profile to user", true);
+            controller.setProfileAndAdmin(selected, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

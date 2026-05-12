@@ -146,6 +146,7 @@ public class MainUserController implements Initializable {
         VBox node = loader.load();
         BoxCardController boxCardController = loader.getController();
         boxCardController.setData(box);
+        node.setMinHeight(300);
         HBox.setHgrow(node, Priority.ALWAYS);
         return node;
     }

@@ -10,6 +10,10 @@ public class User extends ParentUser{
         this.specialInfo = specialInfo;
     }
 
+    public User(int id, String username, String password){
+        super(id, username, password);
+    }
+
     @Override
     public boolean equals(Object obj){
         if (obj instanceof User){

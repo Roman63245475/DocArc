@@ -25,6 +25,42 @@
     -fx-font-weight: 600;
 }
 
+.r-15{
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+}
+
+.scroll-pane .viewport{
+    -fx-background-radius: 15px;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .thumb{
+    -fx-background-radius: 15px;
+    -fx-background-color: rgba(45, 61, 79, 0.35);
+}
+
+.scroll-pane .track{
+    -fx-background-radius: 15px;
+    -fx-background-color: rgba(45, 61, 79, 0.14);
+}
+
+.scroll-pane .thumb:hover{
+    -fx-background-color: rgba(45, 61, 79, 0.45);
+}
+
+.scroll-pane .scroll-bar{
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .increment-arrow{
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .decrement-arrow{
+    -fx-background-color: transparent;
+}
+
 .label-bolder{
     -fx-font-size: 12px;
     -fx-font-weight: 500;

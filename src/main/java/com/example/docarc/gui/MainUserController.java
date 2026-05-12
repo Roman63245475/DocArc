@@ -2,7 +2,6 @@ package com.example.docarc.gui;
 
 import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
-import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.DataService;
 import javafx.animation.KeyFrame;
@@ -11,24 +10,24 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainUserController implements Initializable {
 
+    @FXML private Button logOutButton;
 
     @FXML private ScrollPane boxesArea;
-    @FXML private VBox boxCardsArea;
+    @FXML private GridPane boxCardsArea;
 
     private User user;
     private DataService dataService;
@@ -92,23 +91,44 @@ public class MainUserController implements Initializable {
         new Thread(getBoxes).start();
     }
 
+//    private void displayBoxCards(List<Box> boxes) throws IOException {
+//        this.boxCardsArea.getChildren().clear();
+//        boxesArea.setContent(boxCardsArea);
+//        int i = 1;
+//        HBox hBox = new HBox();
+//        for (Box box : boxes) {
+//            if (i > 3) {
+//                boxCardsArea.getChildren().add(hBox);
+//                hBox = new HBox();
+//                i = 1;
+//            }
+//            VBox boxCard = createBoxCard(box);
+//            hBox.getChildren().add(boxCard);
+//            i++;
+//        }
+//        if (!hBox.getChildren().isEmpty()) {
+//            boxCardsArea.getChildren().add(hBox);
+//        }
+//    }
+
     private void displayBoxCards(List<Box> boxes) throws IOException {
         this.boxCardsArea.getChildren().clear();
         boxesArea.setContent(boxCardsArea);
-        int i = 1;
-        HBox hBox = new HBox(70);
-        for (Box box : boxes) {
-            if (i > 3) {
-                boxCardsArea.getChildren().add(hBox);
-                hBox = new HBox();
-                i = 1;
-            }
-            VBox boxCard = createBoxCard(box);
-            hBox.getChildren().add(boxCard);
-            i++;
+
+        if (boxes.size() > 3) {
+            boxCardsArea.setVgap(15);
         }
-        if (!hBox.getChildren().isEmpty()) {
-            boxCardsArea.getChildren().add(hBox);
+
+        for (int i = 0; i < boxes.size(); i++) {
+            Box box = boxes.get(i);
+            VBox boxCard = createBoxCard(box);
+
+            GridPane.setVgrow(boxCard, Priority.ALWAYS);
+
+            int column = i % 3;
+            int row =  i / 3;
+
+            boxCardsArea.add(boxCard, column, row);
         }
     }
 
@@ -123,12 +143,23 @@ public class MainUserController implements Initializable {
 
     private VBox createBoxCard(Box box) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("box_card.fxml"));
-        Parent node = loader.load();
+        VBox node = loader.load();
         BoxCardController boxCardController = loader.getController();
         boxCardController.setData(box);
-        return (VBox) node;
+        HBox.setHgrow(node, Priority.ALWAYS);
+        return node;
     }
 
+    @FXML
+    private void logOut(){
+        Stage st = (Stage) this.logOutButton.getScene().getWindow();
+        st.close();
+        try {
+            UIHelper.logOut();
+        } catch (IOException e) {
+            return;
+        }
+    }
 
     private VBox createDocumentCard(Document document){
         VBox documentCard = new VBox(15);

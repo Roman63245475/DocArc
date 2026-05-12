@@ -73,4 +73,11 @@ public class DocumentFileService {
             }
         }
     }
+
+    public void onEditDocument(Document document) throws MyException {
+        if (document == null) {
+            throw new MyException("Could not find document");
+        }
+        documentRepository.updateDocument(document);
+    }
 }

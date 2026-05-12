@@ -1,28 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="610.0" prefWidth="844.0" spacing="20" style="-fx-background-color: #f5f7fb;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.MainUserController">
-    <padding>
-        <Insets bottom="30" left="30" right="30" top="30" />
-    </padding>
+<VBox alignment="TOP_CENTER" prefHeight="610.0" prefWidth="844.0" style="-fx-background-color: #f5f7fb;" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.MainUserController">
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="844.0" spacing="10.0" styleClass="title-bar">
+            <children>
+                <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@images/LogoBlue_Logoicon.png" />
+                    </image></ImageView>
+                <Region prefHeight="28.0" prefWidth="666.0" HBox.hgrow="ALWAYS" />
+                <Label fx:id="userLabel" minHeight="-Infinity" text="Hello user" textFill="WHITE" />
+                <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOut" prefHeight="24.0" prefWidth="48.0" text="Log out" />
+            </children>
+            <padding>
+                <Insets right="10.0" />
+            </padding></HBox>
+       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" VBox.vgrow="ALWAYS">
+          <children>
+             <VBox alignment="CENTER" prefWidth="100.0">
+                <children>
+                    <!-- Заголовок -->
+                    <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Adding Documents" />
 
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Select box and add new documents via api" />
+                </children>
+             </VBox>
+             <Button mnemonicParsing="false" onAction="#createBox" prefHeight="28.0" prefWidth="116.0" text="Create new Box" />
+             <ScrollPane fx:id="boxesArea" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" prefHeight="320.0" prefWidth="783.0" styleClass="r-15" VBox.vgrow="ALWAYS">
+                <content>
+                   <GridPane fx:id="boxCardsArea" hgap="15.0">
+                     <columnConstraints>
+                         <ColumnConstraints percentWidth="33.33" />
+                         <ColumnConstraints percentWidth="33.33" />
+                         <ColumnConstraints percentWidth="33.33" />
+                     </columnConstraints>
+                      <rowConstraints>
+                         <RowConstraints />
+                         <RowConstraints />
+                      </rowConstraints>
+                   </GridPane>
+                </content>
+             </ScrollPane>
 
-    <!-- Заголовок -->
-    <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Adding Documents" />
-
-    <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Select box and add new documents via api" />
-   <Button mnemonicParsing="false" onAction="#createBox" text="Create new Box" />
-   <ScrollPane fx:id="boxesArea" prefHeight="320.0" prefWidth="783.0">
-      <content>
-         <VBox fx:id="boxCardsArea" prefHeight="321.0" prefWidth="782.0" />
-      </content>
-   </ScrollPane>
-
-    <!-- Большая кнопка снизу (если нужна для общего действия) -->
-    <Button maxWidth="300" onAction="#loadAllDocuments" style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 25;" text="Upload document to the each box via API" />
+              <!-- Большая кнопка снизу (если нужна для общего действия) -->
+              <Button maxWidth="300" onAction="#loadAllDocuments" text="Upload document to the each box via API" />
+          </children>
+          <padding>
+             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+          </padding>
+       </VBox>
+    </children>
 </VBox>

@@ -44,6 +44,23 @@ public class Tiff extends Data{
         this.reference_id = referenceId;
         this.file = file;
     }
+
+    public Tiff(String fileName, int referenceId, BufferedImage processedImage) {
+        this.fileName = fileName;
+        this.reference_id = referenceId;
+        this.file = createFileFromBufferedImage(processedImage, fileName);
+    }
+
+    private File createFileFromBufferedImage(BufferedImage image, String fileName) {
+        try {
+            File imageFile = new File(destinationFolder, fileName + "_processed.png");
+            javax.imageio.ImageIO.write(image, "png", imageFile);
+            return imageFile;
+        } catch (IOException e) {
+            System.out.println("Failed to create file from BufferedImage: " + e.getMessage());
+            return new File(destinationFolder, fileName);
+        }
+    }
     public int getId() {
         return id;
     }

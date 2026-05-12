@@ -39,7 +39,7 @@ public class ApiService {
             ZipEntry entry;
             File newFile = null;
             while ((entry = zis.getNextEntry()) != null) {
-                 newFile = new File(destinationFolder, entry.getName() + "_" + UUID.randomUUID().toString());
+                newFile = new File(destinationFolder, entry.getName() + "_" + UUID.randomUUID().toString());
 
 
                 try (FileOutputStream fos = new FileOutputStream(newFile)) {
@@ -84,28 +84,28 @@ public class ApiService {
     }
 
 
-        public File getZip() {
-            try {
-                File file = new File(this.tempZipDocuments);
-                if  (!file.exists()) {
-                    file.mkdirs();
-                }
-                InputStream in = new URL(this.stringUrl).openStream();
-                Path tempFile = Files.createTempFile(Paths.get(this.tempZipDocuments), "fetched_file", ".zip");
-                Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
-                return tempFile.toFile();
-            } catch (MalformedURLException e) {
-                System.out.println("http protocol is not secure");
-                e.printStackTrace();
-                System.out.println("this");
-                throw new RuntimeException(e);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("this");
-                throw new RuntimeException(e);
+    public File getZip() {
+        try {
+            File file = new File(this.tempZipDocuments);
+            if  (!file.exists()) {
+                file.mkdirs();
             }
+            InputStream in = new URL(this.stringUrl).openStream();
+            Path tempFile = Files.createTempFile(Paths.get(this.tempZipDocuments), "fetched_file", ".zip");
+            Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            return tempFile.toFile();
+        } catch (MalformedURLException e) {
+            System.out.println("http protocol is not secure");
+            e.printStackTrace();
+            System.out.println("this");
+            throw new RuntimeException(e);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("this");
+            throw new RuntimeException(e);
         }
+    }
 
 
 //        public String getFile(){
@@ -124,6 +124,7 @@ public class ApiService {
         }
     }
 
+
     public Document loadDocument(Profile profile, int boxId) {
         boolean barCodeFound = false;
         String fileName = profile.getName() + UUID.randomUUID().toString();
@@ -135,10 +136,13 @@ public class ApiService {
                 File fetchedZipFile = getZip();
                 File unzippedFile = unzipFile(fetchedZipFile);
                 deleteZip(fetchedZipFile);
-                BufferedImage convertedFile = ImageIO.read(unzippedFile);
+                BufferedImage originalImage = ImageIO.read(unzippedFile);
 
-                files.add(new Tiff(unzippedFile.getName(), reference_id, unzippedFile));
-                barCodeFound = hasBarCode(convertedFile);
+                // Применяем настройки профайла к изображению
+                BufferedImage processedImage = ImageProcessor.applyProfileSettings(originalImage, profile);
+
+                files.add(new Tiff(unzippedFile.getName(), reference_id, processedImage));
+                barCodeFound = hasBarCode(originalImage);
                 scanningOrderId++;
                 reference_id++;
             }
@@ -150,4 +154,3 @@ public class ApiService {
     }
 
 }
-

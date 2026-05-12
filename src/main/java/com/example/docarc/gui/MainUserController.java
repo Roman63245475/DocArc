@@ -28,6 +28,7 @@ public class MainUserController implements Initializable {
 
     @FXML private ScrollPane boxesArea;
     @FXML private GridPane boxCardsArea;
+    @FXML private Label userLabel;
 
     private User user;
     private DataService dataService;
@@ -35,6 +36,7 @@ public class MainUserController implements Initializable {
 
     public void setUser(User usr){
         this.user = usr;
+        userLabel.setText("Hello " + this.user.getUsername());
         loadData();
     }
 

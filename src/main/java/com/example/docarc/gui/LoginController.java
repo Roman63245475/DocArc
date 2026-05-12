@@ -74,6 +74,8 @@ public class LoginController implements Initializable {
             }
             catch (IOException e) {
                 loginButton.setDisable(false);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
                 this.errorLabel.setText("Page can't be rendered");
                 this.errorLabel.setOpacity(1.0);
                 return;

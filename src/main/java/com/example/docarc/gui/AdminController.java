@@ -2,8 +2,10 @@ package com.example.docarc.gui;
 
 import com.example.docarc.be.Admin;
 import com.example.docarc.be.ParentUser;
+import com.example.docarc.be.Profile;
 import com.example.docarc.be.Role;
 import com.example.docarc.bll.LogService;
+import com.example.docarc.bll.ProfileService;
 import com.example.docarc.bll.UserService;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -25,6 +27,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.commons.logging.Log;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +50,7 @@ public class AdminController implements Initializable {
     @FXML private Label logsLabel;
 
     @FXML private Button userManBtn;
-    @FXML private Button metadataBtn;
+    @FXML private Button profileManagementButton;
     @FXML private Button ActivityLogBtn;
     @FXML private Button appLogsBtn;
     @FXML private Button errorLogsBtn;
@@ -65,29 +68,42 @@ public class AdminController implements Initializable {
     @FXML private ListView<String> appLogsList;
     @FXML private ListView<String> errorLogsList;
 
+    @FXML private TableView<Profile> profilesTable;
+    @FXML private TableColumn<Profile, String> profileNameColumn;
+    @FXML private TableColumn<Profile, Double> rotationProfileColumn;
+    @FXML private TableColumn<Profile, Double> brightnessProfileColumn;
+    @FXML private TableColumn<Profile, Double> contrastProfileColumn;
+    @FXML private TableColumn<Profile, Boolean> grayscaleProfileColumn;
+
+
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
     private ObservableList<String> observableAppLogs = FXCollections.observableArrayList();
     private ObservableList<String> observableErrorLogs = FXCollections.observableArrayList();
+    private ObservableList<Profile> observableProfiles = FXCollections.observableArrayList();
 
     private boolean isMenuOpen = false;
 
     private UserService userService;
     private LogService logService;
+    private ProfileService profileService;
     private Timeline timeLine;
     private Admin user;
 
     public AdminController() {
         this.userService = new UserService();
+        this.logService = new LogService();
+        this.profileService = new ProfileService();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.logService = new LogService();
         setUpTooltip();
         setUpUserTable();
         setUpTimeline();
         setUpLogs();
+        setUpProfilesTable();
         refreshLogs();
+        displayProfiles();
 
         //Shortcuts
         sideBar.sceneProperty().addListener((observable, oldValue, newValue) -> {
@@ -116,6 +132,28 @@ public class AdminController implements Initializable {
                 }
             });
         });
+    }
+
+    private void setUpProfilesTable(){
+        this.profileNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        this.rotationProfileColumn.setCellValueFactory(new PropertyValueFactory<>("rotation"));
+        this.brightnessProfileColumn.setCellValueFactory(new PropertyValueFactory<>("brightness"));
+        this.contrastProfileColumn.setCellValueFactory(new PropertyValueFactory<>("contrast"));
+        this.grayscaleProfileColumn.setCellValueFactory(new PropertyValueFactory<>("grayscale"));
+        profilesTable.setItems(this.observableProfiles);
+    }
+
+    public void displayProfiles(){
+        Task<List<Profile>> get_profiles_task = new Task<List<Profile>>() {
+            @Override
+            protected List<Profile> call() throws Exception {
+                return profileService.getProfiles();
+            }
+        };
+        get_profiles_task.setOnSucceeded(event -> {
+            observableProfiles.setAll(get_profiles_task.getValue());
+        });
+        new Thread(get_profiles_task).start();
     }
 
     private void setUpTooltip() {
@@ -253,7 +291,7 @@ public class AdminController implements Initializable {
 
     private void changeView(String target, StackPane parent){
         for(Node n : parent.getChildren()){
-            if (n.getId().equals(target)){
+            if (target.equals(n.getId())){
                 n.setVisible(true);
             }else{
                 n.setVisible(false);
@@ -267,14 +305,28 @@ public class AdminController implements Initializable {
     }
 
     @FXML
-    private void onMetadataClick() {
-        System.out.println("Metadata clicked");
+    private void profileManagementButtonClick() {
+        changeView("profileManagementView", contentBox);
+        displayProfiles();
     }
 
     @FXML
     private void onLogsClick() {
         refreshLogs();
         changeView("activityLogsBox", contentBox);
+    }
+
+    @FXML
+    private void createProfile(){
+        try {
+            CreateProfileController controller = (CreateProfileController) UIHelper.openNewWindow("create_profile_view.fxml", "Create Profile", true);
+            controller.setMainController(this);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @FXML

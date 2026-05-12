@@ -1,0 +1,92 @@
+package com.example.docarc.repo.impl;
+
+import com.example.docarc.be.Profile;
+import com.example.docarc.custom_exceptions.DuplicateException;
+import com.example.docarc.custom_exceptions.MyException;
+import com.example.docarc.repo.ConnectionManager;
+import com.example.docarc.repo.repositories.IProfileRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class ProfileRepository implements IProfileRepository {
+
+    private DataSource ds;
+    private static final Logger logger = LoggerFactory.getLogger(ProfileRepository.class);
+    public ProfileRepository(DataSource ds) {
+        this.ds = ds;
+    }
+
+    public ProfileRepository() {
+        this.ds = ConnectionManager.getDataSource();;
+    }
+    @Override
+    public void addProfile(Profile profile) throws DuplicateException, MyException {
+        try (Connection con = ds.getConnection()) {
+            String sqlPrompt = "INSERT INTO profiles (name, brightness, contrast, rotation, grayscale) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(sqlPrompt);
+            ps.setString(1, profile.getName());
+            ps.setDouble(2, profile.getBrightness());
+            ps.setDouble(3, profile.getContrast());
+            ps.setDouble(4, profile.getRotation());
+            ps.setBoolean(5, profile.getGrayscale());
+            ps.executeUpdate();
+            ps.close();
+            logger.info("Profile added successfully");
+        }
+        catch (SQLException e) {
+            if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
+                logger.warn("Attempt to insert a duplicate");
+                throw new DuplicateException("Profile with the same name already exists");
+            }
+            else{
+                logger.error("Failed to create a profile due to: {}", e.getMessage());
+                throw new MyException("Sorry something went wrong went creating a profile");
+            }
+
+        }
+
+    }
+
+    @Override
+    public void updateProfile(Profile profile) {
+        System.out.println("I'm empty");
+    }
+
+    @Override
+    public void deleteProfile(Profile profile) {
+        System.out.println("I'm empty");
+    }
+
+    @Override
+    public List<Profile> getProfiles() {
+        String sqlPrompt = "Select * from profiles";
+        List<Profile> profiles = new ArrayList<>();
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlPrompt)){
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double brightness = rs.getDouble("brightness");
+                double contrast = rs.getDouble("contrast");
+                double rotation = rs.getDouble("rotation");
+                boolean grayscale = rs.getBoolean("grayscale");
+                profiles.add(new Profile(id,  name, brightness, contrast, rotation, grayscale));
+            }
+            logger.info("Profiles successfully selected");
+            return profiles;
+        }
+        catch (SQLException e) {
+            logger.error("Failed to get profiles due to: {}", e.getMessage());
+            return List.of();
+        }
+    }
+}

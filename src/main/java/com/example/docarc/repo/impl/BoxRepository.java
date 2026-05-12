@@ -28,9 +28,10 @@ public class BoxRepository implements IBoxRepository {
     @Override
     public void createBox(String boxName, User responsibleUser) {
         try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "Insert into boxes (name) values (?)";
+            String sqlPrompt = "Insert into boxes (name, user_id) values (?, ?)";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setString(1, boxName);
+            ps.setInt(2, responsibleUser.getId());
             ps.execute();
             logger.info("User {} created box {}", responsibleUser.getUsername(), boxName);
         }

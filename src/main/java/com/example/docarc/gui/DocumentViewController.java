@@ -44,7 +44,8 @@ public class DocumentViewController implements Initializable {
     private int draggedIndex;
     private DocumentFileService service;
 
-    private boolean edit = false;
+    private boolean openedInEditMode = false;
+    private boolean orderChanged = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -123,7 +124,7 @@ public class DocumentViewController implements Initializable {
                 listOfFiles.getSelectionModel().select(targetIndex);
 
                 if (draggedIndex != targetIndex) {
-                    edit = true;
+                    orderChanged = true;
                 }
 
                 event.setDropCompleted(true);
@@ -202,7 +203,7 @@ public class DocumentViewController implements Initializable {
             orderId++;
         }
         this.document.setData(finalOrder);
-        if (edit){
+        if (openedInEditMode){
             onEditDocument();
         }else{
             saveDocumentSecondPart();
@@ -249,6 +250,10 @@ public class DocumentViewController implements Initializable {
 
         Thread thread = new Thread(task);
         thread.start();
+    }
+
+    public void setEditMode(){
+        this.openedInEditMode = true;
     }
 
     @FXML

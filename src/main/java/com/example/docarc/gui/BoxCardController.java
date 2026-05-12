@@ -57,7 +57,7 @@ public class BoxCardController {
 
     private void displayClickedDocument(Document document){
         try {
-            UIHelper.displayDocument(document);
+            UIHelper.displayDocument(document, true);
         } catch (IOException e) {
             System.out.println("needs to be logged likely");
         }
@@ -72,7 +72,7 @@ public class BoxCardController {
         };
         scanDocument.setOnSucceeded((e) -> {
             try {
-                UIHelper.displayDocument(scanDocument.getValue());
+                UIHelper.displayDocument(scanDocument.getValue(), false);
             } catch (IOException ex) {
                 System.out.println("sorry couldn't display document");
             }

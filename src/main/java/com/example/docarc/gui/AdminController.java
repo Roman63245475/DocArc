@@ -252,7 +252,11 @@ public class AdminController implements Initializable {
 
     @FXML
     private void createClient(){
-        System.out.println("it works");
+        try {
+            UIHelper.openNewWindow("create_client_view.fxml", "Create Client", true);
+        } catch (IOException e) {
+            System.out.println("needs to be logged likely");
+        }
     }
 
     private void setUpUserTable(){

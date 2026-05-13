@@ -71,7 +71,6 @@ public class AdminController implements Initializable {
     @FXML private TableView<Profile> profilesTable;
     @FXML private Button assignProfileToUserBtn;
     @FXML private TableColumn<Profile, String> profileNameColumn;
-    @FXML private TableColumn<Profile, Double> rotationProfileColumn;
     @FXML private TableColumn<Profile, Double> brightnessProfileColumn;
     @FXML private TableColumn<Profile, Double> contrastProfileColumn;
     @FXML private TableColumn<Profile, Boolean> grayscaleProfileColumn;
@@ -113,25 +112,32 @@ public class AdminController implements Initializable {
             if (newValue == null) return;
             newValue.setOnKeyPressed(event -> {
                 ParentUser selectedUser = usersTable.getSelectionModel().getSelectedItem();
+
+                String activeTab = "";
+
+                for (Node n : contentBox.getChildren()) {
+                    if (n.isVisible() && n.getId() != null){
+                        activeTab = n.getId();
+                        break;
+                    }
+                }
+
                 if (event.getCode() == KeyCode.A) {
-                    onAddUser();
+                    if ("userManagementBox".equals(activeTab)) onAddUser();
+                    if("profileManagementView".equals(activeTab)) createProfile();
                 }
 
-                if (event.getCode() == KeyCode.U) {
-                    onUserManClick();
+                if (event.getCode() == KeyCode.S) {
+                    if ("profileManagementView".equals(activeTab)) onAssignProfileToUser();
                 }
 
-                if (event.getCode() == KeyCode.L) {
-                    onLogsClick();
-                }
+                if (event.getCode() == KeyCode.U) onUserManClick();
+                if (event.getCode() == KeyCode.L) onLogsClick();
+                if (event.getCode() == KeyCode.P) profileManagementButtonClick();
 
-                if (selectedUser != null) {
-                    if (event.getCode() == KeyCode.E){
-                        onEditUser(selectedUser);
-                    }
-                    if (event.getCode() == KeyCode.D){
-                        deleteUser(selectedUser);
-                    }
+                if (selectedUser != null && "userManagementBox".equals(activeTab)) {
+                    if (event.getCode() == KeyCode.E) onEditUser(selectedUser);
+                    if (event.getCode() == KeyCode.D) deleteUser(selectedUser);
                 }
             });
         });
@@ -139,7 +145,6 @@ public class AdminController implements Initializable {
 
     private void setUpProfilesTable(){
         this.profileNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        this.rotationProfileColumn.setCellValueFactory(new PropertyValueFactory<>("rotation"));
         this.brightnessProfileColumn.setCellValueFactory(new PropertyValueFactory<>("brightness"));
         this.contrastProfileColumn.setCellValueFactory(new PropertyValueFactory<>("contrast"));
         this.grayscaleProfileColumn.setCellValueFactory(new PropertyValueFactory<>("grayscale"));
@@ -162,11 +167,13 @@ public class AdminController implements Initializable {
     private void setUpTooltip() {
         Tooltip tooltip = new Tooltip();
         Label operationsLabel = new Label("Useful Shortcuts:\n" +
-                "[ A ] Add a new user.\n" +
+                "[ A ] Add a new user/profile.\n" +
                 "[ E ] Edit the selected user.\n" +
                 "[ D ] Delete the selected user.\n" +
-                "━━━━━━━━━━━━━━━\n" +
+                "[ S ] Open profile assignment window.\n" +
+                "━━━━━━━━━━━━━━━━━\n" +
                 "[ U ] Open user management tab.\n" +
+                "[ P ] Open profile management tab.\n" +
                 "[ L ] Open activity logs tab.");
 
         operationsLabel.getStyleClass().add("tooltip-label");

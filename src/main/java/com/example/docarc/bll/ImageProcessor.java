@@ -26,9 +26,6 @@ public class ImageProcessor {
         // Применяем контраст
         processedImage = applyContrast(processedImage, profile.getContrast());
 
-        // Применяем ротацию
-        processedImage = applyRotation(processedImage, profile.getRotation());
-
         return processedImage;
     }
 
@@ -102,38 +99,38 @@ public class ImageProcessor {
         return contrastImage;
     }
 
-    private static BufferedImage applyRotation(BufferedImage image, double rotation) {
-        if (rotation == 0.0) {
-            return image;
-        }
-
-        double radians = Math.toRadians(rotation);
-
-        // Вычисляем новые размеры изображения после поворота
-        double sin = Math.abs(Math.sin(radians));
-        double cos = Math.abs(Math.cos(radians));
-
-        int newWidth = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
-        int newHeight = (int) Math.floor(image.getWidth() * sin + image.getHeight() * cos);
-
-        BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, image.getType());
-
-        Graphics2D g2d = rotatedImage.createGraphics();
-
-        // Устанавливаем качество рендеринга
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Применяем трансформацию
-        AffineTransform transform = new AffineTransform();
-        transform.translate(newWidth / 2.0, newHeight / 2.0);
-        transform.rotate(radians);
-        transform.translate(-image.getWidth() / 2.0, -image.getHeight() / 2.0);
-
-        g2d.drawImage(image, transform, null);
-        g2d.dispose();
-
-        return rotatedImage;
-    }
+//    private static BufferedImage applyRotation(BufferedImage image, double rotation) {
+//        if (rotation == 0.0) {
+//            return image;
+//        }
+//
+//        double radians = Math.toRadians(rotation);
+//
+//        // Вычисляем новые размеры изображения после поворота
+//        double sin = Math.abs(Math.sin(radians));
+//        double cos = Math.abs(Math.cos(radians));
+//
+//        int newWidth = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);
+//        int newHeight = (int) Math.floor(image.getWidth() * sin + image.getHeight() * cos);
+//
+//        BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, image.getType());
+//
+//        Graphics2D g2d = rotatedImage.createGraphics();
+//
+//        // Устанавливаем качество рендеринга
+//        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//
+//        // Применяем трансформацию
+//        AffineTransform transform = new AffineTransform();
+//        transform.translate(newWidth / 2.0, newHeight / 2.0);
+//        transform.rotate(radians);
+//        transform.translate(-image.getWidth() / 2.0, -image.getHeight() / 2.0);
+//
+//        g2d.drawImage(image, transform, null);
+//        g2d.dispose();
+//
+//        return rotatedImage;
+//    }
 }

@@ -31,13 +31,12 @@ public class ProfileRepository implements IProfileRepository {
     @Override
     public void addProfile(Profile profile) throws DuplicateException, MyException {
         try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "INSERT INTO profiles (name, brightness, contrast, rotation, grayscale) VALUES (?, ?, ?, ?, ?)";
+            String sqlPrompt = "INSERT INTO profiles (name, brightness, contrast, grayscale) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setString(1, profile.getName());
             ps.setDouble(2, profile.getBrightness());
             ps.setDouble(3, profile.getContrast());
-            ps.setDouble(4, profile.getRotation());
-            ps.setBoolean(5, profile.getGrayscale());
+            ps.setBoolean(4, profile.getGrayscale());
             ps.executeUpdate();
             ps.close();
             logger.info("Profile added successfully");
@@ -77,9 +76,8 @@ public class ProfileRepository implements IProfileRepository {
                 String name = rs.getString("name");
                 double brightness = rs.getDouble("brightness");
                 double contrast = rs.getDouble("contrast");
-                double rotation = rs.getDouble("rotation");
                 boolean grayscale = rs.getBoolean("grayscale");
-                profiles.add(new Profile(id,  name, brightness, contrast, rotation, grayscale));
+                profiles.add(new Profile(id,  name, brightness, contrast, grayscale));
             }
             logger.info("Profiles successfully selected");
             return profiles;
@@ -105,9 +103,8 @@ public class ProfileRepository implements IProfileRepository {
                 String name = rs.getString("name");
                 double brightness = rs.getDouble("brightness");
                 double contrast = rs.getDouble("contrast");
-                double rotation = rs.getDouble("rotation");
                 boolean grayscale = rs.getBoolean("grayscale");
-                profiles.add(new Profile(id,  name, brightness, contrast, rotation, grayscale));
+                profiles.add(new Profile(id,  name, brightness, contrast, grayscale));
             }
             logger.info("Profiles for user {} successfully selected", userId);
         }
@@ -116,7 +113,7 @@ public class ProfileRepository implements IProfileRepository {
         }
 
         // Всегда добавляем Default профайл в начало списка
-        Profile defaultProfile = new Profile(0, "Default", 0.0, 0.0, 0.0, false);
+        Profile defaultProfile = new Profile(0, "Default", 0.0, 0.0, false);
         profiles.add(0, defaultProfile);
 
         return profiles;

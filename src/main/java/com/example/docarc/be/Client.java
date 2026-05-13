@@ -15,6 +15,11 @@ public class Client {
         this.amountOfEmployees = amountOfEmployees;
     }
 
+    public Client(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public Client(String name, String country, String city){
         this.name = name;
         this.country = country;

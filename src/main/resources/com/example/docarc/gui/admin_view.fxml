@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="960.0" stylesheets="@css/admin-styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.AdminController">
+<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="960.0" stylesheets="@css/admin-styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.AdminController">
     <children>
         <VBox fx:id="sideBar" managed="false" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="600.0" prefWidth="0.0" styleClass="sidebar" visible="false">
             <children>
@@ -97,7 +97,7 @@
                 </HBox>
                 <StackPane fx:id="contentBox" prefHeight="600.0" prefWidth="768.0" styleClass="content-area" VBox.vgrow="ALWAYS">
                     <children>
-                        <VBox fx:id="userManagementBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                        <VBox fx:id="userManagementBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" visible="false">
                             <children>
                                 <HBox alignment="CENTER_LEFT" prefWidth="200.0">
                                     <children>
@@ -158,7 +158,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#createProfile" text="Create new Profile" />
-                              <Button fx:id="assignProfileToUserBtn" mnemonicParsing="false" onAction="#onAssignProfileToUser" text="Assign to user" />
+                              <Button fx:id="assignProfileToClientBtn" mnemonicParsing="false" onAction="#assignProfileToClientClick" text="Assign to a client" />
                            </children>
                         </HBox>
                         <TableView fx:id="profilesTable" prefHeight="339.0" prefWidth="920.0">
@@ -174,7 +174,7 @@
                         </TableView>
                      </children>
                   </VBox>
-                  <VBox fx:id="clientManagementView" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
+                  <VBox fx:id="clientManagementView" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
                         <Label text="Clients Management">
                            <VBox.margin>

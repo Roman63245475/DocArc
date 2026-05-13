@@ -1,27 +1,28 @@
 package com.example.docarc.bll;
 
+import com.example.docarc.be.Client;
 import com.example.docarc.be.Profile;
 import com.example.docarc.be.User;
 import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.ProfileRepository;
-import com.example.docarc.repo.impl.UserProfileAssignmentRepository;
+import com.example.docarc.repo.impl.ClientProfileAssignmentRepository;
 import com.example.docarc.repo.repositories.IProfileRepository;
-import com.example.docarc.repo.repositories.IUserProfileAssignmentRepository;
+import com.example.docarc.repo.repositories.IClientProfileAssignmentRepository;
 
 import java.util.List;
 
 public class ProfileService {
     private final IProfileRepository profileRepository;
-    private final IUserProfileAssignmentRepository profileAssignmentRepository;
+    private final IClientProfileAssignmentRepository profileAssignmentRepository;
 
     public ProfileService() {
         this.profileRepository = new ProfileRepository();
-        this.profileAssignmentRepository = new UserProfileAssignmentRepository();
+        this.profileAssignmentRepository = new ClientProfileAssignmentRepository();
     }
 
-    public ProfileService(IProfileRepository profileRepository, IUserProfileAssignmentRepository profileAssignmentRepository) {
+    public ProfileService(IProfileRepository profileRepository, IClientProfileAssignmentRepository profileAssignmentRepository) {
         this.profileRepository = profileRepository;
         this.profileAssignmentRepository = profileAssignmentRepository;
     }
@@ -35,12 +36,12 @@ public class ProfileService {
         return profileRepository.getProfiles();
     }
 
-    public List<User> getUsersEligibleForProfileAssignment(int profileId) throws DataBaseConnectionException, MyException {
-        return profileAssignmentRepository.findUsersEligibleForProfile(profileId);
+    public List<Client> getClientsEligibleForProfileAssignment(int profileId) throws DataBaseConnectionException, MyException {
+        return profileAssignmentRepository.findClientsEligibleForProfile(profileId);
     }
 
-    public void assignProfileToUser(int profileId, int userId) throws DataBaseConnectionException, MyException, DuplicateException {
-        profileAssignmentRepository.assignProfileToUser(profileId, userId);
+    public void assignProfileToClient(int profileId, int clientId) throws DataBaseConnectionException, MyException, DuplicateException {
+        profileAssignmentRepository.assignProfileToClient(profileId, clientId);
     }
 
     private void checkName(String name) throws MyException {

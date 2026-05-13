@@ -12,12 +12,10 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -25,7 +23,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.apache.commons.logging.Log;
 
 import java.io.IOException;
 import java.net.URL;
@@ -68,7 +65,7 @@ public class AdminController implements Initializable {
     @FXML private ListView<String> errorLogsList;
 
     @FXML private TableView<Profile> profilesTable;
-    @FXML private Button assignProfileToUserBtn;
+    @FXML private Button assignProfileToClientBtn;
     @FXML private TableColumn<Profile, String> profileNameColumn;
     @FXML private TableColumn<Profile, Double> brightnessProfileColumn;
     @FXML private TableColumn<Profile, Double> contrastProfileColumn;
@@ -115,7 +112,7 @@ public class AdminController implements Initializable {
         setUpTimeline();
         setUpLogs();
         setUpProfilesTable();
-        assignProfileToUserBtn.disableProperty().bind(
+        assignProfileToClientBtn.disableProperty().bind(
                 profilesTable.getSelectionModel().selectedItemProperty().isNull());
         refreshLogs();
         displayProfiles();
@@ -143,7 +140,7 @@ public class AdminController implements Initializable {
                 }
 
                 if (event.getCode() == KeyCode.S) {
-                    if ("profileManagementView".equals(activeTab)) onAssignProfileToUser();
+                    if ("profileManagementView".equals(activeTab)) assignProfileToClientClick();
                 }
 
                 if (event.getCode() == KeyCode.U) onUserManClick();
@@ -369,14 +366,14 @@ public class AdminController implements Initializable {
     }
 
     @FXML
-    private void onAssignProfileToUser() {
+    private void assignProfileToClientClick() {
         Profile selected = profilesTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
             return;
         }
         try {
-            AssignProfileToUserController controller = (AssignProfileToUserController) UIHelper.openNewWindow(
-                    "assign_profile_to_user_view.fxml", "Assign profile to user", true);
+            AssignProfileToClientController controller = (AssignProfileToClientController) UIHelper.openNewWindow(
+                    "assign_profile_to_client_view.fxml", "Assign profile to user", true);
             controller.setProfileAndAdmin(selected, this);
         } catch (IOException e) {
             e.printStackTrace();

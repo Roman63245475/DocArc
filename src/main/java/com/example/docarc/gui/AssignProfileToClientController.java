@@ -1,5 +1,6 @@
 package com.example.docarc.gui;
 
+import com.example.docarc.be.Client;
 import com.example.docarc.be.Profile;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.ProfileService;
@@ -19,59 +20,59 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AssignProfileToUserController implements Initializable {
+public class AssignProfileToClientController implements Initializable {
 
     @FXML private Label profileNameLabel;
-    @FXML private ListView<User> eligibleUsersList;
+    @FXML private ListView<Client> eligibleClientsList;
     @FXML private Label errorLabel;
     @FXML private Button assignButton;
 
     private final ProfileService profileService = new ProfileService();
-    private final ObservableList<User> eligibleUsers = FXCollections.observableArrayList();
+    private final ObservableList<Client> eligibleClients = FXCollections.observableArrayList();
 
     private Profile profile;
     private AdminController adminController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        eligibleUsersList.setItems(eligibleUsers);
+        eligibleClientsList.setItems(eligibleClients);
         errorLabel.setStyle("-fx-text-fill: red");
         hideError();
         assignButton.disableProperty().bind(
                 Bindings.or(
-                        Bindings.isEmpty(eligibleUsers),
-                        eligibleUsersList.getSelectionModel().selectedItemProperty().isNull()));
+                        Bindings.isEmpty(eligibleClients),
+                        eligibleClientsList.getSelectionModel().selectedItemProperty().isNull()));
     }
 
     public void setProfileAndAdmin(Profile profile, AdminController adminController) {
         this.profile = profile;
         this.adminController = adminController;
         profileNameLabel.setText(profile.getName());
-        loadEligibleUsers();
+        loadEligibleClients();
     }
 
-    private void loadEligibleUsers() {
-        Task<List<User>> task = new Task<>() {
+    private void loadEligibleClients() {
+        Task<List<Client>> task = new Task<>() {
             @Override
-            protected List<User> call() throws Exception {
-                return profileService.getUsersEligibleForProfileAssignment(profile.getId());
+            protected List<Client> call() throws Exception {
+                return profileService.getClientsEligibleForProfileAssignment(profile.getId());
             }
         };
-        task.setOnSucceeded(e -> eligibleUsers.setAll(task.getValue()));
+        task.setOnSucceeded(e -> eligibleClients.setAll(task.getValue()));
         task.setOnFailed(e -> showError(task.getException().getMessage()));
         new Thread(task).start();
     }
 
     @FXML
     private void onAssign() {
-        User selected = eligibleUsersList.getSelectionModel().getSelectedItem();
-        if (selected == null || profile == null) {
+        Client selectedClient = eligibleClientsList.getSelectionModel().getSelectedItem();
+        if (selectedClient == null || profile == null) {
             return;
         }
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                profileService.assignProfileToUser(profile.getId(), selected.getId());
+                profileService.assignProfileToClient(profile.getId(), selectedClient.getId());
                 return null;
             }
         };
@@ -95,7 +96,7 @@ public class AssignProfileToUserController implements Initializable {
     }
 
     private void closeStage() {
-        Stage st = (Stage) eligibleUsersList.getScene().getWindow();
+        Stage st = (Stage) eligibleClientsList.getScene().getWindow();
         st.close();
     }
 

@@ -1,5 +1,6 @@
 package com.example.docarc.bll;
 
+import com.example.docarc.be.Client;
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
 import com.example.docarc.custom_exceptions.DataBaseConnectionException;
@@ -30,9 +31,9 @@ public class UserService {
 
 
 
-    public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
-        logger.info("Getting all users");
-        return this.userRepository.getAllUsers(id);
+    public List<ParentUser> getAllUsersByClient(Client client, int id) throws DataBaseConnectionException, MyException {
+        //logger.info("Getting all users");
+        return this.userRepository.getAllUsersByClient(client.getId(), id);
     }
 
     public void editUser(ParentUser user, String username, String password, Role role) throws MyException {

@@ -27,7 +27,8 @@ public class UserRepository implements IUserRepository {
 
     private ConnectionManager cm;
     private DataSource ds;
-    private Logger logger =  LoggerFactory.getLogger(UserRepository.class);
+    private Logger logger = LoggerFactory.getLogger(UserRepository.class);
+    private static final String sqlGetUsersByClient = "select * from users where clientId = ? and id !=?";
 
     public UserRepository() {
         this.ds = ConnectionManager.getDataSource();
@@ -81,19 +82,18 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
+    public List<ParentUser> getAllUsersByClient(int clientId, int userId) throws DataBaseConnectionException, MyException {
         List<ParentUser> users = new ArrayList<>();
-        try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "Select * from users where id != ?";
-            PreparedStatement ps = con.prepareStatement(sqlPrompt);
-            ps.setInt(1, id);
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlGetUsersByClient);) {
+            ps.setInt(1, clientId);
+            ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int Id = rs.getInt("id");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 boolean isAdmin = rs.getBoolean("isadmin");
-                ParentUser user = (isAdmin) ? new Admin(Id, username, password) : new User(Id, username, password, "otherInfo");
+                ParentUser user = (isAdmin) ? new Admin(Id, username, password) : new User(Id, username, password);
                 users.add(user);
             }
             return users;

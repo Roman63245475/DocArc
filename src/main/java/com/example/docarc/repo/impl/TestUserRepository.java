@@ -48,6 +48,11 @@ public class TestUserRepository implements IUserRepository {
     }
 
     @Override
+    public List<ParentUser> getAllUsersByClient(int clientId, int id) {
+        return List.of();
+    }
+
+    //@Override
     public List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException {
         List<ParentUser> users = new ArrayList<>();
         for (HashMap<String, String> h : this.userData) {

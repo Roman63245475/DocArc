@@ -14,7 +14,7 @@ public interface IUserRepository {
 
     void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, LoginException, DuplicateException, MyException;
 
-    List<ParentUser> getAllUsers(int id) throws DataBaseConnectionException, MyException;
+    List<ParentUser> getAllUsersByClient(int clientId, int id) throws DataBaseConnectionException, MyException;
 
     void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) throws DataBaseConnectionException, MyException, DuplicateException;
 

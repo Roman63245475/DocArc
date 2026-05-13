@@ -82,6 +82,9 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<Client, Integer> clientUserAmountColumn;
     private ObservableList<Client> clientsList = FXCollections.observableArrayList();
 
+    // clients combobox
+    @FXML private ComboBox<Client> clientsComboBox;
+
 
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
     private ObservableList<String> observableAppLogs = FXCollections.observableArrayList();
@@ -96,6 +99,7 @@ public class AdminController implements Initializable {
     private Timeline timeLine;
     private Admin user;
     private ClientService clientService;
+    private Client selectedClient;
 
     public AdminController() {
         this.userService = new UserService();
@@ -116,6 +120,8 @@ public class AdminController implements Initializable {
         refreshLogs();
         displayProfiles();
         setUpClientsTable();
+        setUpClientsCombobox();
+        displayClients();
         //Shortcuts
         sideBar.sceneProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
@@ -149,6 +155,14 @@ public class AdminController implements Initializable {
                     if (event.getCode() == KeyCode.D) deleteUser(selectedUser);
                 }
             });
+        });
+    }
+
+    private void setUpClientsCombobox(){
+        this.clientsComboBox.setItems(clientsList);
+        this.clientsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            this.selectedClient = newValue;
+            displayUsers();
         });
     }
 
@@ -251,7 +265,7 @@ public class AdminController implements Initializable {
         this.user = usr;
         adminNameLabel.setText(usr.getUsername());
         welcomeUserLabel.setText(usr.getUsername());
-        refreshUserTable();
+        //refreshUserTable();
     }
 
     @FXML
@@ -462,7 +476,7 @@ public class AdminController implements Initializable {
                 };
 
                 task.setOnSucceeded(event -> {
-                    refreshUserTable();
+                    displayUsers();
                 });
 
                 task.setOnFailed(event -> {
@@ -483,12 +497,16 @@ public class AdminController implements Initializable {
         changeView("clientManagementView", this.contentBox);
     }
 
-    public void refreshUserTable(){
+    public void displayUsers(){
+        if (this.selectedClient == null){
+            return;
+        }
+
         Task<List<ParentUser>> getAllUsersTask = new Task<List<ParentUser>>() {
 
             @Override
             protected List<ParentUser> call() throws Exception {
-                return userService.getAllUsers(user.getId());
+                return userService.getAllUsersByClient(selectedClient, user.getId());
             }
         };
         getAllUsersTask.setOnSucceeded(event -> {

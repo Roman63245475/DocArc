@@ -72,7 +72,7 @@ public class AddEditUserController implements Initializable {
         createUserTask.setOnSucceeded(event -> {
             Stage stage = (Stage) this.errorLabel.getScene().getWindow();
             stage.close();
-            this.adminController.refreshUserTable();
+            this.adminController.displayUsers();
         });
         createUserTask.setOnFailed(event -> {
             Throwable cause = createUserTask.getException();
@@ -103,7 +103,7 @@ public class AddEditUserController implements Initializable {
         editUserTask.setOnSucceeded(event -> {
             Stage stage = (Stage) this.errorLabel.getScene().getWindow();
             stage.close();
-            this.adminController.refreshUserTable();
+            this.adminController.displayUsers();
         });
         editUserTask.setOnFailed(event -> {
             Throwable cause = editUserTask.getException();

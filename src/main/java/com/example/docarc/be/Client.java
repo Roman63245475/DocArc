@@ -40,4 +40,9 @@ public class Client {
     public int getAmountOfEmployees() {
         return this.amountOfEmployees;
     }
+
+    @Override
+    public String toString(){
+        return this.name;
+    }
 }

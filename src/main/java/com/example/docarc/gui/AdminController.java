@@ -42,6 +42,7 @@ public class AdminController implements Initializable {
     @FXML private VBox userManagementBox;
     @FXML private StackPane contentBox;
     @FXML private StackPane listContainer;
+    @FXML private VBox clientManagementView;
 
     @FXML private Region questionIcon;
 
@@ -249,6 +250,11 @@ public class AdminController implements Initializable {
 
     }
 
+    @FXML
+    private void createClient(){
+        System.out.println("it works");
+    }
+
     private void setUpUserTable(){
         this.userUsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         this.userRoleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
@@ -436,6 +442,11 @@ public class AdminController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    @FXML
+    private void onClientManagementClick(){
+        System.out.println("I'm called");
+        changeView("clientManagementView", this.contentBox);
     }
 
     public void refreshUserTable(){

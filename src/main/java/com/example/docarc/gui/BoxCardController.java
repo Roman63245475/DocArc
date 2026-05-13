@@ -72,6 +72,8 @@ public class BoxCardController {
             System.out.println("needs to be logged likely");
         }
     }
+
+
     @FXML
     private void loadDocument(){
         if (currentUser == null) {

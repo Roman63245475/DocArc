@@ -187,12 +187,12 @@
                               <Insets top="15.0" />
                            </VBox.margin>
                         </Button>
-                        <TableView prefHeight="284.0" prefWidth="920.0">
+                        <TableView fx:id="clientsTable" prefHeight="284.0" prefWidth="920.0">
                           <columns>
-                            <TableColumn prefWidth="177.0" text="Name" />
-                              <TableColumn minWidth="0.0" prefWidth="253.0" text="Country" />
-                              <TableColumn prefWidth="226.0" text="City" />
-                              <TableColumn prefWidth="263.0" text="Amount of employees" />
+                            <TableColumn fx:id="clientNameColumn" prefWidth="177.0" text="Name" />
+                              <TableColumn fx:id="clientCountryColumn" minWidth="0.0" prefWidth="253.0" text="Country" />
+                              <TableColumn fx:id="clientCityColumn" prefWidth="226.0" text="City" />
+                              <TableColumn fx:id="clientUserAmountColumn" prefWidth="263.0" text="Amount of employees" />
                           </columns>
                            <VBox.margin>
                               <Insets top="25.0" />

@@ -1,9 +1,7 @@
 package com.example.docarc.gui;
 
-import com.example.docarc.be.Admin;
-import com.example.docarc.be.ParentUser;
-import com.example.docarc.be.Profile;
-import com.example.docarc.be.Role;
+import com.example.docarc.be.*;
+import com.example.docarc.bll.ClientService;
 import com.example.docarc.bll.LogService;
 import com.example.docarc.bll.ProfileService;
 import com.example.docarc.bll.UserService;
@@ -76,6 +74,14 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<Profile, Double> contrastProfileColumn;
     @FXML private TableColumn<Profile, Boolean> grayscaleProfileColumn;
 
+    //clients table
+    @FXML private TableView<Client> clientsTable;
+    @FXML private TableColumn<Client, String> clientNameColumn;
+    @FXML private TableColumn<Client, String> clientCountryColumn;
+    @FXML private TableColumn<Client, String> clientCityColumn;
+    @FXML private TableColumn<Client, Integer> clientUserAmountColumn;
+    private ObservableList<Client> clientsList = FXCollections.observableArrayList();
+
 
     private ObservableList<ParentUser> usersLst = FXCollections.observableArrayList();
     private ObservableList<String> observableAppLogs = FXCollections.observableArrayList();
@@ -89,11 +95,13 @@ public class AdminController implements Initializable {
     private ProfileService profileService;
     private Timeline timeLine;
     private Admin user;
+    private ClientService clientService;
 
     public AdminController() {
         this.userService = new UserService();
         this.logService = new LogService();
         this.profileService = new ProfileService();
+        this.clientService = new ClientService();
     }
 
     @Override
@@ -107,7 +115,7 @@ public class AdminController implements Initializable {
                 profilesTable.getSelectionModel().selectedItemProperty().isNull());
         refreshLogs();
         displayProfiles();
-
+        setUpClientsTable();
         //Shortcuts
         sideBar.sceneProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
@@ -150,6 +158,14 @@ public class AdminController implements Initializable {
         this.contrastProfileColumn.setCellValueFactory(new PropertyValueFactory<>("contrast"));
         this.grayscaleProfileColumn.setCellValueFactory(new PropertyValueFactory<>("grayscale"));
         profilesTable.setItems(this.observableProfiles);
+    }
+
+    private void setUpClientsTable(){
+        this.clientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        this.clientCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+        this.clientCityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
+        this.clientUserAmountColumn.setCellValueFactory(new PropertyValueFactory<>("amountOfEmployees"));
+        this.clientsTable.setItems(clientsList);
     }
 
     public void displayProfiles(){
@@ -253,7 +269,9 @@ public class AdminController implements Initializable {
     @FXML
     private void createClient(){
         try {
-            UIHelper.openNewWindow("create_client_view.fxml", "Create Client", true);
+            CreateClientController controller = (CreateClientController) UIHelper.openNewWindow("create_client_view.fxml", "Create Client", true);
+            controller.setAdminUser(this.user);
+            controller.setAdminController(this);
         } catch (IOException e) {
             System.out.println("needs to be logged likely");
         }
@@ -351,6 +369,18 @@ public class AdminController implements Initializable {
         }
     }
 
+
+    public void displayClients(){
+        Task<List<Client>> get_clients = new Task<List<Client>>() {
+            @Override
+            protected List<Client> call() throws Exception {
+                return clientService.getClients();
+            }
+        };
+        get_clients.setOnSucceeded(e -> this.clientsList.setAll(get_clients.getValue()));
+        //get_clients.setOnFailed(e -> System.out.println("idk what to do here"));
+        new Thread(get_clients).start();
+    }
     @FXML
     private void createProfile(){
         try {

@@ -1,18 +1,25 @@
 package com.example.docarc.gui;
 
+import com.example.docarc.be.Profile;
+import com.example.docarc.bll.ImageProcessor;
 import com.example.docarc.bll.ProfileService;
 import javafx.beans.property.DoubleProperty;
 import javafx.concurrent.Task;
 import javafx.css.converter.StringConverter;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,9 +30,13 @@ public class CreateProfileController implements Initializable {
     @FXML private Slider brightnessSlider;
     @FXML private TextField nameField;
 
+    @FXML private ImageView postImage;
+
     @FXML private Label contrastLabel;
     @FXML private Label brightnessLabel;
     @FXML private Label errorLabel;
+
+    private BufferedImage bi;
 
     private ProfileService profileService;
     private AdminController adminController;
@@ -71,9 +82,34 @@ public class CreateProfileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        bi = SwingFXUtils.fromFXImage(postImage.getImage(), null);
         this.errorLabel.setStyle("-fx-text-fill: red");
         contrastLabel.textProperty().bindBidirectional(contrastSlider.valueProperty(), new NumberStringConverter("###.#"));
         brightnessLabel.textProperty().bindBidirectional(brightnessSlider.valueProperty(), new NumberStringConverter("###.#"));
+
+        contrastSlider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                applyProfile();
+            }
+        });
+
+        brightnessSlider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                applyProfile();
+            }
+        });
+
+        grayscaleCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            applyProfile();
+        });
+
         this.errorLabel.setOpacity(0);
     }
+
+    private void applyProfile(){
+        BufferedImage processedImage = ImageProcessor.applyProfileSettings(bi, new Profile("Dummy", brightnessSlider.getValue(), contrastSlider.getValue(), grayscaleCheckbox.isSelected()));
+        Image img = SwingFXUtils.toFXImage(processedImage, null);
+        postImage.setImage(img);
+    }
+
 }

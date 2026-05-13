@@ -2,11 +2,12 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="270.0" spacing="10.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateProfileController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="290.0" spacing="10.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateProfileController">
     <children>
-      <Label styleClass="h2" text="Preview Creation" />
+      <Label styleClass="h2" text="Profile Creation" />
       <VBox alignment="CENTER" prefWidth="100.0" spacing="15.0">
          <children>
               <HBox alignment="CENTER" prefWidth="270.0" spacing="10.0">
@@ -14,7 +15,7 @@
                       <Insets />
                   </VBox.margin>
                   <children>
-                      <Label text="Greyscale:">
+                      <Label minWidth="-Infinity" text="Greyscale:">
                           <HBox.margin>
                               <Insets />
                           </HBox.margin>
@@ -24,6 +25,7 @@
                               <Insets />
                           </HBox.margin>
                       </CheckBox>
+                  <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   </children>
               </HBox>
               <HBox alignment="CENTER" prefWidth="600.0" spacing="10.0">
@@ -49,7 +51,7 @@
                               <Insets />
                           </HBox.margin>
                       </Slider>
-                  <Region prefWidth="200.0" />
+                  <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <Label fx:id="brightnessLabel" minWidth="-Infinity" text="0" />
                   </children>
                   <VBox.margin>
@@ -58,15 +60,16 @@
               </HBox>
               <HBox alignment="CENTER" prefWidth="600.0" spacing="10.0">
                   <children>
-                      <Label text="Name:" />
-                      <TextField fx:id="nameField">
+                      <Label minWidth="-Infinity" text="Name:" />
+                      <TextField fx:id="nameField" minWidth="-Infinity">
                           <HBox.margin>
                               <Insets />
                           </HBox.margin>
                       </TextField>
+                  <Region prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   </children>
                   <VBox.margin>
-                      <Insets left="5.0" />
+                      <Insets />
                   </VBox.margin>
               </HBox>
             <Label fx:id="errorLabel" />
@@ -74,12 +77,50 @@
       </VBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="35.0" prefWidth="270.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="28.0" prefWidth="56.0" text="Cancel">
+            <ToggleButton minWidth="-Infinity" mnemonicParsing="false" text="Page Preview" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onCancel" prefHeight="28.0" prefWidth="49.0" text="Cancel">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Button>
-              <Button mnemonicParsing="false" onAction="#onSave" prefHeight="28.0" prefWidth="47.0" text="Save" />
+              <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#onSave" prefHeight="28.0" prefWidth="44.0" text="Save" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="h3" text="Original" />
+                   <VBox fx:id="imageContainer" alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="123.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fitHeight="${imageContainer.height}" fitWidth="${imageContainer.width}" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/page.png" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <Label minWidth="-Infinity" styleClass="h1" text="-&gt;" />
+            <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="h3" text="Post" />
+                  <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="123.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="postImage" fitHeight="${imageContainer.height}" fitWidth="${imageContainer.width}" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/page.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
          </children>
       </HBox>
     </children>

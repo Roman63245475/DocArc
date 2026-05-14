@@ -49,9 +49,8 @@ public class DataService {
     public List<Box> getUserBoxes(User user) throws MyException {
         List<Box> userBoxes = this.boxRepository.getUserBoxes(user);
         List<Document> documents = this.documentRepository.getDocumentsByBoxIds(userBoxes);
-        List<Tiff> files = this.fileRepository.getFilesByDocumentsIds(documents);
-        Map<Integer, List<Tiff>> filesByDocsId = files.stream().collect(Collectors.groupingBy(Tiff::getDocumentId));
-        relateData(documents, filesByDocsId);
+//        Map<Integer, List<Tiff>> filesByDocsId = files.stream().collect(Collectors.groupingBy(Tiff::getDocumentId));
+//        relateData(documents, filesByDocsId);
         Map<Integer, List<Document>> documentsByBoxIds = documents.stream().collect(Collectors.groupingBy(Document::getBoxId));
         relateData(userBoxes, documentsByBoxIds);
         return userBoxes;
@@ -62,5 +61,10 @@ public class DataService {
             List<T> lst = data.getOrDefault(obj.getId(), List.of());
             obj.setData(lst);
         }
+    }
+
+    public List<Tiff> getFilesByDocument(Document document) throws MyException {
+        System.out.println("getFilesByDocument from dataservice");
+        return this.fileRepository.getFilesByDocumentId(document.getId());
     }
 }

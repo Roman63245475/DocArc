@@ -28,6 +28,10 @@ public class Tiff extends Data{
     }
 
     private void convertFileContentToFile(){
+        File destF = new File (destinationFolder);
+        if (!destF.exists()){
+            destF.mkdirs();
+        }
         this.file = new File(destinationFolder, fileName);
         try (FileOutputStream fos = new FileOutputStream(this.file)) {
             fos.write(fileContent);

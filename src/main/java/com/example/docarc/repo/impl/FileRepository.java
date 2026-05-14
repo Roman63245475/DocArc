@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ public class FileRepository implements IFileRepository {
 
     private DataSource ds;
     private static final Logger logger = LoggerFactory.getLogger(FileRepository.class);
+    private static final String sqlGetFilesByDocument = "select * from files where documentId = ?";
 
     public FileRepository(){
         this.ds = ConnectionManager.getDataSource();
@@ -78,6 +80,31 @@ public class FileRepository implements IFileRepository {
             e.printStackTrace();
             logger.error("Failed to save files due to: {}", e.getMessage());
             throw e;
+        }
+    }
+
+    @Override
+    public List<Tiff> getFilesByDocumentId(int documentId) throws MyException {
+        List<Tiff> files = new ArrayList<>();
+        try (Connection con = ds.getConnection() ;PreparedStatement ps = con.prepareStatement(sqlGetFilesByDocument)){
+            ps.setInt(1, documentId);
+            try (ResultSet rs = ps.executeQuery();){
+                while(rs.next()){
+                    int file_id = rs.getInt("id");
+                    String file_name = rs.getString("name");
+                    int document_id = rs.getInt("documentId");
+                    int order_id = rs.getInt("orderId");
+                    byte[] file_content = rs.getBytes("file_content");
+                    files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
+                }
+                return files;
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("file repository " + e.getMessage());
+            e.printStackTrace();
+            logger.error("Failed to save files due to: {}", e.getMessage());
+            throw new MyException("soryan");
         }
     }
 }

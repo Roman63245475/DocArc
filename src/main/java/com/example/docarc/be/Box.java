@@ -42,4 +42,8 @@ public class Box implements IDataSettable<Document>{
         return this.documents;
     }
 
+    public Profile getProfile(){
+        return this.profile;
+    }
+
 }

@@ -7,12 +7,14 @@ public class Document extends Data implements IDataSettable<Tiff> {
     private int id;
     private String name;
     private int box_reference;
+    private int amountOfFiles;
     private List<Tiff> files;
 
-    public Document(int id, String name, int box_id) {
+    public Document(int id, String name, int box_id, int amountOfFiles) {
         this.id = id;
         this.name = name;
         this.box_reference = box_id;
+        this.amountOfFiles = amountOfFiles;
         this.files = new ArrayList<>();
     }
 
@@ -51,6 +53,10 @@ public class Document extends Data implements IDataSettable<Tiff> {
 
     public String getCreatedDate(){
         return "07/05/2026";
+    }
+
+    public int getAmountOfFiles(){
+        return this.amountOfFiles;
     }
 
 

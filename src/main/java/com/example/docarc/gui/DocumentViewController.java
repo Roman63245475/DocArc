@@ -43,6 +43,7 @@ public class DocumentViewController implements Initializable {
     private Tiff draggedItem;
     private int draggedIndex;
     private DocumentFileService service;
+    private DataService dataService;
 
     private boolean openedInEditMode = false;
     private boolean orderChanged = false;
@@ -52,6 +53,7 @@ public class DocumentViewController implements Initializable {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
         //ComboBoxHelper.makeSearchable(folderChoice, [ObservableList]);
         this.service = new DocumentFileService();
+        this.dataService = new DataService();
         this.listOfFiles.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 System.out.println(newVal.getReference_id());
@@ -144,12 +146,31 @@ public class DocumentViewController implements Initializable {
         displayImage();
     }
 
+    private void loadDocumentFiles(){
+        Task<List<Tiff>> get_document_files = new Task<List<Tiff>>() {
+            @Override
+            protected List<Tiff> call() throws Exception {
+                return dataService.getFilesByDocument(document);
+            }
+        };
+        get_document_files.setOnSucceeded(event -> {
+            this.document.setData(get_document_files.getValue());
+            this.files.setAll(this.document.getFiles());
+            displayImage();
+        });
+        new Thread(get_document_files).start();
+    }
+
     private void fillList() {
         files.setAll(this.document.getFiles());
     }
 
     private void displayImage(){
-        this.pageView.setImage(SwingFXUtils.toFXImage(files.get(0).getConvertedBufferedImage(), null));
+        if (files.size() > 0){
+            if (files.get(0).getConvertedBufferedImage() != null){
+                this.pageView.setImage(SwingFXUtils.toFXImage(files.get(0).getConvertedBufferedImage(), null));
+            }
+        }
     }
 
     private void displayImage(Tiff file) {
@@ -254,6 +275,7 @@ public class DocumentViewController implements Initializable {
 
     public void setEditMode(){
         this.openedInEditMode = true;
+        loadDocumentFiles();
     }
 
     @FXML

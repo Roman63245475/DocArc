@@ -76,26 +76,28 @@ public class BoxCardController {
 
     @FXML
     private void loadDocument(){
-//        if (currentUser == null) {
-//            showAlert(Alert.AlertType.ERROR, "Error", "No user is currently logged in.");
-//            return;
-//        }
-//
-//        List<Profile> profiles = currentUser.getProfiles();
-//        if (profiles == null || profiles.isEmpty()) {
-//            showAlert(Alert.AlertType.WARNING, "Warning", "No profiles available for this user.");
-//            return;
-//        }
-//
-//        // Показываем диалог выбора профайла
-//        //Optional<Profile> selectedProfile = showProfileSelectionDialog(profiles);
-//
-//        if (selectedProfile.isPresent()) {
-//            Profile profile = selectedProfile.get();
-//            loadDocumentWithProfile(profile);
-//        }
-//        // Если пользователь нажал Cancel, просто выходим без загрузки документа
-        System.out.println("oki");
+        Task<Document> scanDocument = new Task<>() {
+            @Override
+            protected Document call() throws Exception {
+                // Передаем имя профайла вместо "default"
+                return apiService.loadDocument(box.getProfile(), box.getId());
+            }
+        };
+        scanDocument.setOnSucceeded((e) -> {
+            try {
+                UIHelper.displayDocument(scanDocument.getValue(), false);
+            } catch (IOException ex) {
+                System.out.println("sorry couldn't display document");
+            }
+        });
+        scanDocument.setOnFailed( (e) ->{
+                    Throwable exception = scanDocument.getException();
+                    System.out.println(exception.getMessage());
+                }
+        );
+        System.out.println("I started from ui");
+        new Thread(scanDocument).start();
+        //System.out.println("oki");
     }
 
     private Optional<Profile> showProfileSelectionDialog(List<Profile> profiles) {
@@ -138,28 +140,28 @@ public class BoxCardController {
         }
     }
 
-    private void loadDocumentWithProfile(Profile profile) {
-        Task<Document> scanDocument = new Task<>() {
-            @Override
-            protected Document call() throws Exception {
-                // Передаем имя профайла вместо "default"
-                return apiService.loadDocument(profile, box.getId());
-            }
-        };
-        scanDocument.setOnSucceeded((e) -> {
-            try {
-                UIHelper.displayDocument(scanDocument.getValue(), false);
-            } catch (IOException ex) {
-                System.out.println("sorry couldn't display document");
-            }
-        });
-        scanDocument.setOnFailed( (e) ->{
-                    Throwable exception = scanDocument.getException();
-                    System.out.println(exception.getMessage());
-                }
-        );
-        new Thread(scanDocument).start();
-    }
+//    private void loadDocumentWithProfile(Profile profile) {
+//        Task<Document> scanDocument = new Task<>() {
+//            @Override
+//            protected Document call() throws Exception {
+//                // Передаем имя профайла вместо "default"
+//                return apiService.loadDocument(profile, box.getId());
+//            }
+//        };
+//        scanDocument.setOnSucceeded((e) -> {
+//            try {
+//                UIHelper.displayDocument(scanDocument.getValue(), false);
+//            } catch (IOException ex) {
+//                System.out.println("sorry couldn't display document");
+//            }
+//        });
+//        scanDocument.setOnFailed( (e) ->{
+//                    Throwable exception = scanDocument.getException();
+//                    System.out.println(exception.getMessage());
+//                }
+//        );
+//        new Thread(scanDocument).start();
+//    }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);

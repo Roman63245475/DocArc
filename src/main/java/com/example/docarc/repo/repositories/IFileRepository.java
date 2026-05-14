@@ -12,4 +12,5 @@ public interface IFileRepository {
 
     List<Tiff> getFilesByDocumentsIds(List<Document> documents) throws MyException;
     void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException;
+    List<Tiff> getFilesByDocumentId(int documentId) throws MyException;
 }

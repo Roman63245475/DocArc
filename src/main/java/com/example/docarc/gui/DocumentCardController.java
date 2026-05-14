@@ -23,7 +23,7 @@ public class DocumentCardController {
 
     private void fillFields() {
         documentName.setText(document.getName());
-        filesAmount.setText(document.getFiles().size() + " files");
+        filesAmount.setText(document.getAmountOfFiles() + " files");
         createdDate.setText(document.getCreatedDate());
     }
 

@@ -31,7 +31,7 @@ public class DocumentRepository implements IDocumentRepository {
         List<Document> documents = new ArrayList<>();
         String placeholder = boxes.stream().map(box -> "?").collect(Collectors.joining(","));
         try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "select * from documents where boxId in (" + placeholder + ")";
+            String sqlPrompt = "select d.*,  (select count(f.id) from files f where f.documentId = d.id) as amount_of_files from documents d where boxId in (" + placeholder + ")";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             for (int i = 0; i < boxes.size(); i++){
                 ps.setInt(i+1, boxes.get(i).getId());
@@ -42,7 +42,8 @@ public class DocumentRepository implements IDocumentRepository {
                 int document_id = rs.getInt("id");
                 String document_name = rs.getString("name");
                 int box_reference = rs.getInt("boxId");
-                documents.add(new Document(document_id, document_name, box_reference));
+                int amountOfFiles = rs.getInt("amount_of_files");
+                documents.add(new Document(document_id, document_name, box_reference, amountOfFiles));
             }
             return documents;
         }

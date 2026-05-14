@@ -126,8 +126,9 @@ public class ApiService {
 
 
     public Document loadDocument(Profile profile, int boxId) {
+        //System.out.println("I'm invoked from api");
         boolean barCodeFound = false;
-        String fileName = profile.getName() + UUID.randomUUID().toString();
+        String fileName = (profile == null) ? "default" + boxId + "_" + UUID.randomUUID().toString() : profile.getName() + "_" + boxId + "_" + UUID.randomUUID().toString();
         List<Tiff> files = new ArrayList<>();
         int reference_id = 1;
         int scanningOrderId = 1;

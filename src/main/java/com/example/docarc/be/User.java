@@ -7,10 +7,11 @@ import java.util.Objects;
 public class User extends ParentUser{
     private String specialInfo;
     private List<Profile> profiles;
+    private int clientId;
 
-    public User(int id, String username, String password, String specialInfo){
+    public User(int id, String username, String password, int clientId){
         super(id, username, password);
-        this.specialInfo = specialInfo;
+        this.clientId = clientId;
         this.profiles = new ArrayList<>();
     }
 
@@ -35,6 +36,10 @@ public class User extends ParentUser{
 
     public String getInfo(){
         return this.specialInfo;
+    }
+
+    public int getClientId() {
+        return clientId;
     }
 
     @Override

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="228.0" prefWidth="429.0" styleClass="body" stylesheets="@css/alert-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateBoxController">
+<VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="254.0" prefWidth="429.0" styleClass="body" stylesheets="@css/alert-styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateBoxController">
     <children>
 
-        <VBox alignment="CENTER" spacing="14.0" VBox.vgrow="ALWAYS">
+        <VBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
             <children>
 
                 <Label fx:id="headerLabel" styleClass="h1" text="Create a Box" />
@@ -18,10 +22,16 @@
                   <TextField fx:id="boxName" prefHeight="26.0" prefWidth="200.0" />
                </children>
             </HBox>
-            <Label fx:id="errorLabel" opacity="0.0" text="errorLabel" />
+            <HBox layoutX="10.0" layoutY="85.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="50.0" text="Profile:" />
+                  <ComboBox fx:id="profileComboBox" prefHeight="29.0" prefWidth="187.0" promptText="Select a profile for this box" />
+               </children>
+            </HBox>
 
             </children>
         </VBox>
+      <Label fx:id="errorLabel" opacity="0.0" text="errorLabel" />
 
         <HBox alignment="CENTER_RIGHT" spacing="50.0">
             <children>

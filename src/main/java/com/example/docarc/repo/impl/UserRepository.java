@@ -29,6 +29,8 @@ public class UserRepository implements IUserRepository {
     private DataSource ds;
     private Logger logger = LoggerFactory.getLogger(UserRepository.class);
     private static final String sqlGetUsersByClient = "select * from users where clientId = ? and id !=?";
+    private static final String sqlFindUserByUsername = "select * from users where username = ?";
+    private static final String sqlCreateUser = "Insert into users (username, password, isadmin, clientId) values (?, ?, ?, ?)";
 
     public UserRepository() {
         this.ds = ConnectionManager.getDataSource();
@@ -36,9 +38,7 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public ParentUser findUser(String username) throws DataBaseConnectionException, LoginException {
-        try(Connection con = ds.getConnection()){
-            String sqlPrompt = "select * from users where username = ?";
-            PreparedStatement ps = con.prepareStatement(sqlPrompt);
+        try(Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlFindUserByUsername);){
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -46,7 +46,8 @@ public class UserRepository implements IUserRepository {
                 String userName = rs.getString("username");
                 String password = rs.getString("password");
                 boolean isAdmin = rs.getBoolean("isadmin");
-                ParentUser user = (isAdmin) ? new Admin(id, username, password) : new User(id, username, password, "otherInfo");
+                int clientId = rs.getInt("clientId");
+                ParentUser user = (isAdmin) ? new Admin(id, username, password) : new User(id, username, password, clientId);
                 return user;
             }
             throw new LoginException("User not found");
@@ -57,15 +58,15 @@ public class UserRepository implements IUserRepository {
         }
     }
 
-    public void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, DuplicateException, MyException {
+    public void createUser(String username, String password, boolean isAdmin, int clientId) throws DataBaseConnectionException, DuplicateException, MyException {
         Connection con = null;
         try {
             con = ds.getConnection();
-            String sqlPrompt = "Insert into users (username, password, isadmin) values (?, ?, ?)";
-            PreparedStatement ps = con.prepareStatement(sqlPrompt);
+            PreparedStatement ps = con.prepareStatement(sqlCreateUser);
             ps.setString(1, username);
             ps.setString(2, password);
             ps.setBoolean(3, isAdmin);
+            ps.setInt(4, clientId);
             ps.executeUpdate();
         }
         catch (SQLException e){

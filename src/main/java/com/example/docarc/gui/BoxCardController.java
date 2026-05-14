@@ -76,25 +76,26 @@ public class BoxCardController {
 
     @FXML
     private void loadDocument(){
-        if (currentUser == null) {
-            showAlert(Alert.AlertType.ERROR, "Error", "No user is currently logged in.");
-            return;
-        }
-
-        List<Profile> profiles = currentUser.getProfiles();
-        if (profiles == null || profiles.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Warning", "No profiles available for this user.");
-            return;
-        }
-
-        // Показываем диалог выбора профайла
-        Optional<Profile> selectedProfile = showProfileSelectionDialog(profiles);
-
-        if (selectedProfile.isPresent()) {
-            Profile profile = selectedProfile.get();
-            loadDocumentWithProfile(profile);
-        }
-        // Если пользователь нажал Cancel, просто выходим без загрузки документа
+//        if (currentUser == null) {
+//            showAlert(Alert.AlertType.ERROR, "Error", "No user is currently logged in.");
+//            return;
+//        }
+//
+//        List<Profile> profiles = currentUser.getProfiles();
+//        if (profiles == null || profiles.isEmpty()) {
+//            showAlert(Alert.AlertType.WARNING, "Warning", "No profiles available for this user.");
+//            return;
+//        }
+//
+//        // Показываем диалог выбора профайла
+//        //Optional<Profile> selectedProfile = showProfileSelectionDialog(profiles);
+//
+//        if (selectedProfile.isPresent()) {
+//            Profile profile = selectedProfile.get();
+//            loadDocumentWithProfile(profile);
+//        }
+//        // Если пользователь нажал Cancel, просто выходим без загрузки документа
+        System.out.println("oki");
     }
 
     private Optional<Profile> showProfileSelectionDialog(List<Profile> profiles) {

@@ -12,7 +12,7 @@ public interface IUserRepository {
 
     ParentUser findUser(String username) throws DataBaseConnectionException, LoginException;
 
-    void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, LoginException, DuplicateException, MyException;
+    void createUser(String username, String password, boolean isAdmin, int clientId) throws DataBaseConnectionException, LoginException, DuplicateException, MyException;
 
     List<ParentUser> getAllUsersByClient(int clientId, int id) throws DataBaseConnectionException, MyException;
 

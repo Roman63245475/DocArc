@@ -1,6 +1,7 @@
 package com.example.docarc.bll;
 
 import com.example.docarc.be.*;
+import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.BoxRepository;
 import com.example.docarc.repo.impl.DocumentRepository;
@@ -28,9 +29,12 @@ public class DataService {
     public DataService(IBoxRepository boxRepository) {
         this.boxRepository = boxRepository;
     }
-    public void createBox(String name, User responsibleUser) throws MyException {
+    public void createBox(String name, Profile profile, User responsibleUser) throws MyException, DuplicateException {
         checkName(name);
-        this.boxRepository.createBox(name, responsibleUser);
+        if (profile == null) {
+            throw new MyException("Please select a profile");
+        }
+        this.boxRepository.createBox(name, responsibleUser, profile.getId());
     }
 
     private void checkName(String name) throws MyException {

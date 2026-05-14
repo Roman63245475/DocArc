@@ -36,6 +36,9 @@ public class ProfileService {
         return profileRepository.getProfiles();
     }
 
+    public List<Profile> getProfilesByClient(int clientId) throws MyException {
+        return this.profileRepository.getProfilesByClientId(clientId);
+    }
     public List<Client> getClientsEligibleForProfileAssignment(int profileId) throws DataBaseConnectionException, MyException {
         return profileAssignmentRepository.findClientsEligibleForProfile(profileId);
     }

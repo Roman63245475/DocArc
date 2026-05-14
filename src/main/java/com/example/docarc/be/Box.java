@@ -7,11 +7,13 @@ public class Box implements IDataSettable<Document>{
     private String name;
     private User owner;
     List<Document> documents;
+    private Profile profile;
 
-    public Box(int id, String name, User owner) {
+    public Box(int id, String name, User owner, Profile profile) {
         this.id = id;
         this.name = name;
         this.owner = owner;
+        this.profile = profile;
     }
 
     public String getName(){

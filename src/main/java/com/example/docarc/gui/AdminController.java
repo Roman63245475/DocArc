@@ -428,6 +428,9 @@ public class AdminController implements Initializable {
 
     @FXML
     private void onAddUser(){
+        if (selectedClient == null) {
+            return;
+        }
         add_edit_user(null);
     }
 
@@ -444,6 +447,7 @@ public class AdminController implements Initializable {
                 Object obj = UIHelper.openNewWindow(filename, title, true);
                 AddEditUserController addEditController = (AddEditUserController) obj;
                 addEditController.setController(this);
+                addEditController.setClientID(selectedClient.getId());
                 if (selectedUser == null) return;
                 addEditController.setUser(selectedUser);
         }

@@ -23,6 +23,7 @@ public class AddEditUserController implements Initializable {
     private ParentUser user;
     private AuthService authService;
     private UserService userService;
+    private int clientID;
 
     @FXML private TextField userNameField;
     @FXML private TextField passwordField;
@@ -64,7 +65,7 @@ public class AddEditUserController implements Initializable {
         Task<Void> createUserTask = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
-                authService.createUser(username, password, role);
+                authService.createUser(username, password, role, clientID);
                 return null;
             }
         };
@@ -81,6 +82,11 @@ public class AddEditUserController implements Initializable {
             this.createUserButton.setDisable(false);
         });
         new Thread(createUserTask).start();
+    }
+
+
+    public void setClientID(int clientID){
+        this.clientID = clientID;
     }
 
     @FXML
@@ -138,6 +144,7 @@ public class AddEditUserController implements Initializable {
         this.createUserButton.setOnAction(event -> {editUser();});
         fillFields();
     }
+
 
     private void fillFields(){
         this.userNameField.setText(this.user.getUsername());

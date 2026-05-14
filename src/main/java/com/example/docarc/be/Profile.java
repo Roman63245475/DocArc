@@ -1,7 +1,7 @@
 package com.example.docarc.be;
 
 public class Profile {
-    private int id;
+    private Integer id;
     private String name;
     private double brightness;
     private double contrast;
@@ -16,6 +16,16 @@ public class Profile {
         this.grayscale = greyscale;
     }
 
+    public Profile(String name){
+        this.id = null;
+        this.name = name;
+    }
+
+    public Profile(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public Profile(String name, double brightness, double contrast, Boolean greyscale) {
         this.name = name;
         this.brightness = brightness;
@@ -24,7 +34,7 @@ public class Profile {
     }
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -58,5 +68,10 @@ public class Profile {
 
     public void setGreyscale(Boolean grayscale) {
         this.grayscale = grayscale;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

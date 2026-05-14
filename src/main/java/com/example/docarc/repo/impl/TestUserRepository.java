@@ -31,7 +31,7 @@ public class TestUserRepository implements IUserRepository {
                     int id = Integer.parseInt(h.get("id"));
                     String us_name = h.get("username");
                     String password = h.get("password");
-                    ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(id, username, password) : new User(id, username, password, "hey");
+                    ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(id, username, password) : new User(id, username, password, 5);
                     return parentUser;
                 } catch (IllegalArgumentException ex) {
                     System.out.println("developer screwed up");
@@ -42,7 +42,7 @@ public class TestUserRepository implements IUserRepository {
     }
 
     @Override
-    public void createUser(String username, String password, boolean isAdmin) throws DataBaseConnectionException, LoginException, DuplicateException, MyException {
+    public void createUser(String username, String password, boolean isAdmin, int clientId) throws DataBaseConnectionException, LoginException, DuplicateException, MyException {
         System.out.println("chetko");
 
     }
@@ -63,7 +63,7 @@ public class TestUserRepository implements IUserRepository {
                 }
                 String us_name = h.get("username");
                 String password = h.get("password");
-                ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(user_id, us_name, password) : new User(user_id, us_name, password, "hey");
+                ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(user_id, us_name, password) : new User(user_id, us_name, password, 6);
                 users.add(parentUser);
             }
             catch (NumberFormatException ex) {

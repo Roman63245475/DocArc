@@ -12,4 +12,5 @@ public interface IProfileRepository {
     void deleteProfile(Profile profile);
     List<Profile> getProfiles();
     List<Profile> getProfilesByUserId(int userId);
+    List<Profile> getProfilesByClientId(int clientId) throws MyException;
 }

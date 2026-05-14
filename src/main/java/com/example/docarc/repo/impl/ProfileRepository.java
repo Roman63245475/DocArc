@@ -21,6 +21,7 @@ public class ProfileRepository implements IProfileRepository {
 
     private DataSource ds;
     private static final Logger logger = LoggerFactory.getLogger(ProfileRepository.class);
+    private static final String sqlGetProfilesByClient = "select p.name, p.id from profiles p left join profile_client on p.id = profile_client.profile_id where client_id = ?";
     public ProfileRepository(DataSource ds) {
         this.ds = ds;
     }
@@ -89,6 +90,8 @@ public class ProfileRepository implements IProfileRepository {
     }
 
 
+
+
     @Override
     public List<Profile> getProfilesByUserId(int userId) {
         String sqlPrompt = "SELECT p.* FROM profiles p " +
@@ -117,5 +120,27 @@ public class ProfileRepository implements IProfileRepository {
         profiles.add(0, defaultProfile);
 
         return profiles;
+    }
+
+    @Override
+    public List<Profile> getProfilesByClientId(int clientId) throws MyException {
+        List<Profile> profiles = new ArrayList<>();
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlGetProfilesByClient)){
+            ps.setInt(1, clientId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                profiles.add(new Profile(id, name));
+            }
+            Profile defaultProfile = new Profile("Default");
+            profiles.add(defaultProfile);
+            logger.info("Profiles for client {} successfully selected", clientId);
+            return profiles;
+        }
+        catch (SQLException e) {
+            logger.error("Failed to get profiles for client {} due to: {}", clientId, e.getMessage());
+            throw new MyException("Something went wrong when observing client's profiles");
+        }
     }
 }

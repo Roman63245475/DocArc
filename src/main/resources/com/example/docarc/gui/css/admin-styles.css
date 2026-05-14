@@ -314,9 +314,32 @@
 }
 
 .table-view .column-header-background {
+    -fx-border-radius: 0px;
+    -fx-background-radius: 6px;
     -fx-background-color: #F9F9F9;
     -fx-border-color: transparent transparent #E2E4E8 transparent;
     -fx-border-width: 0 0 1 0;
+}
+
+.field{
+    -fx-background-color: #F9F9F9;
+    -fx-border-color: #E2E4E8;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+.combo-box .list-cell{
+    -fx-text-fill: #BFBFBF;
+}
+
+.combo-box .text-field{
+    -fx-background-color: transparent;
+    -fx-padding: 9px 9px 9px 27px;
+}
+
+.combo-box .arrow-button{
+    -fx-background-color: #F9F9F9;
+    -fx-border-color: transparent;
 }
 
 .table-view .column-header,

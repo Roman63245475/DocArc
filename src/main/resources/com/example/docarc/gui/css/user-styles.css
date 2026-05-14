@@ -78,6 +78,18 @@
     -fx-background-color: #1c252f;
 }
 
+.toggle-button{
+    -fx-background-color: #2d3d4f;
+    -fx-background-radius: 6px;
+    -fx-padding: 5px 0px 5px 0px;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.toggle-button:selected{
+    -fx-background-color: #1c252f;
+}
+
 .field{
     -fx-background-color: #F9F9F9;
     -fx-border-color: #E2E4E8;

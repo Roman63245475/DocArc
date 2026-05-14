@@ -9,13 +9,11 @@ import javafx.css.converter.StringConverter;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
@@ -25,12 +23,18 @@ import java.util.ResourceBundle;
 
 public class CreateProfileController implements Initializable {
 
-    @FXML private CheckBox grayscaleCheckbox;
+    @FXML private HBox previewBox;
+
     @FXML private Slider contrastSlider;
     @FXML private Slider brightnessSlider;
+
+    @FXML private CheckBox grayscaleCheckbox;
+
     @FXML private TextField nameField;
 
     @FXML private ImageView postImage;
+
+    @FXML private ToggleButton previewToggle;
 
     @FXML private Label contrastLabel;
     @FXML private Label brightnessLabel;
@@ -101,6 +105,11 @@ public class CreateProfileController implements Initializable {
 
         grayscaleCheckbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             applyProfile();
+        });
+
+        previewToggle.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            previewBox.setVisible(newValue);
+            previewBox.setManaged(newValue);
         });
 
         this.errorLabel.setOpacity(0);

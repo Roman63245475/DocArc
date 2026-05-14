@@ -137,6 +137,7 @@ public class AdminController implements Initializable {
                 if (event.getCode() == KeyCode.A) {
                     if ("userManagementBox".equals(activeTab)) onAddUser();
                     if("profileManagementView".equals(activeTab)) createProfile();
+                    if("clientManagementView".equals(activeTab)) createClient();
                 }
 
                 if (event.getCode() == KeyCode.S) {
@@ -146,6 +147,7 @@ public class AdminController implements Initializable {
                 if (event.getCode() == KeyCode.U) onUserManClick();
                 if (event.getCode() == KeyCode.L) onLogsClick();
                 if (event.getCode() == KeyCode.P) profileManagementButtonClick();
+                if (event.getCode() == KeyCode.C) onClientManagementClick();
 
                 if (selectedUser != null && "userManagementBox".equals(activeTab)) {
                     if (event.getCode() == KeyCode.E) onEditUser(selectedUser);

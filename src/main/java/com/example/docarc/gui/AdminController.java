@@ -11,6 +11,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,7 +24,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.converter.NumberStringConverter;
 
+import javax.swing.text.NumberFormatter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -55,6 +58,8 @@ public class AdminController implements Initializable {
 
     @FXML private Region menuToggleBtn;
     @FXML private Button logOutButton;
+
+    @FXML private TextField searchInput;
 
     @FXML private TableView<ParentUser> usersTable;
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
@@ -88,6 +93,9 @@ public class AdminController implements Initializable {
     private ObservableList<String> observableErrorLogs = FXCollections.observableArrayList();
     private ObservableList<Profile> observableProfiles = FXCollections.observableArrayList();
 
+    private FilteredList<String> appFilteredList =  new FilteredList<>(observableAppLogs);
+    private FilteredList<String> errorFilteredList =  new FilteredList<>(observableErrorLogs);
+
     private boolean isMenuOpen = false;
 
     private UserService userService;
@@ -114,6 +122,7 @@ public class AdminController implements Initializable {
         setUpProfilesTable();
         assignProfileToClientBtn.disableProperty().bind(
                 profilesTable.getSelectionModel().selectedItemProperty().isNull());
+        setUpSearchbar();
         refreshLogs();
         displayProfiles();
         setUpClientsTable();
@@ -157,6 +166,22 @@ public class AdminController implements Initializable {
         });
     }
 
+    private void setUpSearchbar() {
+        searchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+            appFilteredList.setPredicate(currentString -> {
+                if (newValue == null || newValue.isBlank()) return true;
+                String searchText = newValue.toLowerCase();
+                return currentString.toLowerCase().contains(searchText);
+            });
+
+            errorFilteredList.setPredicate(currentString -> {
+                if (newValue == null || newValue.isBlank()) return true;
+                String searchText = newValue.toLowerCase();
+                return currentString.toLowerCase().contains(searchText);
+            });
+        });
+    }
+
     private void setUpClientsCombobox(){
         this.clientsComboBox.setItems(clientsList);
         this.clientsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -167,8 +192,32 @@ public class AdminController implements Initializable {
 
     private void setUpProfilesTable(){
         this.profileNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        this.brightnessProfileColumn.setCellValueFactory(new PropertyValueFactory<>("brightness"));
-        this.contrastProfileColumn.setCellValueFactory(new PropertyValueFactory<>("contrast"));
+        this.brightnessProfileColumn.setCellValueFactory(new PropertyValueFactory<>("rawBrightness"));
+        this.brightnessProfileColumn.setCellFactory(column -> new TableCell<Profile, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText(String.format("%.1f", item * 100));
+                }
+            }
+        });
+        this.contrastProfileColumn.setCellValueFactory(new PropertyValueFactory<>("rawContrast"));
+        this.contrastProfileColumn.setCellFactory(column -> new TableCell<Profile, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText(String.format("%.1f", item * 100));
+                }
+            }
+        });
         this.grayscaleProfileColumn.setCellValueFactory(new PropertyValueFactory<>("grayscale"));
         profilesTable.setItems(this.observableProfiles);
     }
@@ -196,15 +245,7 @@ public class AdminController implements Initializable {
 
     private void setUpTooltip() {
         Tooltip tooltip = new Tooltip();
-        Label operationsLabel = new Label("Useful Shortcuts:\n" +
-                "[ A ] Add a new user/profile.\n" +
-                "[ E ] Edit the selected user.\n" +
-                "[ D ] Delete the selected user.\n" +
-                "[ S ] Open profile assignment window.\n" +
-                "━━━━━━━━━━━━━━━━━\n" +
-                "[ U ] Open user management tab.\n" +
-                "[ P ] Open profile management tab.\n" +
-                "[ L ] Open activity logs tab.");
+        Label operationsLabel = new Label("Click for shortcuts");
 
         operationsLabel.getStyleClass().add("tooltip-label");
 
@@ -221,6 +262,16 @@ public class AdminController implements Initializable {
         });
 
         Tooltip.install(questionIcon, tooltip);
+
+        questionIcon.addEventFilter(MouseEvent.ANY, event -> {
+            if (event.getEventType() == MouseEvent.MOUSE_ENTERED ||  event.getEventType() == MouseEvent.MOUSE_MOVED) {
+                Stage stage = (Stage) questionIcon.getScene().getWindow();
+                if (stage != null && !stage.isFocused()) {
+                    event.consume();
+                }
+            }
+        });
+
     }
 
     private void setUpTimeline() {
@@ -256,8 +307,8 @@ public class AdminController implements Initializable {
     }
 
     private void setUpLogs() {
-        appLogsList.setItems(observableAppLogs);
-        errorLogsList.setItems(observableErrorLogs);
+        appLogsList.setItems(appFilteredList);
+        errorLogsList.setItems(errorFilteredList);
     }
 
     public void setUser(Admin usr) {
@@ -421,6 +472,15 @@ public class AdminController implements Initializable {
         appLogsBtn.setDisable(false);
         errorLogsBtn.setDisable(true);
         changeView("errorLogsList", listContainer);
+    }
+
+    @FXML
+    private void openShortcuts(){
+        try {
+            UIHelper.openNewWindow("shortcuts-view.fxml", "Shortcuts", false);
+        } catch (IOException e) {
+            System.out.println("Couldn't open the window: " + e.getMessage());
+        }
     }
 
     @FXML

@@ -31,7 +31,7 @@ public class TestUserRepository implements IUserRepository {
                     int id = Integer.parseInt(h.get("id"));
                     String us_name = h.get("username");
                     String password = h.get("password");
-                    ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(id, username, password) : new User(id, username, password, 5);
+                    ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(id, username, password, true) : new User(id, username, password, 5, true);
                     return parentUser;
                 } catch (IllegalArgumentException ex) {
                     System.out.println("developer screwed up");
@@ -42,9 +42,8 @@ public class TestUserRepository implements IUserRepository {
     }
 
     @Override
-    public void createUser(String username, String password, boolean isAdmin, int clientId) throws DataBaseConnectionException, LoginException, DuplicateException, MyException {
+    public void createUser(String username, String password, boolean isAdmin, int clientId, boolean isActive) throws DataBaseConnectionException, LoginException, DuplicateException, MyException {
         System.out.println("chetko");
-
     }
 
     @Override
@@ -63,7 +62,7 @@ public class TestUserRepository implements IUserRepository {
                 }
                 String us_name = h.get("username");
                 String password = h.get("password");
-                ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(user_id, us_name, password) : new User(user_id, us_name, password, 6);
+                ParentUser parentUser = Role.valueOf(h.get("role")) == Role.ADMIN ? new Admin(user_id, us_name, password, true) : new User(user_id, us_name, password, 6, true);
                 users.add(parentUser);
             }
             catch (NumberFormatException ex) {
@@ -74,7 +73,7 @@ public class TestUserRepository implements IUserRepository {
     }
 
     @Override
-    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) {
+    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername, boolean isActive) {
         System.out.println("aga nu");
     }
 

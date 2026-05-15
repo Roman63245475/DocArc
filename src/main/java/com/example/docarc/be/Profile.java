@@ -46,12 +46,20 @@ public class Profile {
         this.name = name;
     }
 
+    public double getRawBrightness() {
+        return brightness;
+    }
+
     public double getBrightness() {
         return brightness / 100;
     }
 
     public void setBrightness(double brightness) {
         this.brightness = brightness;
+    }
+
+    public double getRawContrast() {
+        return contrast;
     }
 
     public double getContrast() {

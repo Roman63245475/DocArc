@@ -30,7 +30,7 @@ public class UserRepository implements IUserRepository {
     private Logger logger = LoggerFactory.getLogger(UserRepository.class);
     private static final String sqlGetUsersByClient = "select * from users where clientId = ? and id !=?";
     private static final String sqlFindUserByUsername = "select * from users where username = ?";
-    private static final String sqlCreateUser = "Insert into users (username, password, isadmin, clientId) values (?, ?, ?, ?)";
+    private static final String sqlCreateUser = "Insert into users (username, password, isadmin, clientId, is_active) values (?, ?, ?, ?, ?)";
 
     public UserRepository() {
         this.ds = ConnectionManager.getDataSource();
@@ -47,7 +47,8 @@ public class UserRepository implements IUserRepository {
                 String password = rs.getString("password");
                 boolean isAdmin = rs.getBoolean("isadmin");
                 int clientId = rs.getInt("clientId");
-                ParentUser user = (isAdmin) ? new Admin(id, username, password) : new User(id, username, password, clientId);
+                boolean active = rs.getBoolean("is_active");
+                ParentUser user = (isAdmin) ? new Admin(id, username, password, active) : new User(id, username, password, clientId, active);
                 return user;
             }
             throw new LoginException("User not found");
@@ -58,7 +59,7 @@ public class UserRepository implements IUserRepository {
         }
     }
 
-    public void createUser(String username, String password, boolean isAdmin, int clientId) throws DataBaseConnectionException, DuplicateException, MyException {
+    public void createUser(String username, String password, boolean isAdmin, int clientId, boolean isActive) throws DataBaseConnectionException, DuplicateException, MyException {
         Connection con = null;
         try {
             con = ds.getConnection();
@@ -67,6 +68,7 @@ public class UserRepository implements IUserRepository {
             ps.setString(2, password);
             ps.setBoolean(3, isAdmin);
             ps.setInt(4, clientId);
+            ps.setBoolean(5, isActive);
             ps.executeUpdate();
         }
         catch (SQLException e){
@@ -94,7 +96,8 @@ public class UserRepository implements IUserRepository {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
                 boolean isAdmin = rs.getBoolean("isadmin");
-                ParentUser user = (isAdmin) ? new Admin(Id, username, password) : new User(Id, username, password);
+                boolean active = rs.getBoolean("is_active");
+                ParentUser user = (isAdmin) ? new Admin(Id, username, password, active) : new User(Id, username, password, active);
                 users.add(user);
             }
             return users;
@@ -108,25 +111,27 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername) throws DataBaseConnectionException, MyException, DuplicateException {
+    public void editUser(ParentUser user, String username, String password, boolean isAdmin, boolean sameUsername, boolean isActive) throws DataBaseConnectionException, MyException, DuplicateException {
         Connection con = null;
         try {
             PreparedStatement ps = null;
             con = ds.getConnection();
             if (sameUsername){
-                String sqlPrompt = "Update users set password = ?, isadmin = ? where id = ?";
+                String sqlPrompt = "Update users set password = ?, isadmin = ?, is_active = ? where id = ?";
                 ps = con.prepareStatement(sqlPrompt);
                 ps.setString(1, password);
                 ps.setBoolean(2, isAdmin);
-                ps.setInt(3, user.getId());
+                ps.setBoolean(3, isActive);
+                ps.setInt(4, user.getId());
             }
             else{
-                String sqlPrompt = "Update users set username = ?, password = ?, isadmin = ? where id = ?";
+                String sqlPrompt = "Update users set username = ?, password = ?, isadmin = ?, is_active = ? where id = ?";
                 ps = con.prepareStatement(sqlPrompt);
                 ps.setString(1, username);
                 ps.setString(2, password);
                 ps.setBoolean(3, isAdmin);
-                ps.setInt(4, user.getId());
+                ps.setBoolean(4, isActive);
+                ps.setInt(5, user.getId());
             }
             ps.executeUpdate();
         }

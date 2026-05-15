@@ -44,6 +44,8 @@ public class DataService {
         if(name.length()>50){
             throw new MyException("Name should be less than 50");
         }
+
+
     }
 
     public List<Box> getUserBoxes(User user) throws MyException {

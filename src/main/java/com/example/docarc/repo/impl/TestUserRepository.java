@@ -1,9 +1,6 @@
 package com.example.docarc.repo.impl;
 
-import com.example.docarc.be.Admin;
-import com.example.docarc.be.ParentUser;
-import com.example.docarc.be.Role;
-import com.example.docarc.be.User;
+import com.example.docarc.be.*;
 import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.LoginException;
@@ -17,11 +14,13 @@ import java.util.List;
 
 public class TestUserRepository implements IUserRepository {
     private List<HashMap<String, String>> userData;
+    private List<Client> clientsList;
     private List<String> names = new ArrayList<>(Arrays.asList("Sofia_user", "Tove_user", "Zlata_user", "Dasha_user"));
 
     public TestUserRepository(){
         this.userData = new ArrayList<>();
         initializeUsers();
+        initializeClients();
     }
     @Override
     public ParentUser findUser(String username) throws LoginException {
@@ -47,8 +46,18 @@ public class TestUserRepository implements IUserRepository {
     }
 
     @Override
-    public List<ParentUser> getAllUsersByClient(int clientId, int id) {
-        return List.of();
+    public List<ParentUser> getAllUsersByClient(int clientId, int user_id) {
+        List<ParentUser> list = new ArrayList<>();
+        for (Client c : clientsList) {
+            if (c.getId() == clientId){
+                for (ParentUser u : c.getUsers()) {
+                    if (u.getId() != user_id) {
+                        list.add(u);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     //@Override
@@ -89,23 +98,47 @@ public class TestUserRepository implements IUserRepository {
         admin.put("username", "roman_admin");
         admin.put("password", "$2a$10$J3Ioaufs7oOjCP4iTMRQ6.YZvw7c24qFOL/CVN52sID.1.Kiy99kC"); //yumma4444
         admin.put("role", "ADMIN");
+        admin.put("status", "ACTIVE");
         HashMap<String, String> user = new HashMap<>();
         user.put("id", "2");
         user.put("username", "kalivan_user");
         user.put("password", "$2a$10$UY5KhyIt6Jvr7mVEkbb9NOis.Ug/ULfKeMB8m3TWWmO4gcnAb6uYW"); //kalivanskiy_password
         user.put("role", "USER");
+        user.put("status", "DISABLED");
+        HashMap<String, String> user2 = new HashMap<>();
+        user2.put("id", "3");
+        user2.put("username", "test_user");
+        user2.put("password", "$2a$10$4CD.0Ln/jeWOMvzFg4YHluFFPwsIVaFTv5RIyKG3gYV.S7n9I9GvG"); //test_user_password
+        user2.put("role", "USER");
+        user2.put("status", "ACTIVE");
         userData.add(admin);
         userData.add(user);
+        userData.add(user2);
         for (int i = 0; i < this.names.size(); i++) {
-            int minId = 3;
+            int minId = 4;
             HashMap<String, String> h = new HashMap<>();
             h.put("id", String.valueOf(minId + i));
             h.put("username", this.names.get(i));
             h.put("password", this.names.get(i) + "_" + (minId + i));
             String role = ((minId + i) % 2 == 0) ? "ADMIN" : "USER";
+            h.put("status", "ACTIVE");
             h.put("role", role);
             userData.add(h);
         }
+    }
+
+    private void initializeClients(){
+        this.clientsList = new ArrayList<>();
+        List<ParentUser> tempList = new ArrayList<>();
+        Client client = new Client(1, "Test Client");
+        for (HashMap<String, String> h : this.userData) {
+            boolean active = h.get("status").equals("ACTIVE");
+            int id = Integer.parseInt(h.get("id"));
+            ParentUser user = (h.get("role").equals("ADMIN")) ? new Admin(id, h.get("username"), h.get("password"), active) : new User(id, h.get("username"), h.get("password"), 6, active);
+            tempList.add(user);
+        }
+        client.setUsers(tempList);
+        clientsList.add(client);
     }
 }
 

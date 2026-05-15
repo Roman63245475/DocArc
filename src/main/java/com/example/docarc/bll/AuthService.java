@@ -9,7 +9,6 @@ import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.LoginException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.impl.ProfileRepository;
-import com.example.docarc.repo.impl.TestUserRepository;
 import com.example.docarc.repo.impl.UserRepository;
 import com.example.docarc.repo.repositories.IProfileRepository;
 import com.example.docarc.repo.repositories.IUserRepository;
@@ -47,10 +46,14 @@ public class AuthService {
 
                 // Если пользователь является экземпляром User, загружаем его профайлы
                 if (usr instanceof User) {
-                    User user = (User) usr;
-                    List<Profile> userProfiles = profileRepository.getProfilesByUserId(user.getId());
-                    user.setProfiles(userProfiles);
-                    logger.info("Loaded profiles for user {}", username);
+                    if (((User) usr).isUserActive()){
+                        User user = (User) usr;
+                        List<Profile> userProfiles = profileRepository.getProfilesByUserId(user.getId());
+                        user.setProfiles(userProfiles);
+                        logger.info("Loaded profiles for user {}", username);
+                    }else{
+                        throw new LoginException("User is not active, please contact your administrator.");
+                    }
                 }
 
                 return usr;
@@ -92,11 +95,11 @@ public class AuthService {
     }
 
 
-    public void createUser(String userName, String password, Role role, int clientId) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
+    public void createUser(String userName, String password, Role role, int clientId, boolean isActive) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
         logger.info("ENTER createUser");
         if (checkUsername(userName, password) && checkPassword(password)){
             String hashedPassword = passwordEncoder.encode(password);
-            this.userRepository.createUser(userName, hashedPassword, role == Role.ADMIN, clientId);
+            this.userRepository.createUser(userName, hashedPassword, role == Role.ADMIN, clientId, isActive);
             logger.info("User '{}' created successfully", userName);
         }
         else{

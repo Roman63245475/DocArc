@@ -9,14 +9,14 @@ public class User extends ParentUser{
     private List<Profile> profiles;
     private int clientId;
 
-    public User(int id, String username, String password, int clientId){
-        super(id, username, password);
+    public User(int id, String username, String password, int clientId, boolean isActive) {
+        super(id, username, password, isActive);
         this.clientId = clientId;
         this.profiles = new ArrayList<>();
     }
 
-    public User(int id, String username, String password){
-        super(id, username, password);
+    public User(int id, String username, String password, boolean isActive) {
+        super(id, username, password, isActive);
         this.profiles = new ArrayList<>();
     }
 
@@ -41,6 +41,8 @@ public class User extends ParentUser{
     public int getClientId() {
         return clientId;
     }
+
+
 
     @Override
     public Role getRole() {

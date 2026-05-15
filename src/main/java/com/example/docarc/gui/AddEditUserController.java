@@ -2,15 +2,13 @@ package com.example.docarc.gui;
 
 import com.example.docarc.be.ParentUser;
 import com.example.docarc.be.Role;
+import com.example.docarc.be.User;
 import com.example.docarc.bll.AuthService;
 import com.example.docarc.bll.UserService;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
@@ -32,6 +30,9 @@ public class AddEditUserController implements Initializable {
     @FXML private Region eyeIcon;
     @FXML private TextField revealField;
     @FXML private Button createUserButton;
+
+    @FXML private CheckBox activeCheckBox;
+
     @FXML private Label titleLabelTop;
     @FXML private Label titleLabelBottom;
 
@@ -56,6 +57,8 @@ public class AddEditUserController implements Initializable {
         String username = userNameField.getText();
         String password = passwordField.getText();
         Role role = userRoleBox.getSelectionModel().getSelectedItem();
+        boolean isActive = activeCheckBox.isSelected();
+
         if (username.isEmpty() || password.isEmpty() || role == null){
             this.errorLabel.setText("Please fill all the fields");
             this.errorLabel.setOpacity(1.0);
@@ -65,7 +68,7 @@ public class AddEditUserController implements Initializable {
         Task<Void> createUserTask = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
-                authService.createUser(username, password, role, clientID);
+                authService.createUser(username, password, role, clientID, isActive);
                 return null;
             }
         };
@@ -94,6 +97,7 @@ public class AddEditUserController implements Initializable {
         String username = userNameField.getText();
         String password = passwordField.getText();
         Role role = userRoleBox.getSelectionModel().getSelectedItem();
+        boolean isActive = activeCheckBox.isSelected();
         if (username.isEmpty() || role == null){
             this.errorLabel.setText("Username and Role fields have to be filled out");
             return;
@@ -102,7 +106,7 @@ public class AddEditUserController implements Initializable {
         Task<Void> editUserTask = new Task<Void>(){
             @Override
             protected Void call() throws Exception {
-                userService.editUser(user, username, password, role);
+                userService.editUser(user, username, password, role, isActive);
                 return null;
             }
         };
@@ -149,6 +153,7 @@ public class AddEditUserController implements Initializable {
     private void fillFields(){
         this.userNameField.setText(this.user.getUsername());
         this.userRoleBox.setValue(this.user.getRole());
+        activeCheckBox.setSelected(user.isUserActive());
     }
 
     public void setController(AdminController adminController) {

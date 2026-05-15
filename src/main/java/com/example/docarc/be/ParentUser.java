@@ -5,11 +5,13 @@ public abstract class ParentUser {
     protected int id;
     protected String username;
     protected String password;
+    private boolean isActive;
 
-    public ParentUser(int id, String username, String password){
+    public ParentUser(int id, String username, String password, boolean isActive){
         this.id = id;
         this.username = username;
         this.password = password;
+        this.isActive = isActive;
     }
 
     public int getId(){
@@ -22,6 +24,10 @@ public abstract class ParentUser {
 
     public String getPassword(){
         return this.password;
+    }
+
+    public boolean isUserActive() {
+        return isActive;
     }
 
     @Override

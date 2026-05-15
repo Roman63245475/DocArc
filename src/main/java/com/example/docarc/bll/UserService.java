@@ -36,7 +36,7 @@ public class UserService {
         return this.userRepository.getAllUsersByClient(client.getId(), id);
     }
 
-    public void editUser(ParentUser user, String username, String password, Role role) throws MyException {
+    public void editUser(ParentUser user, String username, String password, Role role, boolean isActive) throws MyException {
         if (checkUsername(username, password)){
             String hashedPassword = "";
             if (!password.isEmpty()){
@@ -51,7 +51,7 @@ public class UserService {
                 }
             }
             try {
-                this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username));
+                this.userRepository.editUser(user, username, hashedPassword, role == Role.ADMIN, user.getUsername().equals(username), isActive);
                 logger.info("user edited successfully");
             }
             catch (DuplicateException | DataBaseConnectionException ex){

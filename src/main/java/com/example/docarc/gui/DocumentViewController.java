@@ -6,11 +6,13 @@ import com.example.docarc.be.User;
 import com.example.docarc.bll.ApiService;
 import com.example.docarc.bll.DataService;
 import com.example.docarc.bll.DocumentFileService;
+import com.example.docarc.bll.ExportService;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -19,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,6 +33,8 @@ import java.util.ResourceBundle;
 
 public class DocumentViewController implements Initializable {
 
+    @FXML private Button btnExportId;
+    @FXML private HBox hboxId;
     @FXML private ImageView pageView;
     @FXML private Label userLabel;
     @FXML private Button logOutButton;
@@ -47,7 +52,7 @@ public class DocumentViewController implements Initializable {
 
     private boolean openedInEditMode = false;
     private boolean orderChanged = false;
-
+    ExportService exportService = new ExportService();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //ComboBoxHelper.makeSearchable(boxChoice, [ObservableList]);
@@ -283,6 +288,30 @@ public class DocumentViewController implements Initializable {
         Stage st = (Stage) this.logOutButton.getScene().getWindow();
         st.close();
     }
+
+    public void btnExportOnClick(ActionEvent actionEvent) {
+        btnExportId.setVisible(false);
+        hboxId.setVisible(true);
+    }
+
+    public void btnSinglePageOnClick(ActionEvent actionEvent) {
+        double rotation = pageView.getRotate();
+        Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
+        for (int i = 0; i < listOfFiles.getItems().size(); i++) {
+            tiffs[i] = (Tiff) listOfFiles.getItems().get(i);
+        }
+        exportService.singlePage(rotation, tiffs);
+    }
+
+    public void btnMultipageOnClick(ActionEvent actionEvent) {
+        double rotation = pageView.getRotate();
+        Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
+        for (int i = 0; i < listOfFiles.getItems().size(); i++) {
+            tiffs[i] = (Tiff) listOfFiles.getItems().get(i);
+        }
+        exportService.multiPage(rotation, tiffs);
+    }
+
 
 //    private void displayImages(List<Tiff> files){
 //        List<Image> images = new ArrayList<>();

@@ -16,8 +16,12 @@ public class ClientService {
         this.clientRepository = new ClientRepository();
     }
 
+    public ClientService(IClientRepository clientRepository){
+        this.clientRepository = clientRepository;
+    }
+
     public void createClient(String name, String country, String city, Admin responsibleAdmin) throws MyException {
-        if (!name.isEmpty() && !country.isEmpty() && !city.isEmpty()){
+        if (!name.isBlank() && !country.isBlank() && !city.isBlank()){
             Client client = new Client(name, country, city);
             this.clientRepository.createClient(client, responsibleAdmin);
         }

@@ -50,15 +50,15 @@ public class LoginController implements Initializable {
             this.errorLabel.setOpacity(1.0);
             return;
         }
-        loginButton.setDisable(true);
+        loginButton.setDisable(true);//<> -> diamond operator
         Task<ParentUser> loginTask = new Task<ParentUser>(){
             @Override
-            protected ParentUser call() throws Exception {
+            protected ParentUser call() throws Exception {//anonym class
                 return authService.login(username, password);
             }
         };
         loginTask.setOnSucceeded(event -> {
-            ParentUser user = loginTask.getValue();
+            ParentUser user = loginTask.getValue();// javafx application thread
             try {
                 String fileName = (user instanceof Admin) ? "admin_view.fxml" : "main_user_view.fxml";
                 String title = (user instanceof Admin) ? "Admin panel" : "User panel";
@@ -74,8 +74,8 @@ public class LoginController implements Initializable {
             }
             catch (IOException e) {
                 loginButton.setDisable(false);
-                System.out.println(e.getMessage());
-                e.printStackTrace();
+                //System.out.println(e.getMessage());
+                //e.printStackTrace();
                 this.errorLabel.setText("Page can't be rendered");
                 this.errorLabel.setOpacity(1.0);
                 return;

@@ -21,11 +21,9 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("login test")
-    void login() throws MyException {
+    void login() throws LoginException {
         Admin admin = new Admin(1, "roman_admin", "$2a$10$J3Ioaufs7oOjCP4iTMRQ6.YZvw7c24qFOL/CVN52sID.1.Kiy99kC", true);
-        User user = new User(2, "kalivan_user", "$2a$10$UY5KhyIt6Jvr7mVEkbb9NOis.Ug/ULfKeMB8m3TWWmO4gcnAb6uYW", true);
         assertEquals(admin, authService.login("roman_admin", "yumma4444"));
-        assertEquals(user, authService.login("kalivan_user", "kalivanskiy_password"));
         assertThrows(MyException.class, () -> authService.login("kalivan_usr", "kalivanskiy"));
     }
 

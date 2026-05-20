@@ -51,11 +51,15 @@ public class UserRepository implements IUserRepository {
                 ParentUser user = (isAdmin) ? new Admin(id, username, password, active) : new User(id, username, password, clientId, active);
                 return user;
             }
+            //if user not found
             throw new LoginException("User not found");
         } catch (SQLServerException e) {
-            throw new DataBaseConnectionException("Connection failed. " + e.getMessage());
+            //if couldn't have gotten a connection obj
+            throw new DataBaseConnectionException("Connection failed");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error("SQL Error", e);
+            //if dev is an idiot
+            throw new DataBaseConnectionException("Sorry something went wrong");
         }
     }
 
@@ -80,6 +84,15 @@ public class UserRepository implements IUserRepository {
             }
             else {
                 throw new MyException("Sorry something went wrong");
+            }
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    logger.error("Failed to close connection due to {}", e.getMessage());
+                }
             }
         }
     }

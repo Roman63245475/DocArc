@@ -37,29 +37,20 @@ public class AuthService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public ParentUser login(String username, String password) throws MyException {
+    public ParentUser login(String username, String password) throws LoginException {
         ParentUser usr = null;
         try {
             usr = userRepository.findUser(username);
-            if (passwordEncoder.matches(password, usr.getPassword())){
+            if (passwordEncoder.matches(password, usr.getPassword())){//usr.getPassword -> hashed password bc database stores only hashed passwords.
                 logger.info("{} logged in successfully", username);
-
-                // Если пользователь является экземпляром User, загружаем его профайлы
-                if (usr instanceof User) {
-                    if (((User) usr).isUserActive()){
-                        User user = (User) usr;
-                        List<Profile> userProfiles = profileRepository.getProfilesByUserId(user.getId());
-                        user.setProfiles(userProfiles);
-                        logger.info("Loaded profiles for user {}", username);
-                    }else{
-                        throw new LoginException("User is not active, please contact your administrator.");
-                    }
+                if (!usr.isUserActive()){
+                    throw new LoginException("User is not active, please contact your administrator.");
                 }
 
                 return usr;
             }
             logger.warn("Login failed: invalid password for user={}",  username);
-            throw new MyException("Username os password is incorrect");
+            throw new LoginException("Username os password is incorrect");
         }
         catch (DataBaseConnectionException | LoginException ex) {
             if (ex instanceof DataBaseConnectionException) {
@@ -67,7 +58,7 @@ public class AuthService {
             } else {
                 logger.warn("Login failed: user not found (username={})", username);
             }
-            throw new MyException(ex.getMessage());
+            throw new LoginException(ex.getMessage());
         }
 //        System.out.println(passwordEncoder.encode("kalivanskiy_password"));
 //        return null;
@@ -95,7 +86,7 @@ public class AuthService {
     }
 
 
-    public void createUser(String userName, String password, Role role, int clientId, boolean isActive) throws MyException, DuplicateException, DataBaseConnectionException, LoginException {
+    public void createUser(String userName, String password, Role role, int clientId, boolean isActive) throws Exception {
         logger.info("ENTER createUser");
         if (checkUsername(userName, password) && checkPassword(password)){
             String hashedPassword = passwordEncoder.encode(password);

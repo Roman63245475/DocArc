@@ -98,11 +98,15 @@
                         <VBox alignment="CENTER">
                            <children>
                               <Label minHeight="-Infinity" minWidth="-Infinity" text="[ A ]" />
+                              <Label layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" text="[ E ]" />
+                              <Label layoutX="10.0" layoutY="27.0" minHeight="-Infinity" minWidth="-Infinity" text="[ D ]" />
                            </children>
                         </VBox>
                         <VBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
                            <children>
                               <Label minHeight="-Infinity" minWidth="-Infinity" text="Add a new client." />
+                              <Label layoutX="10.0" layoutY="27.0" minHeight="-Infinity" minWidth="-Infinity" text="Edit the selected client." />
+                              <Label layoutX="10.0" layoutY="36.0" minHeight="-Infinity" minWidth="-Infinity" text="Delete the selected client." />
                            </children>
                         </VBox>
                      </children>

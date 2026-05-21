@@ -9,4 +9,8 @@ import java.util.List;
 public interface IClientRepository {
     void createClient(Client client, Admin responsibleAdmin) throws MyException;
     List<Client> getClients() throws MyException;
+
+    void deleteClient(int id);
+
+    void updateClient(int id, String name, String country, String city);
 }

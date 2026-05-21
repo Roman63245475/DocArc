@@ -82,6 +82,7 @@ public class AdminController implements Initializable {
     @FXML private TableColumn<Client, String> clientCountryColumn;
     @FXML private TableColumn<Client, String> clientCityColumn;
     @FXML private TableColumn<Client, Integer> clientUserAmountColumn;
+    @FXML private TableColumn<Client, Void> actionsClientColumn;
     private ObservableList<Client> clientsList = FXCollections.observableArrayList();
 
     // clients combobox
@@ -133,6 +134,7 @@ public class AdminController implements Initializable {
             if (newValue == null) return;
             newValue.setOnKeyPressed(event -> {
                 ParentUser selectedUser = usersTable.getSelectionModel().getSelectedItem();
+                Client selectedClient = clientsTable.getSelectionModel().getSelectedItem();
 
                 String activeTab = "";
 
@@ -145,8 +147,8 @@ public class AdminController implements Initializable {
 
                 if (event.getCode() == KeyCode.A) {
                     if ("userManagementBox".equals(activeTab)) onAddUser();
-                    if("profileManagementView".equals(activeTab)) createProfile();
-                    if("clientManagementView".equals(activeTab)) createClient();
+                    if ("profileManagementView".equals(activeTab)) createProfile();
+                    if ("clientManagementView".equals(activeTab)) createClient();
                 }
 
                 if (event.getCode() == KeyCode.S) {
@@ -161,6 +163,11 @@ public class AdminController implements Initializable {
                 if (selectedUser != null && "userManagementBox".equals(activeTab)) {
                     if (event.getCode() == KeyCode.E) onEditUser(selectedUser);
                     if (event.getCode() == KeyCode.D) deleteUser(selectedUser);
+                }
+
+                if (selectedClient != null && "clientManagementView".equals(activeTab)) {
+                    if (event.getCode() == KeyCode.E) onEditClient(selectedClient);
+                    if (event.getCode() == KeyCode.D) deleteClient(selectedClient);
                 }
             });
         });
@@ -227,7 +234,97 @@ public class AdminController implements Initializable {
         this.clientCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
         this.clientCityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
         this.clientUserAmountColumn.setCellValueFactory(new PropertyValueFactory<>("amountOfEmployees"));
+        this.actionsClientColumn.setCellFactory(column -> new TableCell<Client, Void>() {
+            private final HBox hbox = new HBox();
+            private final Region editIcon = new Region();
+            private final Region deleteIcon = new Region();
+
+            {
+                editIcon.getStyleClass().add("btn-icon-edit");
+                deleteIcon.getStyleClass().add("btn-icon-delete");
+                deleteIcon.getStyleClass().add("destructive-c");
+
+                editIcon.setMinHeight(16);
+                editIcon.setMinWidth(16);
+
+                deleteIcon.setPrefHeight(16);
+                deleteIcon.setPrefWidth(16);
+
+                hbox.setSpacing(20);
+                hbox.setAlignment(Pos.CENTER);
+                hbox.getChildren().addAll(editIcon, deleteIcon);
+
+                deleteIcon.setOnMouseClicked(event -> {
+                    Client client = this.getTableView().getItems().get(getIndex());
+                    deleteClient(client);
+                });
+
+                editIcon.setOnMouseClicked(event -> {
+                    Client client = this.getTableView().getItems().get(getIndex());
+                    onEditClient(client);
+                });
+
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty){
+                super.updateItem(item, empty);
+                if (empty){
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText(null);
+                    setGraphic(hbox);
+                }
+            }
+        });
         this.clientsTable.setItems(clientsList);
+    }
+
+    private void onEditClient(Client client) {
+        if (client == null) return;
+        try{
+            CreateClientController controller = (CreateClientController) UIHelper.openNewWindow("create_client_view.fxml", "Edit Client", true);
+            controller.setClient(client);
+            controller.setAdminController(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void deleteClient(Client client) {
+        if (client == null) return;
+        Consumer<AlertController> codeToExecute = (con) ->{
+            con.setText("Deletion Confirmation", "Are you sure you want to delete " + client.getName() + "?");
+        };
+        try{
+            AlertController controller = UIHelper.openAndWait("alert-view.fxml", "Confirm Deletion", codeToExecute);
+            if (controller.isConfirmed()){
+                Task<Void> task = new Task<Void>(){
+                    @Override
+                    protected Void call() throws Exception {
+                        clientService.deleteClient(client);
+                        return null;
+                    };
+                };
+
+                task.setOnSucceeded(event -> {
+                    displayClients();
+                    displayUsers();
+                });
+
+                task.setOnFailed(event -> {
+                    System.out.println("Failed to delete client " + client.getName() + "\n" + task.getException().getMessage());
+                });
+
+                Thread thread = new Thread(task);
+                thread.start();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void displayProfiles(){
@@ -556,7 +653,6 @@ public class AdminController implements Initializable {
     }
     @FXML
     private void onClientManagementClick(){
-        System.out.println("I'm called");
         changeView("clientManagementView", this.contentBox);
     }
 

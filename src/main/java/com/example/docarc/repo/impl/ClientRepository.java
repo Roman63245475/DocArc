@@ -63,4 +63,42 @@ public class ClientRepository implements IClientRepository {
             throw new MyException("Sorry client was not created");
         }
     }
+
+    @Override
+    public void deleteClient(int id) {
+        try (Connection con = ds.getConnection()){
+            con.setAutoCommit(false);
+            try{
+                try(PreparedStatement ps = con.prepareStatement("DELETE FROM clients WHERE id = ?")){
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+                }
+                con.commit();
+            } catch (SQLException e) {
+                con.rollback();
+                throw new RuntimeException("Transaction Failed, rolling back..\n", e);
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void updateClient(int id, String name, String country, String city) {
+        try (Connection con = ds.getConnection()){
+
+            try(PreparedStatement ps = con.prepareStatement("UPDATE clients SET name = ?, country = ?, city = ? WHERE id = ?")){
+                ps.setString(1, name);
+                ps.setString(2, country);
+                ps.setString(3, city);
+                ps.setInt(4, id);
+                ps.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -33,4 +33,15 @@ public class ClientService {
     public List<Client> getClients() throws MyException {
         return this.clientRepository.getClients();
     }
+
+    public void deleteClient(Client client) {
+        clientRepository.deleteClient(client.getId());
+    }
+
+    public void updateClient(Client client, String name, String country, String city) throws MyException {
+        if (name.isBlank() || country.isBlank() || city.isBlank()) {
+            throw new MyException("Make sure all fields are filled out.");
+        }
+        clientRepository.updateClient(client.getId(), name, country, city);
+    }
 }

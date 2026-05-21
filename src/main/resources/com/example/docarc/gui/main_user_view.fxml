@@ -14,8 +14,11 @@
                         <Image url="@images/LogoBlue_Logoicon.png" />
                     </image></ImageView>
                 <Region prefHeight="28.0" prefWidth="666.0" HBox.hgrow="ALWAYS" />
-                <Label fx:id="userLabel" minHeight="-Infinity" text="Hello user" textFill="WHITE" />
-                <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOut" prefHeight="24.0" prefWidth="48.0" text="Log out" />
+                <Label fx:id="userLabel" minHeight="-Infinity" minWidth="-Infinity" text="Hello user" textFill="WHITE" />
+                <Button fx:id="logOutButton" contentDisplay="TEXT_ONLY" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#logOut" text="Log out">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding></Button>
             </children>
             <padding>
                 <Insets right="10.0" />
@@ -46,9 +49,6 @@
                    </GridPane>
                 </content>
              </ScrollPane>
-
-              <!-- Большая кнопка снизу (если нужна для общего действия) -->
-              <Button maxWidth="300" onAction="#loadAllDocuments" text="Upload document to the each box via API" />
           </children>
           <padding>
              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

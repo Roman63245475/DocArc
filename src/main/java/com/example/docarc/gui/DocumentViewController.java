@@ -6,6 +6,7 @@ import com.example.docarc.bll.DataService;
 import com.example.docarc.bll.DocumentFileService;
 import com.example.docarc.bll.ExportService;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -67,57 +68,144 @@ public class DocumentViewController implements Initializable {
             }
         });
         listOfFiles.setItems(files);
-        setListViewBehaviour();
+        listOfFiles.setFixedCellSize(24);
+        //setListViewBehaviour();
         setUpShortcuts();
         setUpListView();
     }
 
     private void setUpListView() {
-        listOfFiles.setCellFactory(listView -> new ListCell<>() {
 
-            private final HBox hbox = new HBox();
+        listOfFiles.setCellFactory(listView -> {
 
-            private final Label label = new Label();
+            ListCell<Tiff> cell = new ListCell<>() {
 
-            private final Region stretcher = new Region();
-            private final Region dotIcon = new Region();
+                private final HBox hbox = new HBox();
 
-            private final MenuButton menuButton = new MenuButton(null, dotIcon);
+                private final Label label = new Label();
 
-            {
-                MenuItem item =  new MenuItem("Delete selected file.\t\t[ D ]");
+                private final Region stretcher = new Region();
+                private final Region dotIcon = new Region();
 
-                item.setOnAction(event -> {
-                    listOfFiles.getItems().remove(getItem());
-                });
+                private final MenuButton menuButton = new MenuButton(null, dotIcon);
 
-                menuButton.getItems().add(item);
+                {
+                    // DELETE MENU ITEM
+                    MenuItem item = new MenuItem("Delete selected file.\t\t[ D ]");
 
-                dotIcon.getStyleClass().add("icon");
-                dotIcon.setId("ellipsis-h-icon");
-                dotIcon.setMinWidth(25);
-                dotIcon.setMaxHeight(5);
-                dotIcon.setOpacity(.3);
+                    item.setOnAction(event -> {
+                        listOfFiles.getItems().remove(getItem());
+                    });
 
-                HBox.setHgrow(stretcher, Priority.ALWAYS);
-                stretcher.setPrefHeight(USE_COMPUTED_SIZE);
-                stretcher.setPrefWidth(USE_COMPUTED_SIZE);
+                    menuButton.getItems().add(item);
 
-                hbox.setAlignment(Pos.CENTER_LEFT);
-                hbox.getChildren().addAll(label, stretcher, menuButton);
-            }
+                    dotIcon.getStyleClass().add("icon");
+                    dotIcon.setId("ellipsis-h-icon");
+                    dotIcon.setMinWidth(25);
+                    dotIcon.setMaxHeight(5);
+                    dotIcon.setOpacity(.3);
 
-            @Override
-            protected void updateItem(Tiff item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                }else{
-                    label.setText(item.getFileName());
-                    setGraphic(hbox);
+                    HBox.setHgrow(stretcher, Priority.ALWAYS);
+
+                    hbox.setAlignment(Pos.CENTER_LEFT);
+                    hbox.getChildren().addAll(label, stretcher, menuButton);
                 }
-            }
+
+                @Override
+                protected void updateItem(Tiff item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        label.setText(item.getFileName());
+                        setGraphic(hbox);
+                    }
+                }
+            };
+
+            // DRAG START
+            cell.setOnDragDetected(event -> {
+
+                if (cell.isEmpty()) {
+                    return;
+                }
+
+                draggedItem = cell.getItem();
+
+                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+
+                ClipboardContent content = new ClipboardContent();
+                content.putString("drag");
+
+                db.setContent(content);
+
+                event.consume();
+            });
+
+
+            // DRAG OVER
+            cell.setOnDragOver(event -> {
+
+                if (event.getGestureSource() != cell
+                        && event.getDragboard().hasString()) {
+
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+
+                event.consume();
+            });
+
+
+            // DROP
+            cell.setOnDragDropped(event -> {
+
+                if (draggedItem == null) {
+                    return;
+                }
+
+                ObservableList<Tiff> items = listOfFiles.getItems();
+
+                int draggedIdx = items.indexOf(draggedItem);
+
+                int thisIdx;
+
+                if (cell.isEmpty()) {
+                    thisIdx = items.size();
+                } else {
+                    thisIdx = cell.getIndex();
+                }
+
+                if (draggedIdx < 0) {
+                    return;
+                }
+
+                items.remove(draggedIdx);
+
+                if (thisIdx > draggedIdx) {
+                    thisIdx--;
+                }
+
+                items.add(thisIdx, draggedItem);
+
+                listOfFiles.getSelectionModel().select(thisIdx);
+
+                event.setDropCompleted(true);
+
+                draggedItem = null;
+
+                event.consume();
+            });
+
+
+            // DRAG DONE
+            cell.setOnDragDone(event -> {
+                draggedItem = null;
+                event.consume();
+            });
+
+            return cell;
         });
     }
 
@@ -133,81 +221,81 @@ public class DocumentViewController implements Initializable {
         });
     }
 
-    private void setListViewBehaviour() {
-        listOfFiles.setCellFactory(lv -> {
-
-            ListCell<Tiff> cell = new ListCell<>() {
-
-                @Override
-                protected void updateItem(Tiff item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getFileName());
-                    }
-                }
-            };
-
-            // START DRAG
-            cell.setOnDragDetected(event -> {
-
-                if (cell.isEmpty())
-                    return;
-
-                draggedItem = cell.getItem();
-                draggedIndex = cell.getIndex();
-
-                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
-
-                ClipboardContent content = new ClipboardContent();
-                content.putString("tiff");
-
-                db.setContent(content);
-
-                event.consume();
-            });
-
-            // DRAG OVER
-            cell.setOnDragOver(event -> {
-
-                if (draggedItem != null && !cell.isEmpty()) {
-                    event.acceptTransferModes(TransferMode.MOVE);
-                }
-
-                event.consume();
-            });
-
-            // DROP
-            cell.setOnDragDropped(event -> {
-
-                if (draggedItem == null)
-                    return;
-
-                ObservableList<Tiff> items = listOfFiles.getItems();
-                int targetIndex = cell.getIndex();
-
-                items.remove(draggedIndex);
-
-                items.add(targetIndex, draggedItem);
-
-                listOfFiles.getSelectionModel().select(targetIndex);
-
-                if (draggedIndex != targetIndex) {
-                    orderChanged = true;
-                }
-
-                event.setDropCompleted(true);
-
-                draggedItem = null;
-
-                event.consume();
-            });
-
-            return cell;
-        });
-    }
+//    private void setListViewBehaviour() {
+//        listOfFiles.setCellFactory(lv -> {
+//
+//            ListCell<Tiff> cell = new ListCell<>() {
+//
+//                @Override
+//                protected void updateItem(Tiff item, boolean empty) {
+//                    super.updateItem(item, empty);
+//
+//                    if (empty || item == null) {
+//                        setText(null);
+//                    } else {
+//                        setText(item.getFileName());
+//                    }
+//                }
+//            };
+//
+//            // START DRAG
+//            cell.setOnDragDetected(event -> {
+//
+//                if (cell.isEmpty())
+//                    return;
+//
+//                draggedItem = cell.getItem();
+//                draggedIndex = cell.getIndex();
+//
+//                Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
+//
+//                ClipboardContent content = new ClipboardContent();
+//                content.putString("tiff");
+//
+//                db.setContent(content);
+//
+//                event.consume();
+//            });
+//
+//            // DRAG OVER
+//            cell.setOnDragOver(event -> {
+//
+//                if (draggedItem != null && !cell.isEmpty()) {
+//                    event.acceptTransferModes(TransferMode.MOVE);
+//                }
+//
+//                event.consume();
+//            });
+//
+//            // DROP
+//            cell.setOnDragDropped(event -> {
+//
+//                if (draggedItem == null)
+//                    return;
+//
+//                ObservableList<Tiff> items = listOfFiles.getItems();
+//                int targetIndex = cell.getIndex();
+//
+//                items.remove(draggedIndex);
+//
+//                items.add(targetIndex, draggedItem);
+//
+//                listOfFiles.getSelectionModel().select(targetIndex);
+//
+//                if (draggedIndex != targetIndex) {
+//                    orderChanged = true;
+//                }
+//
+//                event.setDropCompleted(true);
+//
+//                draggedItem = null;
+//
+//                event.consume();
+//            });
+//
+//            return cell;
+//        });
+//    }
 
     public void setDocument(Document document) {
         this.document = document;

@@ -124,6 +124,7 @@ public class MainUserController implements Initializable {
         for (int i = 0; i < boxes.size(); i++) {
             Box box = boxes.get(i);
             VBox boxCard = createBoxCard(box);
+            boxCard.setMaxWidth(300);
 
             GridPane.setVgrow(boxCard, Priority.ALWAYS);
 

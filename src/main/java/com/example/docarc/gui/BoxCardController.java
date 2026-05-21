@@ -7,6 +7,7 @@ import com.example.docarc.be.User;
 import com.example.docarc.bll.ApiService;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,7 +76,8 @@ public class BoxCardController {
 
 
     @FXML
-    private void loadDocument(){
+    private void loadDocument(ActionEvent event){
+        Button button = (Button) event.getSource();
         Task<Document> scanDocument = new Task<>() {
             @Override
             protected Document call() throws Exception {
@@ -83,6 +85,9 @@ public class BoxCardController {
                 return apiService.loadDocument(box.getProfile(), box.getId());
             }
         };
+
+        button.disableProperty().bind(scanDocument.runningProperty());
+
         scanDocument.setOnSucceeded((e) -> {
             try {
                 UIHelper.displayDocument(scanDocument.getValue(), false);

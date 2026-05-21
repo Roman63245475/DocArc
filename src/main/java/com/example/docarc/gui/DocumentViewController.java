@@ -1,13 +1,10 @@
 package com.example.docarc.gui;
-import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
 import com.example.docarc.be.User;
-import com.example.docarc.bll.ApiService;
 import com.example.docarc.bll.DataService;
 import com.example.docarc.bll.DocumentFileService;
 import com.example.docarc.bll.ExportService;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -15,13 +12,17 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -67,6 +68,69 @@ public class DocumentViewController implements Initializable {
         });
         listOfFiles.setItems(files);
         setListViewBehaviour();
+        setUpShortcuts();
+        setUpListView();
+    }
+
+    private void setUpListView() {
+        listOfFiles.setCellFactory(listView -> new ListCell<>() {
+
+            private final HBox hbox = new HBox();
+
+            private final Label label = new Label();
+
+            private final Region stretcher = new Region();
+            private final Region dotIcon = new Region();
+
+            private final MenuButton menuButton = new MenuButton(null, dotIcon);
+
+            {
+                MenuItem item =  new MenuItem("Delete selected file.\t\t[ D ]");
+
+                item.setOnAction(event -> {
+                    listOfFiles.getItems().remove(getItem());
+                });
+
+                menuButton.getItems().add(item);
+
+                dotIcon.getStyleClass().add("icon");
+                dotIcon.setId("ellipsis-h-icon");
+                dotIcon.setMinWidth(25);
+                dotIcon.setMaxHeight(5);
+                dotIcon.setOpacity(.3);
+
+                HBox.setHgrow(stretcher, Priority.ALWAYS);
+                stretcher.setPrefHeight(USE_COMPUTED_SIZE);
+                stretcher.setPrefWidth(USE_COMPUTED_SIZE);
+
+                hbox.setAlignment(Pos.CENTER_LEFT);
+                hbox.getChildren().addAll(label, stretcher, menuButton);
+            }
+
+            @Override
+            protected void updateItem(Tiff item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    label.setText(item.getFileName());
+                    setGraphic(hbox);
+                }
+            }
+        });
+    }
+
+    private void setUpShortcuts() {
+        hboxId.sceneProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null) return;
+            newVal.setOnKeyPressed(event -> {
+                Tiff selectedFile = listOfFiles.getSelectionModel().getSelectedItem();
+                if (selectedFile != null && event.getCode() == KeyCode.D) {
+                    files.remove(selectedFile);
+                }
+            });
+        });
     }
 
     private void setListViewBehaviour() {
@@ -220,7 +284,8 @@ public class DocumentViewController implements Initializable {
     }
 
     @FXML
-    private void saveDocument(){
+    private void saveDocument(ActionEvent event){
+        Button saveButton = (Button) event.getSource();
         List<Tiff> finalOrder = new ArrayList<>();
         int orderId = 1;
         for (Tiff t : listOfFiles.getItems()) {
@@ -230,13 +295,13 @@ public class DocumentViewController implements Initializable {
         }
         this.document.setData(finalOrder);
         if (openedInEditMode){
-            onEditDocument();
+            onEditDocument(saveButton);
         }else{
-            saveDocumentSecondPart();
+            saveDocumentSecondPart(saveButton);
         }
     }
 
-    private void saveDocumentSecondPart(){
+    private void saveDocumentSecondPart(Button saveButton){
         Task<Void> save_document_task = new  Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -244,6 +309,9 @@ public class DocumentViewController implements Initializable {
                 return null;
             }
         };
+
+        saveButton.disableProperty().bind(save_document_task.runningProperty());
+
         save_document_task.setOnSucceeded(event -> {
             onCancel();
         });
@@ -256,7 +324,7 @@ public class DocumentViewController implements Initializable {
         new Thread(save_document_task).start();
     }
 
-    private void onEditDocument(){
+    private void onEditDocument(Button saveButton){
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -264,6 +332,8 @@ public class DocumentViewController implements Initializable {
                 return null;
             }
         };
+
+        saveButton.disableProperty().bind(task.runningProperty());
 
         task.setOnSucceeded(event -> {
             onCancel();
@@ -280,6 +350,8 @@ public class DocumentViewController implements Initializable {
 
     public void setEditMode(){
         this.openedInEditMode = true;
+        btnExportId.setDisable(false);
+        btnExportId.setOpacity(1.0);
         loadDocumentFiles();
     }
 

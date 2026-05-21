@@ -6,7 +6,7 @@
 
 <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateClientController">
    <children>
-      <Label styleClass="h1" text="Create a new Client">
+      <Label fx:id="titleLabel" styleClass="h1" text="Create a new Client">
          <VBox.margin>
             <Insets top="25.0" />
          </VBox.margin>
@@ -40,12 +40,13 @@
                   <Insets />
                </VBox.margin>
             </HBox>
+            <Label fx:id="errorLabel" opacity="0.0" text="Label" />
          </children>
       </VBox>
       <HBox alignment="CENTER_RIGHT" layoutX="30.0" layoutY="179.0" prefHeight="33.0" prefWidth="346.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="28.0" prefWidth="49.0" text="Cancel" />
-            <Button mnemonicParsing="false" onAction="#onSave" prefHeight="28.0" prefWidth="49.0" text="Save" />
+            <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onCancel" prefHeight="28.0" prefWidth="49.0" text="Cancel" />
+            <Button fx:id="confirmButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSave" prefHeight="28.0" prefWidth="49.0" text="Save" />
          </children>
       </HBox>
    </children>

@@ -7,8 +7,10 @@ import com.example.docarc.bll.ProfileService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -62,7 +64,8 @@ public class CreateBoxController implements Initializable {
     }
 
     @FXML
-    private void onSave() {
+    private void onSave(ActionEvent event) {
+        Button b = (Button) event.getSource();
         String name = boxName.getText();
         Profile profile = profileComboBox.getSelectionModel().getSelectedItem();
         Task<Void> createBoxTask = new Task<Void>() {
@@ -72,6 +75,8 @@ public class CreateBoxController implements Initializable {
                 return null;
             }
         };
+
+        b.disableProperty().bind(createBoxTask.runningProperty());
 
         createBoxTask.setOnSucceeded(e -> {
             onCancel();

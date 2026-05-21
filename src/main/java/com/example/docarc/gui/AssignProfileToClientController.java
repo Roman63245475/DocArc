@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -64,7 +65,8 @@ public class AssignProfileToClientController implements Initializable {
     }
 
     @FXML
-    private void onAssign() {
+    private void onAssign(ActionEvent event) {
+        Button button = (Button) event.getSource();
         Client selectedClient = eligibleClientsList.getSelectionModel().getSelectedItem();
         if (selectedClient == null || profile == null) {
             return;
@@ -76,6 +78,9 @@ public class AssignProfileToClientController implements Initializable {
                 return null;
             }
         };
+
+        button.disableProperty().bind(task.runningProperty());
+
         task.setOnSucceeded(e -> Platform.runLater(() -> {
             closeStage();
             if (adminController != null) {

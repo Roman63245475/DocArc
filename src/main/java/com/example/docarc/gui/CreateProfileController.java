@@ -7,6 +7,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.concurrent.Task;
 import javafx.css.converter.StringConverter;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -60,7 +61,8 @@ public class CreateProfileController implements Initializable {
     }
 
     @FXML
-    private void onSave(){
+    private void onSave(ActionEvent e){
+        Button button = (Button) e.getSource();
         boolean grayscale = grayscaleCheckbox.isSelected();
         double contrast = contrastSlider.valueProperty().get();
         double brightness = brightnessSlider.valueProperty().get();
@@ -72,6 +74,8 @@ public class CreateProfileController implements Initializable {
                 return null;
             }
         };
+        button.disableProperty().bind(create_profile_task.runningProperty());
+
         create_profile_task.setOnSucceeded(event -> {
             onCancel();
             this.adminController.displayProfiles();

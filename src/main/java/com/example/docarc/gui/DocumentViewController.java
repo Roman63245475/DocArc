@@ -451,7 +451,7 @@ public class DocumentViewController implements Initializable {
 
     @FXML
     private void onCancel(){
-        Stage st = (Stage) this.logOutButton.getScene().getWindow();
+        Stage st = (Stage) this.listOfFiles.getScene().getWindow();
         st.close();
     }
 

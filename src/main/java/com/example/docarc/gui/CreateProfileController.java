@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 public class CreateProfileController implements Initializable {
 
     @FXML private HBox previewBox;
-
     @FXML private Slider contrastSlider;
     @FXML private Slider brightnessSlider;
 
@@ -40,11 +39,15 @@ public class CreateProfileController implements Initializable {
     @FXML private Label contrastLabel;
     @FXML private Label brightnessLabel;
     @FXML private Label errorLabel;
+    @FXML private Button saveButton;
+    @FXML private Label tittleLabel;
 
     private BufferedImage bi;
 
     private ProfileService profileService;
     private AdminController adminController;
+    private Profile profile;
+    private boolean edit = false;
 
 
     public CreateProfileController(){
@@ -70,7 +73,16 @@ public class CreateProfileController implements Initializable {
         Task<Void> create_profile_task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                profileService.createProfile(name, contrast, brightness, grayscale);
+                if (edit){
+                    profile.setName(name);
+                    profile.setContrast(contrast);
+                    profile.setBrightness(brightness);
+                    profile.setGrayscale(grayscale);
+                    profileService.editProfile(profile);
+                }
+                else {
+                    profileService.createProfile(name, contrast, brightness, grayscale);
+                }
                 return null;
             }
         };
@@ -123,5 +135,15 @@ public class CreateProfileController implements Initializable {
         BufferedImage processedImage = ImageProcessor.applyProfileSettings(bi, new Profile("Dummy", brightnessSlider.getValue(), contrastSlider.getValue(), grayscaleCheckbox.isSelected()));
         Image img = SwingFXUtils.toFXImage(processedImage, null);
         postImage.setImage(img);
+    }
+
+    public void setProfile(Profile profile){
+        this.profile = profile;
+        this.tittleLabel.setText("Edit Profile");
+        this.edit = true;
+        this.nameField.setText(profile.getName());
+        this.brightnessSlider.setValue(profile.getBrightness());
+        this.contrastSlider.setValue(profile.getContrast());
+        this.grayscaleCheckbox.setSelected(profile.getGrayscale());
     }
 }

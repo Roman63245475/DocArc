@@ -33,6 +33,9 @@ public class Profile {
         this.grayscale = greyscale;
     }
 
+    public void setGrayscale(Boolean grayscale) {
+        this.grayscale = grayscale;
+    }
 
     public Integer getId() {
         return id;

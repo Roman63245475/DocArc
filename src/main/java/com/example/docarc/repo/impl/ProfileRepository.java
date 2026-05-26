@@ -1,6 +1,7 @@
 package com.example.docarc.repo.impl;
 
 import com.example.docarc.be.Profile;
+import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.DuplicateException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
@@ -22,6 +23,7 @@ public class ProfileRepository implements IProfileRepository {
     private DataSource ds;
     private static final Logger logger = LoggerFactory.getLogger(ProfileRepository.class);
     private static final String sqlGetProfilesByClient = "select p.name, p.id from profiles p left join profile_client on p.id = profile_client.profile_id where client_id = ?";
+    private static final String sqlUpdateProfile = "update profiles set name = ?, brightness = ?, contrast = ?, grayscale = ? where id = ?";
     public ProfileRepository(DataSource ds) {
         this.ds = ds;
     }
@@ -57,8 +59,18 @@ public class ProfileRepository implements IProfileRepository {
     }
 
     @Override
-    public void updateProfile(Profile profile) {
-        System.out.println("I'm empty");
+    public void updateProfile(Profile profile) throws DataBaseConnectionException {
+        try(Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlUpdateProfile)) {
+            ps.setString(1, profile.getName());
+            ps.setDouble(2, profile.getBrightness());
+            ps.setDouble(3, profile.getContrast());
+            ps.setBoolean(4, profile.getGrayscale());
+            ps.setInt(5, profile.getId());
+            ps.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new DataBaseConnectionException("something went wrong");
+        }
     }
 
     @Override

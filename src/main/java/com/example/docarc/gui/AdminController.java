@@ -254,10 +254,25 @@ public class AdminController implements Initializable {
                 });
 
                 editIcon.setOnMouseClicked(event -> {
+                    System.out.println("edit");
                     Profile prof = this.getTableView().getItems().get(getIndex());
+                    openEditProfileWindow(prof);
                     // Hello kalivan, write code here :D
                 });
             }
+
+            private void openEditProfileWindow(Profile prof){
+                try {
+                    CreateProfileController cont = (CreateProfileController) UIHelper.openNewWindow("create_profile_view.fxml", "Edit Profile", true);
+                    cont.setProfile(prof);
+                    cont.setMainController(AdminController.this);
+                }
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
+            }
+
 
             @Override
             protected void updateItem(Void item, boolean empty){

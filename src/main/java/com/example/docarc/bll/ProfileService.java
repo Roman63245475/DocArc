@@ -32,6 +32,10 @@ public class ProfileService {
         profileRepository.addProfile(new Profile(name, brightness, contrast, greyscale));
     }
 
+    public void editProfile(Profile profile) throws DataBaseConnectionException {
+        this.profileRepository.updateProfile(profile);
+    }
+
     public List<Profile> getProfiles(){
         return profileRepository.getProfiles();
     }

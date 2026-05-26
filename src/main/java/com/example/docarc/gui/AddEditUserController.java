@@ -77,6 +77,7 @@ public class AddEditUserController implements Initializable {
             Stage stage = (Stage) this.errorLabel.getScene().getWindow();
             stage.close();
             this.adminController.displayUsers();
+            this.adminController.displayClients();
         });
         createUserTask.setOnFailed(event -> {
             Throwable cause = createUserTask.getException();

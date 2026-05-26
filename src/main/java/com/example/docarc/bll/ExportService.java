@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class ExportService {
     private File folder = new File(System.getProperty("user.home"),"exported/");
-    public void singlePage(BufferedImage[] bufferedImages) {
+    public void singlePage(BufferedImage[] bufferedImages, int boxid, String ProfileName) {
 
         if (!folder.exists()) {
             folder.mkdir();
@@ -24,7 +24,7 @@ public class ExportService {
 
         for (BufferedImage t : bufferedImages) {
 
-            String f = folder.getAbsolutePath()+"/scan_singlepage_"+getDate()+".tiff";
+            String f = folder.getAbsolutePath()+"/"+ProfileName+boxid+getDate()+".tiff";
             try {
                 ImageIO.write(t, "TIFF", new File(f));
             }
@@ -35,7 +35,7 @@ public class ExportService {
         }
 
     }
-    public void multiPage(BufferedImage[] bufferedImages) {
+    public void multiPage(BufferedImage[] bufferedImages, int boxid, String ProfileName) {
 
         if (!folder.exists()) {
             folder.mkdir();
@@ -45,7 +45,7 @@ public class ExportService {
         Iterator<ImageWriter> writers =
                 ImageIO.getImageWritersByFormatName("TIFF");
         ImageWriter writer = writers.next();
-        File outputFile = new File(folder + "/scan_multipage_"+getDate()+".tiff");
+        File outputFile = new File(folder + "/"+ProfileName+boxid+getDate()+".tiff");
         try {
             ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
             writer.setOutput(ios);

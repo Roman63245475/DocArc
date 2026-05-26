@@ -1,7 +1,5 @@
 package com.example.docarc.gui;
-import com.example.docarc.be.Document;
-import com.example.docarc.be.Tiff;
-import com.example.docarc.be.User;
+import com.example.docarc.be.*;
 import com.example.docarc.bll.DataService;
 import com.example.docarc.bll.DocumentFileService;
 import com.example.docarc.bll.ExportService;
@@ -54,6 +52,7 @@ public class DocumentViewController implements Initializable {
     private int draggedIndex;
     private DocumentFileService service;
     private DataService dataService;
+    private Box box;
 
     private boolean openedInEditMode = false;
     private boolean orderChanged = false;
@@ -75,6 +74,10 @@ public class DocumentViewController implements Initializable {
         //setListViewBehaviour();
         setUpShortcuts();
         setUpListView();
+    }
+
+    public void setBox(Box box) {
+        this.box = box;
     }
 
     private void setUpListView() {
@@ -458,6 +461,16 @@ public class DocumentViewController implements Initializable {
     }
 
     public void btnSinglePageOnClick(ActionEvent actionEvent) {
+        int getBoxId = document.getBoxId();
+        Profile p = this.box.getProfile();
+        String profileName;
+        if (p == null){
+            profileName = "default";
+        }
+        else{
+            profileName = String.valueOf(this.box.getProfile().getName());
+        }
+
         double rotation = pageView.getRotate();
         BufferedImage[] images = new BufferedImage[listOfFiles.getItems().size()];
         for (int i = 0; i < listOfFiles.getItems().size(); i++) {
@@ -472,10 +485,19 @@ public class DocumentViewController implements Initializable {
             images[i] = bufferedImage;
 
         }
-       exportService.singlePage(images);
+       exportService.singlePage(images,getBoxId,profileName);
     }
 
     public void btnMultipageOnClick(ActionEvent actionEvent) {
+        int getBoxId = document.getBoxId();
+        Profile p = this.box.getProfile();
+        String profileName;
+        if (p == null){
+            profileName = "default";
+        }
+        else{
+            profileName = String.valueOf(this.box.getProfile().getName());
+        }
         double rotation = pageView.getRotate();
         //Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
         BufferedImage[] images = new BufferedImage[listOfFiles.getItems().size()];
@@ -491,7 +513,7 @@ public class DocumentViewController implements Initializable {
             images[i] = bufferedImage;
 
         }
-        exportService.multiPage(images);
+        exportService.multiPage(images,getBoxId,profileName);
     }
 
 

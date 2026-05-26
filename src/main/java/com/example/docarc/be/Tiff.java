@@ -14,13 +14,15 @@ public class Tiff extends Data{
     private String fileName;
     private int documentId;
     private int reference_id;
+    private int orderId;
     private byte[] fileContent;
     private File file;
     private final String destinationFolder = "unzippedFiles";
 
-    public Tiff(int id, String fileName, int documentId, int referenceId, byte[] fileContent) {
+    public Tiff(int id, String fileName, int documentId, int referenceId, byte[] fileContent, int order_id) {
         this.id = id;
         this.fileName = fileName;
+        this.orderId = order_id;
         this.documentId = documentId;
         this.reference_id = referenceId;
         this.fileContent = fileContent;
@@ -49,8 +51,9 @@ public class Tiff extends Data{
         this.file = file;
     }
 
-    public Tiff(String fileName, int referenceId, BufferedImage processedImage) {
+    public Tiff(String fileName, int referenceId, BufferedImage processedImage, int orderId) {
         this.fileName = fileName;
+        this.orderId = orderId;
         this.reference_id = referenceId;
         this.file = createFileFromBufferedImage(processedImage, fileName);
     }
@@ -111,5 +114,13 @@ public class Tiff extends Data{
 
     public byte[] getFileContent() {
         return fileContent;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public int getOrderId(){
+        return orderId;
     }
 }

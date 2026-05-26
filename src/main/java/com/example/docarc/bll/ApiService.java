@@ -142,7 +142,7 @@ public class ApiService {
                 // Применяем настройки профайла к изображению
                 BufferedImage processedImage = ImageProcessor.applyProfileSettings(originalImage, profile);
 
-                files.add(new Tiff(unzippedFile.getName(), reference_id, processedImage));
+                files.add(new Tiff(unzippedFile.getName(), reference_id, processedImage, scanningOrderId));
                 barCodeFound = hasBarCode(originalImage);
                 scanningOrderId++;
                 reference_id++;

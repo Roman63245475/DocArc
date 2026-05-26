@@ -31,46 +31,49 @@ public class FileRepository implements IFileRepository {
 
     @Override
     public List<Tiff> getFilesByDocumentsIds(List<Document> documents) throws MyException {
-        if (documents.isEmpty()){
-            return List.of();
-        }
-        List<Tiff> files = new ArrayList<>();
-        String placeholder = documents.stream().map(doc -> "?").collect(Collectors.joining(","));
-        try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "select * from files where documentId in (" + placeholder + ")";
-            PreparedStatement ps = con.prepareStatement(sqlPrompt);
-            for (int i = 0; i < documents.size(); i++){
-                ps.setInt(i+1, documents.get(i).getId());
-            }
-            ResultSet rs = ps.executeQuery();
-            logger.info("Files successfully observed");
-            while (rs.next()){
-                int file_id = rs.getInt("id");
-                String file_name = rs.getString("name");
-                int document_id = rs.getInt("documentId");
-                int order_id = rs.getInt("orderId");
-                byte[] file_content = rs.getBytes("file_content");
-                files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
-            }
-            return files;
-        }
-        catch (SQLException e) {
-            System.out.println("file repository " + e.getMessage());
-            e.printStackTrace();
-            logger.error("Failed to observe documents due to: {}", e.getMessage());
-            throw new MyException(e.getMessage());
-        }
+        System.out.println("aga nu");
+        return List.of();
+//        if (documents.isEmpty()){
+//            return List.of();
+//        }
+//        List<Tiff> files = new ArrayList<>();
+//        String placeholder = documents.stream().map(doc -> "?").collect(Collectors.joining(","));
+//        try (Connection con = ds.getConnection()) {
+//            String sqlPrompt = "select * from files where documentId in (" + placeholder + ")";
+//            PreparedStatement ps = con.prepareStatement(sqlPrompt);
+//            for (int i = 0; i < documents.size(); i++){
+//                ps.setInt(i+1, documents.get(i).getId());
+//            }
+//            ResultSet rs = ps.executeQuery();
+//            logger.info("Files successfully observed");
+//            while (rs.next()){
+//                int file_id = rs.getInt("id");
+//                String file_name = rs.getString("name");
+//                int document_id = rs.getInt("documentId");
+//                int order_id = rs.getInt("orderId");
+//                byte[] file_content = rs.getBytes("file_content");
+//                files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
+//            }
+//            return files;
+//        }
+//        catch (SQLException e) {
+//            System.out.println("file repository " + e.getMessage());
+//            e.printStackTrace();
+//            logger.error("Failed to observe documents due to: {}", e.getMessage());
+//            throw new MyException(e.getMessage());
+//        }
     }
 
     @Override
     public void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException {
-        String sqlPrompt = "insert into files (documentId, name, orderId, file_content) values (?,?,?,?)";
+        String sqlPrompt = "insert into files (documentId, name, reference_id, file_content, order_id) values (?,?,?,?,?)";
         try (PreparedStatement ps = con.prepareStatement(sqlPrompt)){
             for (Tiff file : files) {
                 ps.setInt(1, documentId);
                 ps.setString(2, file.getFileName());
                 ps.setInt(3, file.getReference_id());
                 ps.setBytes(4, file.getFileContent());
+                ps.setInt(5, file.getOrderId());
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -93,9 +96,10 @@ public class FileRepository implements IFileRepository {
                     int file_id = rs.getInt("id");
                     String file_name = rs.getString("name");
                     int document_id = rs.getInt("documentId");
-                    int order_id = rs.getInt("orderId");
+                    int reference_id = rs.getInt("reference_id");
                     byte[] file_content = rs.getBytes("file_content");
-                    files.add(new Tiff(file_id, file_name, document_id, order_id, file_content));
+                    int orderId = rs.getInt("order_id");
+                    files.add(new Tiff(file_id, file_name, document_id, reference_id, file_content, orderId));
                 }
                 return files;
             }

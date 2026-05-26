@@ -65,7 +65,8 @@ public class DocumentViewController implements Initializable {
         this.dataService = new DataService();
         this.listOfFiles.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                System.out.println(newVal.getReference_id());
+                System.out.println("reference_id: " + newVal.getReference_id());
+                System.out.println("order_id: " + newVal.getOrderId());
                 displayImage(newVal);
             }
         });
@@ -383,7 +384,7 @@ public class DocumentViewController implements Initializable {
         List<Tiff> finalOrder = new ArrayList<>();
         int orderId = 1;
         for (Tiff t : listOfFiles.getItems()) {
-            t.setReference_id(orderId);
+            t.setOrderId(orderId);
             finalOrder.add(t);
             orderId++;
         }

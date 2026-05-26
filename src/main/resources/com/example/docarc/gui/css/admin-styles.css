@@ -337,7 +337,15 @@
 }
 
 .combo-box .list-cell{
-    -fx-text-fill: #BFBFBF;
+    -fx-text-fill: #303030;
+}
+
+.combo-box .list-cell:hover{
+    -fx-background-color: #d8d5d5;
+}
+
+.combo-box .list-view .list-cell:filled:selected {
+    -fx-background-color: #d8d5d5;
 }
 
 .combo-box .text-field{
@@ -345,9 +353,9 @@
     -fx-padding: 9px 9px 9px 27px;
 }
 
-.combo-box .arrow-button{
-    -fx-background-color: #F9F9F9;
-    -fx-border-color: transparent;
+.combo-box .arrow{
+    -fx-background-color: #424141;
+    -fx-shape: "M12,14.5a.74.74,0,0,1-.53-.22L8,10.78A.75.75,0,0,1,9,9.72l3,3,3-3A.75.75,0,0,1,16,10.78l-3.5,3.5A.74.74,0,0,1,12,14.5Z";
 }
 
 .hide{

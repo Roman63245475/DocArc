@@ -14,8 +14,6 @@
                   <Image url="@images/LogoBlue_Logoicon.png" />
                </image></ImageView>
             <Region prefHeight="28.0" prefWidth="666.0" HBox.hgrow="ALWAYS" />
-            <Label fx:id="userLabel" text="Hello user" textFill="WHITE" />
-            <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOut" text="Log out" />
          </children>
          <padding>
             <Insets right="10.0" />

@@ -60,15 +60,15 @@ public class BoxCardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("document_card.fxml"));
             Parent node = loader.load();
             DocumentCardController documentController = loader.getController();
-            node.setOnMouseClicked(e -> displayClickedDocument(document));
+            node.setOnMouseClicked(e -> displayClickedDocument(document, box));
             documentController.setDocument(document);
             vBox.getChildren().add(node);
         }
     }
 
-    private void displayClickedDocument(Document document){
+    private void displayClickedDocument(Document document, Box box){
         try {
-            UIHelper.displayDocument(document, true);
+            UIHelper.displayDocument(document, true, box);
         } catch (IOException e) {
             System.out.println("needs to be logged likely");
         }

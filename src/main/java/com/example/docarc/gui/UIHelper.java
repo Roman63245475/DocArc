@@ -1,5 +1,6 @@
 package com.example.docarc.gui;
 
+import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -62,6 +63,21 @@ public class UIHelper {
         Scene scene = new Scene(loader.load());
         DocumentViewController documentViewController = loader.getController();
         documentViewController.setDocument(doc);
+        if (edit){
+            documentViewController.setEditMode();
+        }
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    public static void displayDocument(Document doc, boolean edit, Box box) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("document_view_page.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        DocumentViewController documentViewController = loader.getController();
+        documentViewController.setDocument(doc);
+        documentViewController.setBox(box);
         if (edit){
             documentViewController.setEditMode();
         }

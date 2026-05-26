@@ -1,11 +1,8 @@
 package com.example.docarc.bll;
 
-import com.example.docarc.be.Tiff;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -19,31 +16,26 @@ import java.util.Iterator;
 
 public class ExportService {
     private File folder = new File(System.getProperty("user.home"),"exported/");
-    public void singlePage(double rotation, Tiff[] tiffs) {
+    public void singlePage(BufferedImage[] bufferedImages, int boxid, String ProfileName) {
 
         if (!folder.exists()) {
             folder.mkdir();
         }
-        for (Tiff t : tiffs) {
 
-            String f = folder.getAbsolutePath()+"/"+t.getReference_id()+".tiff";
-            BufferedImage image = t.getConvertedBufferedImage();
-            Image fximage =  SwingFXUtils.toFXImage(image, null);
-            ImageView imageView = new ImageView(fximage);
-            imageView.setRotate(rotation);
+        for (BufferedImage t : bufferedImages) {
 
-            WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            String f = folder.getAbsolutePath()+"/"+ProfileName+boxid+getDate()+".tiff";
             try {
-                ImageIO.write(bufferedImage, "TIFF", new File(f));
+                ImageIO.write(t, "TIFF", new File(f));
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
     }
-    public void multiPage(double rotation, Tiff[] tiffs) {
+    public void multiPage(BufferedImage[] bufferedImages, int boxid, String ProfileName) {
 
         if (!folder.exists()) {
             folder.mkdir();
@@ -53,21 +45,15 @@ public class ExportService {
         Iterator<ImageWriter> writers =
                 ImageIO.getImageWritersByFormatName("TIFF");
         ImageWriter writer = writers.next();
-        File outputFile = new File(folder + "/" + tiffs[tiffs.length - 1] + "-" + tiffs[0] + ".tiff");
+        File outputFile = new File(folder + "/"+ProfileName+boxid+getDate()+".tiff");
         try {
             ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
             writer.setOutput(ios);
             writer.prepareWriteSequence(null);
 
-            for (Tiff t : tiffs) {
-                BufferedImage image = t.getConvertedBufferedImage();
-                Image fximage = SwingFXUtils.toFXImage(image, null);
-                ImageView imageView = new ImageView(fximage);
-                imageView.setRotate(rotation);
+            for (BufferedImage t : bufferedImages) {
 
-                WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
-                IIOImage IOImg = new IIOImage(bufferedImage, null, null);
+                IIOImage IOImg = new IIOImage(t, null, null);
                 writer.writeToSequence(IOImg, null);
             }
             writer.endWriteSequence();
@@ -77,5 +63,12 @@ public class ExportService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
+
+        String timestamp = LocalDateTime.now().format(formatter);
+        return timestamp;
     }
 }

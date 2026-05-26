@@ -1,11 +1,8 @@
 package com.example.docarc.bll;
 
-import com.example.docarc.be.Tiff;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
-//import javafx.scene.image.Image;
-//import javafx.scene.image.ImageView;
-//import javafx.scene.image.WritableImage;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -24,24 +21,17 @@ public class ExportService {
         if (!folder.exists()) {
             folder.mkdir();
         }
-        int x = 0;
+
         for (BufferedImage t : bufferedImages) {
 
-            String f = folder.getAbsolutePath()+"/"+x+".tiff";
-//            BufferedImage image = t.getConvertedBufferedImage();
-//            Image fximage =  SwingFXUtils.toFXImage(image, null);
-//            ImageView imageView = new ImageView(fximage);
-//            imageView.setRotate(rotation);
-//
-//            WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-//            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            String f = folder.getAbsolutePath()+"/scan_singlepage_"+getDate()+".tiff";
             try {
                 ImageIO.write(t, "TIFF", new File(f));
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
-            x +=1;
+
         }
 
     }
@@ -55,20 +45,14 @@ public class ExportService {
         Iterator<ImageWriter> writers =
                 ImageIO.getImageWritersByFormatName("TIFF");
         ImageWriter writer = writers.next();
-        File outputFile = new File(folder + "/multipage.tiff");
+        File outputFile = new File(folder + "/scan_multipage_"+getDate()+".tiff");
         try {
             ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
             writer.setOutput(ios);
             writer.prepareWriteSequence(null);
 
             for (BufferedImage t : bufferedImages) {
-//                BufferedImage image = t.getConvertedBufferedImage();
-//                Image fximage = SwingFXUtils.toFXImage(image, null);
-//                ImageView imageView = new ImageView(fximage);
-//                imageView.setRotate(rotation);
-//
-//                WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-//                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+
                 IIOImage IOImg = new IIOImage(t, null, null);
                 writer.writeToSequence(IOImg, null);
             }
@@ -79,5 +63,12 @@ public class ExportService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
+
+        String timestamp = LocalDateTime.now().format(formatter);
+        return timestamp;
     }
 }

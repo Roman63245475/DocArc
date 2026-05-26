@@ -14,9 +14,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
@@ -26,6 +28,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -456,20 +459,39 @@ public class DocumentViewController implements Initializable {
 
     public void btnSinglePageOnClick(ActionEvent actionEvent) {
         double rotation = pageView.getRotate();
-        Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
+        BufferedImage[] images = new BufferedImage[listOfFiles.getItems().size()];
         for (int i = 0; i < listOfFiles.getItems().size(); i++) {
-            tiffs[i] = (Tiff) listOfFiles.getItems().get(i);
+            Tiff t = listOfFiles.getItems().get(i);
+            BufferedImage image = t.getConvertedBufferedImage();
+            Image fximage =  SwingFXUtils.toFXImage(image, null);
+            ImageView imageView = new ImageView(fximage);
+            imageView.setRotate(rotation);
+
+            WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            images[i] = bufferedImage;
+
         }
-        exportService.singlePage(rotation, tiffs);
+       exportService.singlePage(images);
     }
 
     public void btnMultipageOnClick(ActionEvent actionEvent) {
         double rotation = pageView.getRotate();
-        Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
+        //Tiff[] tiffs = new Tiff[listOfFiles.getItems().size()];
+        BufferedImage[] images = new BufferedImage[listOfFiles.getItems().size()];
         for (int i = 0; i < listOfFiles.getItems().size(); i++) {
-            tiffs[i] = (Tiff) listOfFiles.getItems().get(i);
+            Tiff t = listOfFiles.getItems().get(i);
+            BufferedImage image = t.getConvertedBufferedImage();
+            Image fximage =  SwingFXUtils.toFXImage(image, null);
+            ImageView imageView = new ImageView(fximage);
+            imageView.setRotate(rotation);
+
+            WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            images[i] = bufferedImage;
+
         }
-        exportService.multiPage(rotation, tiffs);
+        exportService.multiPage(images);
     }
 
 

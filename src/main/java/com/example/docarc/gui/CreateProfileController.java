@@ -124,5 +124,4 @@ public class CreateProfileController implements Initializable {
         Image img = SwingFXUtils.toFXImage(processedImage, null);
         postImage.setImage(img);
     }
-
 }

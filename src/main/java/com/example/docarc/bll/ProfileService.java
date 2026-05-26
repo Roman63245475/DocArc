@@ -52,4 +52,8 @@ public class ProfileService {
             throw new MyException("Name field can't be empty");
         }
     }
+
+    public void deleteProfile(Integer id) {
+        profileRepository.deleteProfile(id);
+    }
 }

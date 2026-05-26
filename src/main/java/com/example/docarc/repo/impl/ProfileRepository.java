@@ -62,8 +62,22 @@ public class ProfileRepository implements IProfileRepository {
     }
 
     @Override
-    public void deleteProfile(Profile profile) {
-        System.out.println("I'm empty");
+    public void deleteProfile(Integer id) {
+        try(Connection con = ds.getConnection()){
+            con.setAutoCommit(false);
+            try{
+                try(PreparedStatement ps = con.prepareStatement("DELETE FROM profiles WHERE id = ?")){
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+                }
+                con.commit();
+            } catch (SQLException e) {
+                con.rollback();
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

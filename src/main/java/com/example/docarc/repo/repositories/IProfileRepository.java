@@ -9,7 +9,7 @@ import java.util.List;
 public interface IProfileRepository {
     void addProfile(Profile profile) throws DuplicateException, MyException;
     void updateProfile(Profile profile);
-    void deleteProfile(Profile profile);
+    void deleteProfile(Integer profile);
     List<Profile> getProfiles();
     List<Profile> getProfilesByUserId(int userId);
     List<Profile> getProfilesByClientId(int clientId) throws MyException;

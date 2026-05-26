@@ -24,9 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.util.converter.NumberStringConverter;
 
-import javax.swing.text.NumberFormatter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -61,6 +59,7 @@ public class AdminController implements Initializable {
 
     @FXML private TextField searchInput;
 
+    //Users table
     @FXML private TableView<ParentUser> usersTable;
     @FXML private TableColumn<ParentUser, String> userUsernameColumn;
     @FXML private TableColumn<ParentUser, Role> userRoleColumn;
@@ -69,14 +68,16 @@ public class AdminController implements Initializable {
     @FXML private ListView<String> appLogsList;
     @FXML private ListView<String> errorLogsList;
 
+    //Profiles table
     @FXML private TableView<Profile> profilesTable;
     @FXML private Button assignProfileToClientBtn;
     @FXML private TableColumn<Profile, String> profileNameColumn;
     @FXML private TableColumn<Profile, Double> brightnessProfileColumn;
     @FXML private TableColumn<Profile, Double> contrastProfileColumn;
     @FXML private TableColumn<Profile, Boolean> grayscaleProfileColumn;
+    @FXML private TableColumn<Profile, Void> actionsProfileColumn;
 
-    //clients table
+    //Clients table
     @FXML private TableView<Client> clientsTable;
     @FXML private TableColumn<Client, String> clientNameColumn;
     @FXML private TableColumn<Client, String> clientCountryColumn;
@@ -226,7 +227,86 @@ public class AdminController implements Initializable {
             }
         });
         this.grayscaleProfileColumn.setCellValueFactory(new PropertyValueFactory<>("grayscale"));
+
+        actionsProfileColumn.setCellFactory(column -> new TableCell<>(){
+            private final HBox hbox = new HBox();
+            private final Region editIcon = new Region();
+            private final Region deleteIcon = new Region();
+
+            {
+                editIcon.getStyleClass().add("btn-icon-edit");
+                deleteIcon.getStyleClass().add("btn-icon-delete");
+                deleteIcon.getStyleClass().add("destructive-c");
+
+                editIcon.setMinHeight(16);
+                editIcon.setMinWidth(16);
+
+                deleteIcon.setPrefHeight(16);
+                deleteIcon.setPrefWidth(16);
+
+                hbox.setSpacing(20);
+                hbox.setAlignment(Pos.CENTER);
+                hbox.getChildren().addAll(editIcon, deleteIcon);
+
+                deleteIcon.setOnMouseClicked(event -> {
+                    Profile prof = this.getTableView().getItems().get(getIndex());
+                    deleteProfile(prof);
+                });
+
+                editIcon.setOnMouseClicked(event -> {
+                    Profile prof = this.getTableView().getItems().get(getIndex());
+                    // Hello kalivan, write code here :D
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty){
+                super.updateItem(item, empty);
+                if (empty){
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText(null);
+                    setGraphic(hbox);
+                }
+            }
+
+        });
+
         profilesTable.setItems(this.observableProfiles);
+    }
+
+    private void deleteProfile(Profile prof) {
+        if (prof == null) return;
+        try {
+            Consumer<AlertController> codeToExecute = (controller) -> {
+                controller.setText("Deletion Confirmation", "Are you sure you want to delete " + prof.getName() + "?");
+            };
+            AlertController controller = UIHelper.openAndWait("alert-view.fxml", "Confirm Deletion", codeToExecute);
+            if (controller.isConfirmed()){
+                Task<Void> task = new Task<Void>(){
+                    @Override
+                    protected Void call() throws Exception {
+                        profileService.deleteProfile(prof.getId());
+                        return null;
+                    }
+                };
+
+                task.setOnSucceeded(event -> {
+                    displayProfiles();
+                });
+
+                task.setOnFailed(event -> {
+                    //Notify user if something went wrong
+                });
+
+                Thread thread = new Thread(task);
+                thread.setDaemon(true);
+                thread.start();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setUpClientsTable(){
@@ -552,7 +632,6 @@ public class AdminController implements Initializable {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-
     }
 
     @FXML

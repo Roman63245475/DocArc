@@ -19,13 +19,13 @@
                </VBox.margin>
                <children>
                   <Label minWidth="-Infinity" prefWidth="45.0" text="Name:" />
-                  <TextField fx:id="nameField" prefHeight="21.0" prefWidth="267.0" />
+                  <TextField fx:id="nameField" prefHeight="21.0" prefWidth="267.0" styleClass="field" />
                </children>
             </HBox>
             <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <Label text="Country:" />
-                  <TextField fx:id="countryField" prefHeight="21.0" prefWidth="267.0" />
+                  <TextField fx:id="countryField" prefHeight="21.0" prefWidth="267.0" styleClass="field" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -34,7 +34,7 @@
             <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <Label minWidth="-Infinity" prefWidth="45.0" text="City:" />
-                  <TextField fx:id="cityField" prefHeight="21.0" prefWidth="267.0" />
+                  <TextField fx:id="cityField" prefHeight="21.0" prefWidth="267.0" styleClass="field" />
                </children>
                <VBox.margin>
                   <Insets />

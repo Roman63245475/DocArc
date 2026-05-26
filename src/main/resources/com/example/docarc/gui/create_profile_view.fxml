@@ -7,7 +7,7 @@
 
 <VBox alignment="CENTER" prefHeight="382.0" prefWidth="465.0" spacing="10.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.CreateProfileController">
     <children>
-      <Label styleClass="h2" text="Profile Creation" />
+      <Label styleClass="h1" text="Profile Creation" />
       <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" spacing="15.0">
          <children>
               <HBox alignment="CENTER" prefWidth="270.0" spacing="10.0">
@@ -61,7 +61,7 @@
               <HBox alignment="CENTER" prefWidth="600.0" spacing="10.0">
                   <children>
                       <Label minWidth="-Infinity" text="Name:" />
-                      <TextField fx:id="nameField" minWidth="-Infinity">
+                      <TextField fx:id="nameField" minWidth="-Infinity" styleClass="field">
                           <HBox.margin>
                               <Insets />
                           </HBox.margin>

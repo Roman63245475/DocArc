@@ -38,9 +38,9 @@
                 <content>
                    <GridPane fx:id="boxCardsArea" hgap="15.0">
                      <columnConstraints>
-                         <ColumnConstraints percentWidth="33.33" />
-                         <ColumnConstraints percentWidth="33.33" />
-                         <ColumnConstraints percentWidth="33.33" />
+                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="33.33" />
+                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="33.33" />
+                         <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="33.33" />
                      </columnConstraints>
                       <rowConstraints>
                          <RowConstraints />

@@ -618,7 +618,7 @@ public class AdminController implements Initializable {
         }
         try {
             AssignProfileToClientController controller = (AssignProfileToClientController) UIHelper.openNewWindow(
-                    "assign_profile_to_client_view.fxml", "Assign profile to user", true);
+                    "assign_profile_to_client_view.fxml", "Assign profile to client", true);
             controller.setProfileAndAdmin(selected, this);
         } catch (IOException e) {
             e.printStackTrace();

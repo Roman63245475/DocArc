@@ -81,7 +81,7 @@ public class LogRepository implements ILogRepository {
         List<String> appLogs = new ArrayList<>();
         try (Connection con = ds.getConnection()) {
             try {
-                String sqlPrompt = "select * from app_logs";
+                String sqlPrompt = "select top 100 * from app_logs order by id;";
                 PreparedStatement ps = con.prepareStatement(sqlPrompt);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
@@ -103,7 +103,7 @@ public class LogRepository implements ILogRepository {
     public List<String> getErrorLogs() {
         List<String> errorLogs = new ArrayList<>();
         try (Connection con = ds.getConnection()) {
-            try(PreparedStatement ps = con.prepareStatement("select * from error_logs")){
+            try(PreparedStatement ps = con.prepareStatement("select top 100 * from error_logs order by id;")){
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String log = rs.getString("error_log");

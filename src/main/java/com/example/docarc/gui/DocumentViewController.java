@@ -55,11 +55,8 @@ public class DocumentViewController implements Initializable {
     private DocumentFileService service;
     private DataService dataService;
     private Box box;
-    private boolean deletionExecuted = false;
-    private Tiff fileToDeleteAfterMove;
 
     private boolean openedInEditMode = false;
-    private boolean orderChanged = false;
     ExportService exportService = new ExportService();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -238,19 +235,11 @@ public class DocumentViewController implements Initializable {
     }
 
     private void moveFile(Tiff item) {
-        this.fileToDeleteAfterMove = item;
         try {
             UIHelper.openDialogWindow(this.document, item, this.user, this);
         }
         catch (Exception e) {
             return;
-        }
-    }
-
-    public void getFeedback(boolean success) {
-        if (success) {
-            deletionExecuted = true;
-            this.listOfFiles.getItems().remove(this.fileToDeleteAfterMove);
         }
     }
 
@@ -393,16 +382,6 @@ public class DocumentViewController implements Initializable {
         this.user = user;
         //this.userLabel.setText(this.user.getUsername());
     }
-    @FXML
-    private void logOut(){
-        Stage st = (Stage) this.logOutButton.getScene().getWindow();
-        st.close();
-        try {
-            UIHelper.logOut();
-        } catch (IOException e) {
-            return;
-        }
-    }
 
     @FXML
     private void saveDocument(){
@@ -415,7 +394,7 @@ public class DocumentViewController implements Initializable {
         }
         this.document.setData(finalOrder);
         if (openedInEditMode){
-            onEditDocument(saveButton);
+            onEditDocument();
         }else{
             saveDocumentSecondPart();
         }
@@ -444,7 +423,7 @@ public class DocumentViewController implements Initializable {
         new Thread(save_document_task).start();
     }
 
-    private void onEditDocument(Button saveButton){
+    private void onEditDocument(){
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -456,13 +435,11 @@ public class DocumentViewController implements Initializable {
         saveButton.disableProperty().bind(task.runningProperty());
 
         task.setOnSucceeded(event -> {
-            deletionExecuted = true;
             onCancel();
         });
 
         task.setOnFailed(event -> {
             System.out.println("Error soobshenie: " + task.getException().getMessage());
-            deletionExecuted = true;
             onCancel();
         });
 
@@ -479,9 +456,6 @@ public class DocumentViewController implements Initializable {
 
     @FXML
     private void onCancel(){
-        if (deletionExecuted){
-            saveDocument();
-        }
         Stage st = (Stage) this.listOfFiles.getScene().getWindow();
         st.close();
     }

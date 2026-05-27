@@ -85,13 +85,11 @@ public class MoveFileController implements Initializable {
         };
         save_changed_files_task.setOnSucceeded(e -> {
             onCancel();
-            parentController.getFeedback(true);
         });
         save_changed_files_task.setOnFailed(e -> {
             onCancel();
             System.out.println(save_changed_files_task.getException().getMessage());
             save_changed_files_task.getException().printStackTrace();
-            parentController.getFeedback(false);
         });
         new Thread(save_changed_files_task).start();
     }

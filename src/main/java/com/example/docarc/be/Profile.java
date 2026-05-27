@@ -5,6 +5,7 @@ public class Profile {
     private String name;
     private double brightness;
     private double contrast;
+    private double rotation;
     private Boolean grayscale;
 
 
@@ -26,11 +27,12 @@ public class Profile {
         this.name = name;
     }
 
-    public Profile(String name, double brightness, double contrast, Boolean greyscale) {
+    public Profile(String name, double brightness, double contrast, double rotation, Boolean greyscale) {
         this.name = name;
         this.brightness = brightness;
         this.contrast = contrast;
         this.grayscale = greyscale;
+        this.rotation = rotation;
     }
 
     public void setGrayscale(Boolean grayscale) {
@@ -84,5 +86,13 @@ public class Profile {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
     }
 }

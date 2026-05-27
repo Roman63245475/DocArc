@@ -20,7 +20,7 @@ public class BoxRepository implements IBoxRepository {
     private DataSource ds;
     private static final Logger logger = LoggerFactory.getLogger(BoxRepository.class);
     private static final String sqlCreateBox = "Insert into boxes (name, user_id, profile_id) values (?, ?, ?)";
-    private static final String sqlGetBoxesWithProfiles = "select b.id as box_id, b.name as box_name, b.profile_id, profile_id, p.name as profile_name, p.brightness as profile_brightness, p.contrast as profile_contrast, p.grayscale as profile_grayscale from boxes b left join profiles p on b.profile_id = p.id where b.user_id = ?";
+    private static final String sqlGetBoxesWithProfiles = "select b.id as box_id, b.name as box_name, b.profile_id, profile_id, p.name as profile_name, p.brightness as profile_brightness, p.contrast as profile_contrast, p.grayscale as profile_grayscale, p.rotation as profile_rotation from boxes b left join profiles p on b.profile_id = p.id where b.user_id = ?";
 
     public BoxRepository() {
         this.ds = ConnectionManager.getDataSource();
@@ -82,7 +82,8 @@ public class BoxRepository implements IBoxRepository {
                 double brightness = rs.getDouble("profile_brightness");
                 double contrast = rs.getDouble("profile_contrast");
                 Boolean grayscale = rs.getBoolean("profile_grayscale");
-                userBoxes.add(new Box(boxId, boxName, user, new Profile(profileName, brightness, contrast, grayscale)));
+                double rotation = rs.getDouble("profile_rotation");
+                userBoxes.add(new Box(boxId, boxName, user, new Profile(profileName, brightness, contrast, rotation, grayscale)));
                 //String name, double brightness, double contrast, Boolean greyscale
             }
             return userBoxes;

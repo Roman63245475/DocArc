@@ -37,42 +37,7 @@ public class DocumentFileService {
 
     public void saveDocument(Document document) throws MyException, IOException {
         setUpFiles(document);
-        Connection con = null;
-        try {
-            con = ConnectionManager.getDataSource().getConnection();
-            con.setAutoCommit(false);
-            int id = this.documentRepository.insertDocument(con, document, UUID.randomUUID().toString());
-            if (id < 0){
-                throw new MyException("Failed to insert document");
-            }
-            this.fileRepository.saveFiles(con, id, document.getFiles());
-            con.commit();
-        }
-        catch (SQLException ex) {
-            if (con != null){
-                try {
-                    con.rollback();
-                }
-                catch (SQLException e) {
-                    logger.error("Failed to rollback transaction", e);
-                }
-            }
-            else{
-                logger.error("Failed to get a database connection due to: {}", ex.getMessage());
-            }
-            throw new MyException("Sorry something went wrong when saving document");
-        }
-
-        finally {
-            if (con != null){
-                try {
-                    con.close();
-                }
-                catch (SQLException e) {
-                    logger.error("Failed to close database connection", e);
-                }
-            }
-        }
+        documentRepository.saveDocument(document);
     }
 
     public void onEditDocument(Document document) throws MyException {

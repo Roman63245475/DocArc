@@ -3,7 +3,6 @@ package com.example.docarc.bll;
 import com.example.docarc.be.Profile;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class ImageProcessor {

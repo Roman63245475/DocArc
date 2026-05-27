@@ -34,12 +34,13 @@ public class ProfileRepository implements IProfileRepository {
     @Override
     public void addProfile(Profile profile) throws DuplicateException, MyException {
         try (Connection con = ds.getConnection()) {
-            String sqlPrompt = "INSERT INTO profiles (name, brightness, contrast, grayscale) VALUES (?, ?, ?, ?)";
+            String sqlPrompt = "INSERT INTO profiles (name, brightness, contrast, grayscale, rotation) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(sqlPrompt);
             ps.setString(1, profile.getName());
             ps.setDouble(2, profile.getBrightness());
             ps.setDouble(3, profile.getContrast());
             ps.setBoolean(4, profile.getGrayscale());
+            ps.setDouble(5, profile.getRotation());
             ps.executeUpdate();
             ps.close();
             logger.info("Profile added successfully");

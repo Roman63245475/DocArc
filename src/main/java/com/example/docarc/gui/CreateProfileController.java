@@ -25,8 +25,10 @@ import java.util.ResourceBundle;
 public class CreateProfileController implements Initializable {
 
     @FXML private HBox previewBox;
+
     @FXML private Slider contrastSlider;
     @FXML private Slider brightnessSlider;
+    @FXML private Slider rotationSlider;
 
     @FXML private CheckBox grayscaleCheckbox;
 
@@ -38,9 +40,12 @@ public class CreateProfileController implements Initializable {
 
     @FXML private Label contrastLabel;
     @FXML private Label brightnessLabel;
+    @FXML private Label rotationLabel;
     @FXML private Label errorLabel;
-    @FXML private Button saveButton;
     @FXML private Label tittleLabel;
+
+    @FXML private Button saveButton;
+
 
     private BufferedImage bi;
 
@@ -69,6 +74,7 @@ public class CreateProfileController implements Initializable {
         boolean grayscale = grayscaleCheckbox.isSelected();
         double contrast = contrastSlider.valueProperty().get();
         double brightness = brightnessSlider.valueProperty().get();
+        double rotation = rotationSlider.getValue();
         String name = nameField.getText();
         Task<Void> create_profile_task = new Task<Void>() {
             @Override
@@ -78,10 +84,11 @@ public class CreateProfileController implements Initializable {
                     profile.setContrast(contrast);
                     profile.setBrightness(brightness);
                     profile.setGrayscale(grayscale);
+                    profile.setRotation(rotation);
                     profileService.editProfile(profile);
                 }
                 else {
-                    profileService.createProfile(name, contrast, brightness, grayscale);
+                    profileService.createProfile(name, contrast, brightness, rotation, grayscale);
                 }
                 return null;
             }
@@ -106,6 +113,7 @@ public class CreateProfileController implements Initializable {
         this.errorLabel.setStyle("-fx-text-fill: red");
         contrastLabel.textProperty().bindBidirectional(contrastSlider.valueProperty(), new NumberStringConverter("###.#"));
         brightnessLabel.textProperty().bindBidirectional(brightnessSlider.valueProperty(), new NumberStringConverter("###.#"));
+        rotationLabel.textProperty().bindBidirectional(rotationSlider.valueProperty(), new NumberStringConverter("###.#"));
 
         contrastSlider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
@@ -116,6 +124,13 @@ public class CreateProfileController implements Initializable {
         brightnessSlider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 applyProfile();
+            }
+        });
+
+        rotationSlider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                applyProfile();
+                postImage.setRotate(rotationSlider.getValue());
             }
         });
 
@@ -132,7 +147,7 @@ public class CreateProfileController implements Initializable {
     }
 
     private void applyProfile(){
-        BufferedImage processedImage = ImageProcessor.applyProfileSettings(bi, new Profile("Dummy", brightnessSlider.getValue(), contrastSlider.getValue(), grayscaleCheckbox.isSelected()));
+        BufferedImage processedImage = ImageProcessor.applyProfileSettings(bi, new Profile("Dummy", brightnessSlider.getValue(), contrastSlider.getValue(), rotationSlider.getValue(), grayscaleCheckbox.isSelected()));
         Image img = SwingFXUtils.toFXImage(processedImage, null);
         postImage.setImage(img);
     }
@@ -145,5 +160,6 @@ public class CreateProfileController implements Initializable {
         this.brightnessSlider.setValue(profile.getBrightness());
         this.contrastSlider.setValue(profile.getContrast());
         this.grayscaleCheckbox.setSelected(profile.getGrayscale());
+        this.rotationSlider.setValue(profile.getRotation());
     }
 }

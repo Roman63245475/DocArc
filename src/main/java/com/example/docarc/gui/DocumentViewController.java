@@ -532,6 +532,9 @@ public class DocumentViewController implements Initializable {
         exportService.multiPage(images,getBoxId,profileName);
     }
 
+    public void setRotation(double rotation) {
+        pageView.setRotate(rotation);
+    }
 
 //    private void displayImages(List<Tiff> files){
 //        List<Image> images = new ArrayList<>();

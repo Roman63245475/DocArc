@@ -27,9 +27,9 @@ public class ProfileService {
         this.profileAssignmentRepository = profileAssignmentRepository;
     }
 
-    public void createProfile(String name, double contrast, double brightness, Boolean greyscale) throws MyException, DuplicateException {
+    public void createProfile(String name, double contrast, double brightness, double rotation, Boolean greyscale) throws MyException, DuplicateException {
         checkName(name);
-        profileRepository.addProfile(new Profile(name, brightness, contrast, greyscale));
+        profileRepository.addProfile(new Profile(name, brightness, contrast, rotation, greyscale));
     }
 
     public void editProfile(Profile profile) throws DataBaseConnectionException {

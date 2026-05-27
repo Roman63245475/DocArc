@@ -29,10 +29,10 @@ public class FileRepository implements IFileRepository {
     }
 
 
-    @Override
-    public List<Tiff> getFilesByDocumentsIds(List<Document> documents) throws MyException {
-        System.out.println("aga nu");
-        return List.of();
+//    @Override
+//    public List<Tiff> getFilesByDocumentsIds(List<Document> documents) throws MyException {
+//        System.out.println("aga nu");
+//        return List.of();
 //        if (documents.isEmpty()){
 //            return List.of();
 //        }
@@ -62,7 +62,7 @@ public class FileRepository implements IFileRepository {
 //            logger.error("Failed to observe documents due to: {}", e.getMessage());
 //            throw new MyException(e.getMessage());
 //        }
-    }
+//    }
 
     @Override
     public void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException {

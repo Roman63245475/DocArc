@@ -1,11 +1,8 @@
 package com.example.docarc.be;
 
-import org.apache.commons.logging.Log;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -67,6 +64,10 @@ public class Tiff extends Data{
             System.out.println("Failed to create file from BufferedImage: " + e.getMessage());
             return new File(destinationFolder, fileName);
         }
+    }
+
+    public void setDocumentId(int id){
+        this.documentId = id;
     }
     public int getId() {
         return id;

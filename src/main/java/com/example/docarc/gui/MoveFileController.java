@@ -5,6 +5,7 @@ import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
 import com.example.docarc.be.User;
 import com.example.docarc.bll.DataService;
+import com.example.docarc.bll.DocumentFileService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -18,8 +19,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,6 +36,8 @@ public class MoveFileController implements Initializable {
     private Tiff file_to_move;
     private User user;
     private Tiff draggedItem;
+    private DocumentFileService documentFileService;
+    private DocumentViewController parentController;
 
     private DataService dataService;
     private ObservableList<Box> availableBoxes = FXCollections.observableArrayList();
@@ -40,20 +45,56 @@ public class MoveFileController implements Initializable {
     private ObservableList<Tiff> files =  FXCollections.observableArrayList();
 
     @FXML private void onSave(){
-        System.out.println("save");
+        Document targetDocument = docCombobox.getSelectionModel().getSelectedItem();
+        if(targetDocument == null){
+            return;
+        }
+        if (files.isEmpty()){
+            return;
+        }
+        List<Tiff> changedSequence = new ArrayList<>();
+        int order_id = 1;
+        for(Tiff t : filesListView.getItems()){
+            t.setOrderId(order_id);
+            changedSequence.add(t);
+            order_id++;
+        }
+        saveChangedFilesSecondPart(targetDocument, changedSequence);
     }
 
     @FXML private void onCancel(){
-        System.out.println("cancel");
+        Stage stage = (Stage) filesListView.getScene().getWindow();
+        stage.close();
     }
 
-    public void setData(Document document, Tiff file_to_move, User user){
+    public void setData(Document document, Tiff file_to_move, User user, DocumentViewController documentViewController){
         this.sourceDocument = document;
         this.file_to_move = file_to_move;
         this.user = user;
+        this.parentController = documentViewController;
         displayAvailableBoxes();
     }
 
+    private void saveChangedFilesSecondPart(Document document, List<Tiff> changedSequence){
+        Task<Void> save_changed_files_task = new  Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                documentFileService.saveChangedFiles(document, changedSequence);
+                return null;
+            }
+        };
+        save_changed_files_task.setOnSucceeded(e -> {
+            onCancel();
+            parentController.getFeedback(true);
+        });
+        save_changed_files_task.setOnFailed(e -> {
+            onCancel();
+            System.out.println(save_changed_files_task.getException().getMessage());
+            save_changed_files_task.getException().printStackTrace();
+            parentController.getFeedback(false);
+        });
+        new Thread(save_changed_files_task).start();
+    }
 
     private void displayAvailableBoxes(){
         Task<List<Box>> get_available_boxes_task = new Task<List<Box>>(){
@@ -74,12 +115,16 @@ public class MoveFileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.documentFileService = new DocumentFileService();
         setUpListView();
         this.dataService = new DataService();
         this.boxCombobox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            this.files.clear();
+            this.availableDocuments.clear();
             displayAvailableDocuments(newValue);
         });
         this.docCombobox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            this.files.clear();
             displayDocumentFiles(newValue);
         });
         this.boxCombobox.setItems(availableBoxes);
@@ -98,7 +143,8 @@ public class MoveFileController implements Initializable {
             this.availableDocuments.setAll(get_available_documents.getValue());
         });
         get_available_documents.setOnFailed(event -> {
-            System.out.println(get_available_documents.getException().getMessage());
+            //System.out.println(get_available_documents.getException().getMessage());
+            get_available_documents.getException().printStackTrace();
         });
         new Thread(get_available_documents).start();
     }

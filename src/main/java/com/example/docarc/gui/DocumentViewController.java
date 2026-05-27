@@ -41,6 +41,8 @@ public class DocumentViewController implements Initializable {
     @FXML private ImageView pageView;
     @FXML private Label userLabel;
     @FXML private Button logOutButton;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
 
     @FXML private List<Image> currentDocumentFiles;
     @FXML private ListView<Tiff> listOfFiles;
@@ -53,6 +55,8 @@ public class DocumentViewController implements Initializable {
     private DocumentFileService service;
     private DataService dataService;
     private Box box;
+    private boolean deletionExecuted = false;
+    private Tiff fileToDeleteAfterMove;
 
     private boolean openedInEditMode = false;
     private boolean orderChanged = false;
@@ -234,12 +238,19 @@ public class DocumentViewController implements Initializable {
     }
 
     private void moveFile(Tiff item) {
-        System.out.println("Moving file");
+        this.fileToDeleteAfterMove = item;
         try {
-            UIHelper.openDialogWindow(this.document, item, this.user);
+            UIHelper.openDialogWindow(this.document, item, this.user, this);
         }
         catch (Exception e) {
             return;
+        }
+    }
+
+    public void getFeedback(boolean success) {
+        if (success) {
+            deletionExecuted = true;
+            this.listOfFiles.getItems().remove(this.fileToDeleteAfterMove);
         }
     }
 
@@ -394,8 +405,7 @@ public class DocumentViewController implements Initializable {
     }
 
     @FXML
-    private void saveDocument(ActionEvent event){
-        Button saveButton = (Button) event.getSource();
+    private void saveDocument(){
         List<Tiff> finalOrder = new ArrayList<>();
         int orderId = 1;
         for (Tiff t : listOfFiles.getItems()) {
@@ -407,11 +417,11 @@ public class DocumentViewController implements Initializable {
         if (openedInEditMode){
             onEditDocument(saveButton);
         }else{
-            saveDocumentSecondPart(saveButton);
+            saveDocumentSecondPart();
         }
     }
 
-    private void saveDocumentSecondPart(Button saveButton){
+    private void saveDocumentSecondPart(){
         Task<Void> save_document_task = new  Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -446,11 +456,13 @@ public class DocumentViewController implements Initializable {
         saveButton.disableProperty().bind(task.runningProperty());
 
         task.setOnSucceeded(event -> {
+            deletionExecuted = true;
             onCancel();
         });
 
         task.setOnFailed(event -> {
             System.out.println("Error soobshenie: " + task.getException().getMessage());
+            deletionExecuted = true;
             onCancel();
         });
 
@@ -467,6 +479,9 @@ public class DocumentViewController implements Initializable {
 
     @FXML
     private void onCancel(){
+        if (deletionExecuted){
+            saveDocument();
+        }
         Stage st = (Stage) this.listOfFiles.getScene().getWindow();
         st.close();
     }

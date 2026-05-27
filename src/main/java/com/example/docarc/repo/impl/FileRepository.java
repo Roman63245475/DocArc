@@ -2,9 +2,11 @@ package com.example.docarc.repo.impl;
 
 import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
+import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
 import com.example.docarc.repo.repositories.IFileRepository;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,24 +67,48 @@ public class FileRepository implements IFileRepository {
 //    }
 
     @Override
-    public void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException {
+    public void saveFiles(int documentId, List<Tiff> files) throws MyException, SQLException, DataBaseConnectionException {
         String sqlPrompt = "insert into files (documentId, name, reference_id, file_content, order_id) values (?,?,?,?,?)";
-        try (PreparedStatement ps = con.prepareStatement(sqlPrompt)){
-            for (Tiff file : files) {
-                ps.setInt(1, documentId);
-                ps.setString(2, file.getFileName());
-                ps.setInt(3, file.getReference_id());
-                ps.setBytes(4, file.getFileContent());
-                ps.setInt(5, file.getOrderId());
-                ps.addBatch();
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+            con.setAutoCommit(false);
+            try (PreparedStatement ps_delete = con.prepareStatement("delete from files where documentId = ?"); PreparedStatement ps_save = con.prepareStatement(sqlPrompt)){
+                ps_delete.setInt(1, documentId);
+                ps_delete.executeUpdate();
+                for (Tiff file : files) {
+                    ps_save.setInt(1, documentId);
+                    ps_save.setString(2, file.getFileName());
+                    ps_save.setInt(3, file.getReference_id());
+                    ps_save.setBytes(4, file.getFileContent());
+                    ps_save.setInt(5, file.getOrderId());
+                    ps_save.addBatch();
+                }
+                ps_save.executeBatch();
+                con.commit();
             }
-            ps.executeBatch();
         }
         catch (SQLException e) {
-            System.out.println("file repository " + e.getMessage());
-            e.printStackTrace();
-            logger.error("Failed to save files due to: {}", e.getMessage());
+            if (e instanceof SQLServerException){
+                try {
+                    con.rollback();
+                }
+                catch (SQLException e1) {
+                    logger.error("Failed to rollback the transaction", e1);
+                    throw new DataBaseConnectionException("Connection Failed");
+                }
+            }
             throw e;
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                }
+                catch (SQLException e1) {
+                    logger.error("Failed to close the connection", e1);
+                }
+            }
         }
     }
 

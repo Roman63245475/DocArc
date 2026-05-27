@@ -38,13 +38,13 @@
                   <ListView fx:id="listOfFiles" prefHeight="267.0" prefWidth="228.0" styleClass="field" VBox.vgrow="ALWAYS" />
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="294.0">
                      <children>
-                        <Button layoutX="10.0" layoutY="10.0" maxWidth="Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onCancel" prefHeight="17.0" prefWidth="109.0" text="Cancel">
+                        <Button fx:id="cancelButton" layoutX="10.0" layoutY="10.0" maxWidth="Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onCancel" prefHeight="17.0" prefWidth="109.0" text="Cancel">
                            <padding>
                               <Insets bottom="4.0" left="9.0" right="9.0" top="4.0" />
                            </padding>
                         </Button>
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button maxWidth="Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveDocument" prefHeight="17.0" prefWidth="109.0" text="Save">
+                        <Button fx:id="saveButton" maxWidth="Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveDocument" prefHeight="17.0" prefWidth="109.0" text="Save">
                            <padding>
                               <Insets bottom="4.0" left="9.0" right="9.0" top="4.0" />
                            </padding>

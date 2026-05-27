@@ -2,6 +2,7 @@ package com.example.docarc.repo.repositories;
 
 import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
+import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.MyException;
 
 import java.sql.Connection;
@@ -10,6 +11,6 @@ import java.util.List;
 
 public interface IFileRepository {
 
-    void saveFiles(Connection con, int documentId, List<Tiff> files) throws MyException, SQLException;
+    void saveFiles(int documentId, List<Tiff> files) throws MyException, SQLException, DataBaseConnectionException;
     List<Tiff> getFilesByDocumentId(int documentId) throws MyException;
 }

@@ -98,13 +98,18 @@ public class DocumentViewController implements Initializable {
 
                 {
                     // DELETE MENU ITEM
-                    MenuItem item = new MenuItem("Delete selected file.\t\t[ D ]");
-
-                    item.setOnAction(event -> {
+                    MenuItem deleteItem = new MenuItem("Delete selected file.\t\t[ D ]");
+                    MenuItem moveItem = new MenuItem("Move selected file.\t\t[ M ]");
+                    deleteItem.setOnAction(event -> {
                         listOfFiles.getItems().remove(getItem());
                     });
 
-                    menuButton.getItems().add(item);
+                    moveItem.setOnAction(event -> {
+                        moveFile(getItem());
+                    });
+
+                    menuButton.getItems().add(deleteItem);
+                    menuButton.getItems().add(moveItem);
 
                     dotIcon.getStyleClass().add("icon");
                     dotIcon.setId("ellipsis-h-icon");
@@ -226,6 +231,16 @@ public class DocumentViewController implements Initializable {
                 }
             });
         });
+    }
+
+    private void moveFile(Tiff item) {
+        System.out.println("Moving file");
+        try {
+            UIHelper.openDialogWindow(this.document, item, this.user);
+        }
+        catch (Exception e) {
+            return;
+        }
     }
 
 //    private void setListViewBehaviour() {
@@ -365,7 +380,7 @@ public class DocumentViewController implements Initializable {
 
     public void setUser(User user){
         this.user = user;
-        this.userLabel.setText(this.user.getUsername());
+        //this.userLabel.setText(this.user.getUsername());
     }
     @FXML
     private void logOut(){

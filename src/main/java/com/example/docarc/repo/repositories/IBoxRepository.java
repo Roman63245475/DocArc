@@ -13,4 +13,5 @@ public interface IBoxRepository {
     void deleteBox(int id);
     void renameBox(int box_id, String name);
     List<Box> getUserBoxes(User user) throws MyException;
+    List<Box> getAvailableBoxes(int user_id) throws MyException;
 }

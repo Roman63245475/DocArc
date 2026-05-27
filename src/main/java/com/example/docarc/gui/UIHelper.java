@@ -2,6 +2,8 @@ package com.example.docarc.gui;
 
 import com.example.docarc.be.Box;
 import com.example.docarc.be.Document;
+import com.example.docarc.be.Tiff;
+import com.example.docarc.be.User;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -57,7 +59,7 @@ public class UIHelper {
         return loader.getController();
     }
 
-    public static void displayDocument(Document doc, boolean edit) throws IOException {
+    public static void displayDocument(Document doc, boolean edit, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("document_view_page.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(loader.load());
@@ -71,13 +73,25 @@ public class UIHelper {
         stage.showAndWait();
     }
 
-    public static void displayDocument(Document doc, boolean edit, Box box) throws IOException {
+    public static void openDialogWindow(Document doc, Tiff file, User user) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("move_dialog_window.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        MoveFileController cont = (MoveFileController) loader.getController();
+        cont.setData(doc, file, user);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void displayDocument(Document doc, boolean edit, Box box, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("document_view_page.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(loader.load());
         DocumentViewController documentViewController = loader.getController();
         documentViewController.setDocument(doc);
         documentViewController.setBox(box);
+        documentViewController.setUser(user);
         if (edit){
             documentViewController.setEditMode();
         }

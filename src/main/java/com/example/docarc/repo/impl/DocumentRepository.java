@@ -19,6 +19,7 @@ public class DocumentRepository implements IDocumentRepository {
 
     private DataSource ds;
     private static final Logger logger = LoggerFactory.getLogger(DocumentRepository.class);
+    private static final String sqlGetAvailableDocuments = "select d.id as document_id, d.name as document_name from documents d where boxId = ? and d.id != ?";
 
     public DocumentRepository(){
         this.ds = ConnectionManager.getDataSource();
@@ -46,6 +47,25 @@ public class DocumentRepository implements IDocumentRepository {
                 documents.add(new Document(document_id, document_name, box_reference, amountOfFiles));
             }
             return documents;
+        }
+        catch (SQLException e) {
+            logger.error("Failed to observe documents due to: {}", e.getMessage());
+            throw new MyException(e.getMessage());
+        }
+    }
+
+    public List<Document> getDocumentsByBox(int box_id, int exceptional_document_id) throws MyException {
+        List<Document> available_documents = new ArrayList<>();
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlGetAvailableDocuments)) {
+            ps.setInt(1, box_id);
+            ps.setInt(2, exceptional_document_id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                int document_id = rs.getInt("document_id");
+                String document_name = rs.getString("document_name");
+                available_documents.add(new Document(document_id, document_name));
+            }
+            return available_documents;
         }
         catch (SQLException e) {
             logger.error("Failed to observe documents due to: {}", e.getMessage());

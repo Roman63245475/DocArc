@@ -21,6 +21,7 @@ public class BoxRepository implements IBoxRepository {
     private static final Logger logger = LoggerFactory.getLogger(BoxRepository.class);
     private static final String sqlCreateBox = "Insert into boxes (name, user_id, profile_id) values (?, ?, ?)";
     private static final String sqlGetBoxesWithProfiles = "select b.id as box_id, b.name as box_name, b.profile_id, profile_id, p.name as profile_name, p.brightness as profile_brightness, p.contrast as profile_contrast, p.grayscale as profile_grayscale from boxes b left join profiles p on b.profile_id = p.id where b.user_id = ?";
+    private static final String sqlGetAvailableBoxes = "select b.id as box_id, b.name as box_name from boxes b where user_id = ?";
 
     public BoxRepository() {
         this.ds = ConnectionManager.getDataSource();
@@ -90,6 +91,26 @@ public class BoxRepository implements IBoxRepository {
         catch (SQLException e) {
             logger.error("Failed to observe user's boxes dut to: {}", e.getMessage());
             throw new MyException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Box> getAvailableBoxes(int user_id) throws MyException {
+        List<Box> availableBoxes = new ArrayList<>();
+        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement(sqlGetAvailableBoxes)) {
+            ps.setInt(1, user_id);
+            ResultSet rs = ps.executeQuery();
+            //logger.info("Boxes successfully observed for user {}", user.getUsername());
+            while (rs.next()){
+                int boxId = rs.getInt("box_id");
+                String boxName = rs.getString("box_name");
+                availableBoxes.add(new Box(boxId, boxName));
+            }
+            return availableBoxes;
+        }
+        catch (SQLException e) {
+            logger.error("Failed to observe available boxes due to: {}", e.getMessage());
+            throw new MyException("failed to observe available boxes");
         }
     }
 }

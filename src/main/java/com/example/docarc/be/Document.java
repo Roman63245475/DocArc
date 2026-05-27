@@ -18,6 +18,11 @@ public class Document extends Data implements IDataSettable<Tiff> {
         this.files = new ArrayList<>();
     }
 
+    public Document(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public Document(String fileName, int boxId, List<Tiff> files){
         this.name = fileName;
         this.box_reference = boxId;

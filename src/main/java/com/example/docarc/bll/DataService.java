@@ -69,4 +69,16 @@ public class DataService {
         System.out.println("getFilesByDocument from dataservice");
         return this.fileRepository.getFilesByDocumentId(document.getId());
     }
+
+    public List<Box> getAvailableBoxes(User user) throws MyException {
+        List<Box> available_boxes = this.boxRepository.getAvailableBoxes(user.getId());
+        for(Box box : available_boxes){
+            System.out.println(box.getId() + ": " + box.getName());
+        }
+        return available_boxes;
+    }
+
+    public List<Document> getAvailableDocuments(Box box, Document exceptional_document) throws MyException {
+        return this.documentRepository.getDocumentsByBox(box.getId(), exceptional_document.getId());
+    }
 }

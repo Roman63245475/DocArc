@@ -68,7 +68,13 @@ public class BoxCardController {
 
     private void displayClickedDocument(Document document, Box box){
         try {
-            UIHelper.displayDocument(document, true, box, this.currentUser);
+            DocumentViewController controller = (DocumentViewController) UIHelper.displayDocument();
+            controller.setDocument(document);
+            controller.setBox(box);
+            controller.setUser(currentUser);
+            controller.setEditMode();
+            if (box.getProfile() == null) return;
+            controller.setRotation(box.getProfile().getRotation());
         } catch (IOException e) {
             System.out.println("needs to be logged likely");
         }
@@ -90,7 +96,11 @@ public class BoxCardController {
 
         scanDocument.setOnSucceeded((e) -> {
             try {
-                UIHelper.displayDocument(scanDocument.getValue(), false, this.currentUser);
+                DocumentViewController controller = (DocumentViewController) UIHelper.displayDocument();
+                controller.setDocument(scanDocument.getValue());
+                controller.setUser(currentUser);
+                if (box.getProfile() == null) return;
+                controller.setRotation(box.getProfile().getRotation());
             } catch (IOException ex) {
                 System.out.println("sorry couldn't display document");
             }

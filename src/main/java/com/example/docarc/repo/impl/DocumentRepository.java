@@ -73,64 +73,65 @@ public class DocumentRepository implements IDocumentRepository {
         }
     }
 
-//    @Override
-//    public void saveDocument(Document document) throws MyException {
-//        Connection con = null;
-//        try {
-//            con = ds.getConnection();
-//            con.setAutoCommit(false);
-//            String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
-//            try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)) {
-//                ps.setString(1, document.getName());
-//                ps.setString(2, "");
-//                ps.setInt(3, document.getBoxId());
-//                ps.executeUpdate();
-//                try (ResultSet rs = ps.getGeneratedKeys()) {
-//                    if (!rs.next()) {
-//                        throw new MyException("Failed to save document");
-//                    }
-//                    int generatedDocumentId = rs.getInt(1);
-//                    String saveFile = "insert into files (documentId, name, orderId, file_content) values (?,?,?,?)";
-//                    try (PreparedStatement ps2 = con.prepareStatement(saveFile)){
-//                        for (Tiff file : document.getFiles()) {
-//                            ps2.setInt(1, generatedDocumentId);
-//                            ps2.setString(2, file.getFileName());
-//                            ps2.setInt(3, file.getReference_id());
-//                            ps2.setBytes(4, file.getFileContent());
-//                            ps2.addBatch();
-//                        }
-//                        ps2.executeBatch();
-//                        con.commit();
-//                    }
-//                }
-//            }
-//        }
-//        catch (SQLException e) {
-//            if (con != null) {
-//                try {
-//                    con.rollback();
-//                    throw new MyException("Sorry document wasn't saved");
-//                }
-//                catch (SQLException ex) {
-//                    logger.error("Failed to rollback the transaction");
-//                }
-//            }
-//            else{
-//                logger.error("Connection Failed: {}", e.getMessage());
-//                throw new MyException("Connection Failed");
-//            }
-//        }
-//        finally {
-//            if (con != null) {
-//                try {
-//                    con.close();
-//                }
-//                catch (SQLException ex) {
-//                    logger.error("Failed to close the connection: {}", ex.getMessage());
-//                }
-//            }
-//        }
-//    }
+    @Override
+    public void saveDocument(Document document) throws MyException {
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+            con.setAutoCommit(false);
+            String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
+            try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, document.getName());
+                ps.setString(2, "");
+                ps.setInt(3, document.getBoxId());
+                ps.executeUpdate();
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (!rs.next()) {
+                        throw new MyException("Failed to save document");
+                    }
+                    int generatedDocumentId = rs.getInt(1);
+                    String saveFile = "insert into files (documentId, name, reference_id, file_content, order_id) values (?,?,?,?,?)";
+                    try (PreparedStatement ps2 = con.prepareStatement(saveFile)){
+                        for (Tiff file : document.getFiles()) {
+                            ps2.setInt(1, generatedDocumentId);
+                            ps2.setString(2, file.getFileName());
+                            ps2.setInt(3, file.getReference_id());
+                            ps2.setBytes(4, file.getFileContent());
+                            ps2.setInt(5, file.getOrderId());
+                            ps2.addBatch();
+                        }
+                        ps2.executeBatch();
+                        con.commit();
+                    }
+                }
+            }
+        }
+        catch (SQLException e) {
+            if (con != null) {
+                try {
+                    con.rollback();
+                    throw new MyException("Sorry document wasn't saved\n" + e.getMessage());
+                }
+                catch (SQLException ex) {
+                    logger.error("Failed to rollback the transaction");
+                }
+            }
+            else{
+                logger.error("Connection Failed: {}", e.getMessage());
+                throw new MyException("Connection Failed");
+            }
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                }
+                catch (SQLException ex) {
+                    logger.error("Failed to close the connection: {}", ex.getMessage());
+                }
+            }
+        }
+    }
 
     public int insertDocument(Connection con, Document document, String reg) throws MyException, SQLException {
         String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
@@ -167,12 +168,13 @@ public class DocumentRepository implements IDocumentRepository {
                     ps.setInt(1, document.getId());
                     ps.executeUpdate();
                 }
-                try(PreparedStatement ps = con.prepareStatement("INSERT INTO files(documentId, name, orderId, file_content) VALUES (?,?,?,?)")){
+                try(PreparedStatement ps = con.prepareStatement("INSERT INTO files(documentId, name, reference_id, file_content, order_id) VALUES (?,?,?,?,?)")){
                     ps.setInt(1, document.getId());
                     for (Tiff t : document.getFiles()){
                         ps.setString(2, t.getFileName());
                         ps.setInt(3, t.getReference_id());
                         ps.setBytes(4, t.getFileContent());
+                        ps.setInt(5, t.getOrderId());
                         ps.addBatch();
                         //System.out.println(t.getFileName() + " Position: " + t.getReference_id());
                     }
@@ -181,7 +183,7 @@ public class DocumentRepository implements IDocumentRepository {
                 con.commit();
             }catch (SQLException e){
                 con.rollback();
-                throw new RuntimeException("Transaction Failed, rolling back..", e);
+                throw new RuntimeException("Transaction Failed, rolling back.." + e.getMessage(), e);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

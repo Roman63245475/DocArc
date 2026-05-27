@@ -112,7 +112,7 @@
 }
 
 .combo-box .list-cell{
-    -fx-text-fill: #BFBFBF;
+    -fx-text-fill: #303030;
 }
 
 .combo-box .text-field{
@@ -123,6 +123,14 @@
 .combo-box .arrow-button{
     -fx-background-color: #F9F9F9;
     -fx-border-color: transparent;
+}
+
+.combo-box .list-view .list-cell:filled:selected {
+    -fx-background-color: #d8d5d5;
+}
+
+.combo-box .list-view .list-cell:hover{
+    -fx-background-color: #d8d5d5;
 }
 
 .split-pane-divider{

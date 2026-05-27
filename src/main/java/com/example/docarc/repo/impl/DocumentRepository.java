@@ -79,11 +79,10 @@ public class DocumentRepository implements IDocumentRepository {
         try {
             con = ds.getConnection();
             con.setAutoCommit(false);
-            String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
+            String documentCreation = "insert into documents (name, boxId) values (?,?)";
             try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, document.getName());
-                ps.setString(2, "");
-                ps.setInt(3, document.getBoxId());
+                ps.setInt(2, document.getBoxId());
                 ps.executeUpdate();
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (!rs.next()) {
@@ -133,12 +132,11 @@ public class DocumentRepository implements IDocumentRepository {
         }
     }
 
-    public int insertDocument(Connection con, Document document, String reg) throws MyException, SQLException {
-        String documentCreation = "insert into documents (name, reg, boxId) values (?,?,?)";
+    public int insertDocument(Connection con, Document document) throws MyException, SQLException {
+        String documentCreation = "insert into documents (name, boxId) values (?,?)";
         try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1, document.getName());
-            ps.setString(2, reg);
-            ps.setInt(3, document.getBoxId());
+            ps.setInt(2, document.getBoxId());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()){
                 if (!rs.next()) {

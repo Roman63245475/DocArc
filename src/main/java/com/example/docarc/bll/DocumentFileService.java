@@ -33,13 +33,24 @@ public class DocumentFileService {
 
     private void setUpFiles(Document doc) throws IOException {
         for (Tiff file : doc.getFiles()) {
+            if (file.getFileContent() != null) {
+                continue;
+            }
+            if (file.getFile() == null) {
+                throw new IOException("Could not prepare file content for: " + file.getFileName());
+            }
             file.setFileContent(Files.readAllBytes(file.getFile().toPath()));
         }
     }
 
     private void setUpFiles(List<Tiff> files) throws IOException {
-        List<Integer> reference_ids = new ArrayList<>();
         for (Tiff file : files) {
+            if (file.getFileContent() != null) {
+                continue;
+            }
+            if (file.getFile() == null) {
+                throw new IOException("Could not prepare file content for: " + file.getFileName());
+            }
             file.setFileContent(Files.readAllBytes(file.getFile().toPath()));
         }
     }

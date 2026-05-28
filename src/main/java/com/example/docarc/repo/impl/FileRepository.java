@@ -89,7 +89,7 @@ public class FileRepository implements IFileRepository {
             }
         }
         catch (SQLException e) {
-            if (e instanceof SQLServerException){
+            if (con != null) {
                 try {
                     con.rollback();
                 }
@@ -97,8 +97,8 @@ public class FileRepository implements IFileRepository {
                     logger.error("Failed to rollback the transaction", e1);
                     throw new DataBaseConnectionException("Connection Failed");
                 }
+                throw e;
             }
-            throw e;
         }
         finally {
             if (con != null) {

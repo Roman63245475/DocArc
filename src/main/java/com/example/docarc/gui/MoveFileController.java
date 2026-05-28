@@ -50,9 +50,6 @@ public class MoveFileController implements Initializable {
         if(targetDocument == null){
             return;
         }
-        if (files.isEmpty()){
-            return;
-        }
         List<Tiff> changedSequence = new ArrayList<>();
         int order_id = 1;
         for(Tiff t : filesListView.getItems()){
@@ -87,9 +84,9 @@ public class MoveFileController implements Initializable {
             onCancel();
         });
         save_changed_files_task.setOnFailed(e -> {
-            onCancel();
-            System.out.println(save_changed_files_task.getException().getMessage());
-            save_changed_files_task.getException().printStackTrace();
+            Throwable exception = save_changed_files_task.getException();
+            this.errorLabel.setText(exception.getMessage());
+            this.errorLabel.setOpacity(1.0);
         });
         new Thread(save_changed_files_task).start();
     }

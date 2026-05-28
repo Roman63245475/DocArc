@@ -65,7 +65,6 @@ public class DataService {
     }
 
     public List<Tiff> getFilesByDocument(Document document) throws MyException {
-        System.out.println("getFilesByDocument from dataservice");
         return this.fileRepository.getFilesByDocumentId(document.getId());
     }
 

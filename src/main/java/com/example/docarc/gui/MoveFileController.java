@@ -39,7 +39,6 @@ public class MoveFileController implements Initializable {
     private User user;
     private Tiff draggedItem;
     private DocumentFileService documentFileService;
-    private DocumentViewController parentController;
 
     private DataService dataService;
     private ObservableList<Box> availableBoxes = FXCollections.observableArrayList();
@@ -69,11 +68,10 @@ public class MoveFileController implements Initializable {
         stage.close();
     }
 
-    public void setData(Document document, Tiff file_to_move, User user, DocumentViewController documentViewController){
+    public void setData(Document document, Tiff file_to_move, User user){
         this.sourceDocument = document;
         this.file_to_move = file_to_move;
         this.user = user;
-        this.parentController = documentViewController;
         displayAvailableBoxes();
     }
 

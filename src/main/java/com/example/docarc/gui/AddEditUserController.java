@@ -49,7 +49,7 @@ public class AddEditUserController implements Initializable {
         this.userRoleBox.getItems().addAll(Role.values());
         revealField.textProperty().bindBidirectional(passwordField.textProperty());
         activeCheckBox.setSelected(true);
-    }git
+    }
 
 
 

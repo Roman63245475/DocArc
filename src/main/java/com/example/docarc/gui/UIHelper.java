@@ -81,6 +81,17 @@ public class UIHelper {
         stage.show();
     }
 
+    public static void showFile(Tiff tiff) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("show_image.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        ShowImageController cont = (ShowImageController) loader.getController();
+        cont.setImage(tiff.getConvertedBufferedImage());
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public static void displayDocument(Document doc, boolean edit, Box box, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("document_view_page.fxml"));
         Stage stage = new Stage();

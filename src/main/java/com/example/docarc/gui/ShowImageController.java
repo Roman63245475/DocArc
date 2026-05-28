@@ -17,8 +17,8 @@ public class ShowImageController {
 
     public void setImage(BufferedImage img){
         Image image = SwingFXUtils.toFXImage(img,null);
-        parentNode.setMaxHeight(image.getHeight());
-        parentNode.setMaxWidth(image.getWidth());
+        pictureField.fitWidthProperty().bind(parentNode.widthProperty());
+        pictureField.fitHeightProperty().bind(parentNode.heightProperty());
         pictureField.setImage(image);
     }
 }

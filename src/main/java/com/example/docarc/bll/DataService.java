@@ -29,6 +29,7 @@ public class DataService {
     public DataService(IBoxRepository boxRepository) {
         this.boxRepository = boxRepository;
     }
+
     public void createBox(String name, Profile profile, User responsibleUser) throws MyException, DuplicateException {
         checkName(name);
         if (profile == null) {
@@ -44,8 +45,6 @@ public class DataService {
         if(name.length()>50){
             throw new MyException("Name should be less than 50");
         }
-
-
     }
 
     public List<Box> getUserBoxes(User user) throws MyException {

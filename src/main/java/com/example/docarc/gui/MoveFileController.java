@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MoveFileController implements Initializable {
     @FXML private ComboBox<Box> boxCombobox;
     @FXML private ComboBox<Document> docCombobox;
     @FXML private ListView<Tiff> filesListView;
+    @FXML private Label errorLabel;
 
     private Document sourceDocument;
     private Tiff file_to_move;
@@ -103,14 +105,15 @@ public class MoveFileController implements Initializable {
             this.availableBoxes.setAll(get_available_boxes_task.getValue());
         });
         get_available_boxes_task.setOnFailed(event -> {
-            System.out.println(get_available_boxes_task.getException().getMessage());
-            get_available_boxes_task.getException().printStackTrace();
+            onCancel();
         });
         new Thread(get_available_boxes_task).start();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.errorLabel.setText("");
+        this.errorLabel.setStyle("-fx-text-fill: red");
         this.documentFileService = new DocumentFileService();
         setUpListView();
         this.dataService = new DataService();
@@ -139,8 +142,7 @@ public class MoveFileController implements Initializable {
             this.availableDocuments.setAll(get_available_documents.getValue());
         });
         get_available_documents.setOnFailed(event -> {
-            //System.out.println(get_available_documents.getException().getMessage());
-            get_available_documents.getException().printStackTrace();
+            onCancel();
         });
         new Thread(get_available_documents).start();
     }
@@ -158,13 +160,18 @@ public class MoveFileController implements Initializable {
             files.setAll(task_files);
         });
         get_files_task.setOnFailed(event -> {
-            System.out.println(get_files_task.getException().getMessage());
+            onCancel();
         });
         new Thread(get_files_task).start();
     }
 
     private void showFile(Tiff tiff){
-        System.out.println(tiff.toString() +" is showed");
+        try {
+            UIHelper.showFile(tiff);
+        }
+        catch (IOException e){
+            return;
+        }
     }
 
     private void setUpListView() {

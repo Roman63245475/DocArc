@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="548.0" spacing="15.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.MoveFileController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="548.0" spacing="10.0" stylesheets="@css/user-styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.docarc.gui.MoveFileController">
    <children>
       <Label styleClass="h1" text="Move file to other document">
          <VBox.margin>
@@ -31,7 +31,8 @@
             <Label text="Files of the selected Document:" />
          </children>
       </VBox>
-      <ListView fx:id="filesListView" maxWidth="-Infinity" prefHeight="294.0" prefWidth="400.0" styleClass="field" />
+      <ListView fx:id="filesListView" maxWidth="-Infinity" prefHeight="242.0" prefWidth="400.0" styleClass="field" />
+      <Label fx:id="errorLabel" opacity="0.0" text="Label" />
       <HBox alignment="CENTER" minWidth="-Infinity" prefWidth="600.0" spacing="100.0">
          <children>
             <Button mnemonicParsing="false" onAction="#onCancel" prefHeight="28.0" prefWidth="63.0" text="Cancel" />

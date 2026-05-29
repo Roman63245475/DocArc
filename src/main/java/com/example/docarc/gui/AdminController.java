@@ -255,7 +255,7 @@ public class AdminController implements Initializable {
                 });
 
                 editIcon.setOnMouseClicked(event -> {
-                    System.out.println("edit");
+                   // System.out.println("edit");
                     Profile prof = this.getTableView().getItems().get(getIndex());
                     openEditProfileWindow(prof);
                     // Hello kalivan, write code here :D
@@ -723,7 +723,7 @@ public class AdminController implements Initializable {
             System.out.println("here either needs to be an alert or some error label");
         }
         String Client = clientsComboBox.getSelectionModel().getSelectedItem().toString();
-        System.out.println(Client);
+
     }
 
 

@@ -70,12 +70,23 @@ public class UIHelper {
         return documentViewController;
     }
 
-    public static void openDialogWindow(Document doc, Tiff file, User user, DocumentViewController previousController) throws IOException {
+    public static void openDialogWindow(Document doc, Tiff file, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("move_dialog_window.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(loader.load());
         MoveFileController cont = (MoveFileController) loader.getController();
-        cont.setData(doc, file, user, previousController);
+        cont.setData(doc, file, user);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void showFile(Tiff tiff) throws IOException {
+        FXMLLoader loader = new FXMLLoader(UIHelper.class.getResource("show_image.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+        ShowImageController cont = (ShowImageController) loader.getController();
+        cont.setImage(tiff.getConvertedBufferedImage());
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.show();

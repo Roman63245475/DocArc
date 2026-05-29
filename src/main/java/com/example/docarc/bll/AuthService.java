@@ -26,8 +26,8 @@ public class AuthService {
 
     public AuthService(IUserRepository userRepository){
         this.userRepository = userRepository;
-        this.profileRepository = new ProfileRepository();
         this.passwordEncoder = new BCryptPasswordEncoder();
+        //this.profileRepository = new ProfileRepository();
     }
 
     public AuthService(){

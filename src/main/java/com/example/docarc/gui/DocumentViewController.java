@@ -236,7 +236,7 @@ public class DocumentViewController implements Initializable {
 
     private void moveFile(Tiff item) {
         try {
-            UIHelper.openDialogWindow(this.document, item, this.user, this);
+            UIHelper.openDialogWindow(this.document, item, this.user);
         }
         catch (Exception e) {
             return;

@@ -29,6 +29,7 @@ public class DataService {
     public DataService(IBoxRepository boxRepository) {
         this.boxRepository = boxRepository;
     }
+
     public void createBox(String name, Profile profile, User responsibleUser) throws MyException, DuplicateException {
         checkName(name);
         if (profile == null) {
@@ -44,8 +45,6 @@ public class DataService {
         if(name.length()>50){
             throw new MyException("Name should be less than 50");
         }
-
-
     }
 
     public List<Box> getUserBoxes(User user) throws MyException {
@@ -66,16 +65,11 @@ public class DataService {
     }
 
     public List<Tiff> getFilesByDocument(Document document) throws MyException {
-        System.out.println("getFilesByDocument from dataservice");
         return this.fileRepository.getFilesByDocumentId(document.getId());
     }
 
     public List<Box> getAvailableBoxes(User user) throws MyException {
-        List<Box> available_boxes = this.boxRepository.getAvailableBoxes(user.getId());
-        for(Box box : available_boxes){
-            System.out.println(box.getId() + ": " + box.getName());
-        }
-        return available_boxes;
+        return this.boxRepository.getAvailableBoxes(user.getId());
     }
 
     public List<Document> getAvailableDocuments(Box box, Document exceptional_document) throws MyException {

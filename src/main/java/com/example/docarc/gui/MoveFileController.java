@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +32,13 @@ public class MoveFileController implements Initializable {
     @FXML private ComboBox<Box> boxCombobox;
     @FXML private ComboBox<Document> docCombobox;
     @FXML private ListView<Tiff> filesListView;
+    @FXML private Label errorLabel;
 
     private Document sourceDocument;
     private Tiff file_to_move;
     private User user;
     private Tiff draggedItem;
     private DocumentFileService documentFileService;
-    private DocumentViewController parentController;
 
     private DataService dataService;
     private ObservableList<Box> availableBoxes = FXCollections.observableArrayList();
@@ -47,9 +48,6 @@ public class MoveFileController implements Initializable {
     @FXML private void onSave(){
         Document targetDocument = docCombobox.getSelectionModel().getSelectedItem();
         if(targetDocument == null){
-            return;
-        }
-        if (files.isEmpty()){
             return;
         }
         List<Tiff> changedSequence = new ArrayList<>();
@@ -67,11 +65,10 @@ public class MoveFileController implements Initializable {
         stage.close();
     }
 
-    public void setData(Document document, Tiff file_to_move, User user, DocumentViewController documentViewController){
+    public void setData(Document document, Tiff file_to_move, User user){
         this.sourceDocument = document;
         this.file_to_move = file_to_move;
         this.user = user;
-        this.parentController = documentViewController;
         displayAvailableBoxes();
     }
 
@@ -87,9 +84,9 @@ public class MoveFileController implements Initializable {
             onCancel();
         });
         save_changed_files_task.setOnFailed(e -> {
-            onCancel();
-            System.out.println(save_changed_files_task.getException().getMessage());
-            save_changed_files_task.getException().printStackTrace();
+            Throwable exception = save_changed_files_task.getException();
+            this.errorLabel.setText(exception.getMessage());
+            this.errorLabel.setOpacity(1.0);
         });
         new Thread(save_changed_files_task).start();
     }
@@ -105,14 +102,15 @@ public class MoveFileController implements Initializable {
             this.availableBoxes.setAll(get_available_boxes_task.getValue());
         });
         get_available_boxes_task.setOnFailed(event -> {
-            System.out.println(get_available_boxes_task.getException().getMessage());
-            get_available_boxes_task.getException().printStackTrace();
+            onCancel();
         });
         new Thread(get_available_boxes_task).start();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.errorLabel.setText("");
+        this.errorLabel.setStyle("-fx-text-fill: red");
         this.documentFileService = new DocumentFileService();
         setUpListView();
         this.dataService = new DataService();
@@ -141,8 +139,7 @@ public class MoveFileController implements Initializable {
             this.availableDocuments.setAll(get_available_documents.getValue());
         });
         get_available_documents.setOnFailed(event -> {
-            //System.out.println(get_available_documents.getException().getMessage());
-            get_available_documents.getException().printStackTrace();
+            onCancel();
         });
         new Thread(get_available_documents).start();
     }
@@ -160,13 +157,18 @@ public class MoveFileController implements Initializable {
             files.setAll(task_files);
         });
         get_files_task.setOnFailed(event -> {
-            System.out.println(get_files_task.getException().getMessage());
+            onCancel();
         });
         new Thread(get_files_task).start();
     }
 
     private void showFile(Tiff tiff){
-        System.out.println(tiff.toString() +" is showed");
+        try {
+            UIHelper.showFile(tiff);
+        }
+        catch (IOException e){
+            return;
+        }
     }
 
     private void setUpListView() {

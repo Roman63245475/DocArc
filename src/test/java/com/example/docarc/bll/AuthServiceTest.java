@@ -24,7 +24,7 @@ class AuthServiceTest {
     void login() throws LoginException {
         Admin admin = new Admin(1, "roman_admin", "$2a$10$J3Ioaufs7oOjCP4iTMRQ6.YZvw7c24qFOL/CVN52sID.1.Kiy99kC", true);
         assertEquals(admin, authService.login("roman_admin", "yumma4444"));
-        assertThrows(MyException.class, () -> authService.login("kalivan_usr", "kalivanskiy"));
+        assertThrows(LoginException.class, () -> authService.login("kalivan_usr", "kalivanskiy"));
     }
 
 

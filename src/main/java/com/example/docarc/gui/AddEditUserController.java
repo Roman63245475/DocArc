@@ -49,6 +49,8 @@ public class AddEditUserController implements Initializable {
         this.userRoleBox.getItems().addAll(Role.values());
         revealField.textProperty().bindBidirectional(passwordField.textProperty());
         activeCheckBox.setSelected(true);
+        activeCheckBox.setVisible(false);
+        activeCheckBox.setManaged(false);
     }
 
 
@@ -148,6 +150,9 @@ public class AddEditUserController implements Initializable {
         this.titleLabelTop.setText("Edit User");
         this.titleLabelBottom.setText("Edit already existing user");
         this.createUserButton.setOnAction(event -> {editUser();});
+        activeCheckBox.setVisible(true);
+        activeCheckBox.setManaged(true);
+        activeCheckBox.setSelected(user.isUserActive());
         fillFields();
     }
 

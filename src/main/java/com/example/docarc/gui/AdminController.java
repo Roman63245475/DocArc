@@ -722,7 +722,6 @@ public class AdminController implements Initializable {
         catch (Exception e) {
             System.out.println("here either needs to be an alert or some error label");
         }
-        String Client = clientsComboBox.getSelectionModel().getSelectedItem().toString();
 
     }
 

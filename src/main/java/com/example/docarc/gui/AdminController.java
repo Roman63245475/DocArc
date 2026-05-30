@@ -5,6 +5,7 @@ import com.example.docarc.bll.ClientService;
 import com.example.docarc.bll.LogService;
 import com.example.docarc.bll.ProfileService;
 import com.example.docarc.bll.UserService;
+import javafx.application.Platform;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -254,7 +255,7 @@ public class AdminController implements Initializable {
                 });
 
                 editIcon.setOnMouseClicked(event -> {
-                    System.out.println("edit");
+                   // System.out.println("edit");
                     Profile prof = this.getTableView().getItems().get(getIndex());
                     openEditProfileWindow(prof);
                     // Hello kalivan, write code here :D
@@ -627,13 +628,27 @@ public class AdminController implements Initializable {
 
 
     public void displayClients(){
+        final Integer previouslySelectedClientId = (selectedClient == null) ? null : selectedClient.getId();
         Task<List<Client>> get_clients = new Task<List<Client>>() {
             @Override
             protected List<Client> call() throws Exception {
                 return clientService.getClients();
             }
         };
-        get_clients.setOnSucceeded(e -> this.clientsList.setAll(get_clients.getValue()));
+        get_clients.setOnSucceeded(e -> {
+            this.clientsList.setAll(get_clients.getValue());
+
+            if (previouslySelectedClientId != null) {
+                Platform.runLater(() -> {
+                    for (Client c : clientsList) {
+                        if (c != null && c.getId() == previouslySelectedClientId) {
+                            clientsComboBox.getSelectionModel().select(c);
+                            break;
+                        }
+                    }
+                });
+            }
+        });
         //get_clients.setOnFailed(e -> System.out.println("idk what to do here"));
         new Thread(get_clients).start();
     }
@@ -707,6 +722,7 @@ public class AdminController implements Initializable {
         catch (Exception e) {
             System.out.println("here either needs to be an alert or some error label");
         }
+
     }
 
 

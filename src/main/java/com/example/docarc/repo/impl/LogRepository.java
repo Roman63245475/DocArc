@@ -38,6 +38,7 @@ public class LogRepository implements ILogRepository {
                     ps.executeBatch();
                 }
                 con.commit();
+                logger.info("Successfully saved the app logs.");
                 return true;
             } catch (SQLException e) {
                 rollbackQuietly(con);
@@ -64,6 +65,7 @@ public class LogRepository implements ILogRepository {
                     ps.executeBatch();
                 }
                 con.commit();
+                logger.info("Successfully saved the error logs.");
                 return true;
             } catch (SQLException e) {
                 rollbackQuietly(con);
@@ -96,6 +98,7 @@ public class LogRepository implements ILogRepository {
             logger.error("Failed to load app logs due to: {}", e.getMessage());
             return appLogs;
         }
+        logger.info("Successfully retrieved the app logs.");
         return appLogs;
     }
 
@@ -118,15 +121,16 @@ public class LogRepository implements ILogRepository {
             logger.error("Failed to load app logs due to: {}", e.getMessage());
             return errorLogs;
         }
+        logger.info("Successfully retrieved the error logs.");
         return errorLogs;
     }
 
     private void rollbackQuietly(Connection con) {
         try {
             con.rollback();
+            logger.error("Failed to save the logs.");
         } catch (SQLException ex) {
             logger.error("Failed to rollback transaction: {}", ex.getMessage());
         }
     }
-
 }

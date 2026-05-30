@@ -88,7 +88,7 @@ public class BoxCardController {
             @Override
             protected Document call() throws Exception {
                 // Передаем имя профайла вместо "default"
-                return apiService.loadDocument(box.getProfile(), box.getId());
+                return apiService.loadDocument(box.getProfile(), box.getId(), currentUser);
             }
         };
 

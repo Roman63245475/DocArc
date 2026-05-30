@@ -49,12 +49,15 @@ public class UserRepository implements IUserRepository {
                 int clientId = rs.getInt("clientId");
                 boolean active = rs.getBoolean("is_active");
                 ParentUser user = (isAdmin) ? new Admin(id, username, password, active) : new User(id, username, password, clientId, active);
+                logger.info("Successfully retrieved the user with id: {}.", id);
                 return user;
             }
             //if user not found
+            logger.warn("Failed to retrieve the user with id: {}.", username);
             throw new LoginException("User not found");
         } catch (SQLServerException e) {
             //if couldn't have gotten a connection obj
+            logger.error("Database connection failed while trying to get the user by username");
             throw new DataBaseConnectionException("Connection failed");
         } catch (SQLException e) {
             logger.error("SQL Error", e);
@@ -74,12 +77,15 @@ public class UserRepository implements IUserRepository {
             ps.setInt(4, clientId);
             ps.setBoolean(5, isActive);
             ps.executeUpdate();
+            logger.info("Successfully created the user with username: {}.", username);
         }
         catch (SQLException e){
             if (con == null){
+                logger.error("Database connection failed while trying to create the user with username: {}.", username);
                 throw new DataBaseConnectionException("Connection failed");
             }
             else if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
+                logger.warn("Failed to create a user, user with the username {} already exists.", username);
                 throw new DuplicateException("User with this username already exists");
             }
             else {
@@ -113,9 +119,11 @@ public class UserRepository implements IUserRepository {
                 ParentUser user = (isAdmin) ? new Admin(Id, username, password, active) : new User(Id, username, password, active);
                 users.add(user);
             }
+            logger.info("Successfully retrieved the users by client with id: {}.", clientId);
             return users;
         }
         catch (SQLServerException e){
+            logger.error("Database connection failed while trying to get the users by client");
             throw new DataBaseConnectionException("Connection failed");
         }
         catch (SQLException e){
@@ -147,12 +155,15 @@ public class UserRepository implements IUserRepository {
                 ps.setInt(5, user.getId());
             }
             ps.executeUpdate();
+            logger.info("Successfully updated the user with id: {}.", user.getId());
         }
         catch (SQLException e){
             if (con == null){
+                logger.error("Database connection failed while trying to update the user.");
                 throw new DataBaseConnectionException("Connection failed");
             }
             else if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
+                logger.warn("User with the same username already exists: {}.", username);
                 throw new DuplicateException("User with this username already exists");
             }
             else {
@@ -167,13 +178,14 @@ public class UserRepository implements IUserRepository {
             try(PreparedStatement ps = con.prepareStatement("delete from users where id = ?")){
                 ps.setInt(1, id);
                 ps.executeUpdate();
+                logger.info("Successfully deleted the user with id: {}.", id);
             }
         } catch (SQLServerException e){
             logger.error("Connection failed due to: {}", e.getMessage());
             throw new DataBaseConnectionException("Connection failed");
         }
         catch (SQLException e){
-            logger.error("sql prompt failed");
+            logger.error("SQL prompt failed");
             throw new MyException("Sorry something went wrong");
         }
     }

@@ -76,7 +76,7 @@ public class MoveFileController implements Initializable {
         Task<Void> save_changed_files_task = new  Task<Void>() {
             @Override
             public Void call() throws Exception {
-                documentFileService.saveChangedFiles(document, changedSequence);
+                documentFileService.saveChangedFiles(document, changedSequence, user.getUsername());
                 return null;
             }
         };

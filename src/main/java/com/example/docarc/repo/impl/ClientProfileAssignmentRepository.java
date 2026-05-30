@@ -54,11 +54,13 @@ public class ClientProfileAssignmentRepository implements IClientProfileAssignme
                     clients.add(new Client(id, name));
                 }
             }
+            logger.info("Successfully found {} clients for profile with id {}", clients.size(), profileId);
             return clients;
         } catch (SQLServerException e) {
-            throw new DataBaseConnectionException("Connection failed. " + e.getMessage());
+            logger.error("Connection failed: {}", e.getMessage());
+            throw new DataBaseConnectionException("Connection failed: " + e.getMessage());
         } catch (SQLException e) {
-            logger.error("findUsersEligibleForProfile failed: {}", e.getMessage());
+            logger.error("findUsersEligibleForProfile failed due to: {}", e.getMessage());
             throw new MyException("Could not load users for assignment.");
         }
     }
@@ -77,14 +79,17 @@ public class ClientProfileAssignmentRepository implements IClientProfileAssignme
             ps.setInt(1, profileId);
             ps.setInt(2, clientId);
             ps.executeUpdate();
+            logger.info("Successfully assigned profile with id {} to client with id {}", profileId, clientId);
         } catch (SQLServerException e) {
-            throw new DataBaseConnectionException("Connection failed. " + e.getMessage());
+            logger.error("Connection failed: {}", e.getMessage());
+            throw new DataBaseConnectionException("Connection failed: " + e.getMessage());
         } catch (SQLException e) {
             e.printStackTrace();
             if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
+                logger.warn("Could not assign profile {} to client {} due to duplication error.", profileId, clientId);
                 throw new DuplicateException("This client already has this profile.");
             }
-            logger.error("assignProfileToUser failed: {}", e.getMessage());
+            logger.error("assignProfileToUser failed due to: {}", e.getMessage());
             throw new MyException("Could not assign profile.");
         }
     }

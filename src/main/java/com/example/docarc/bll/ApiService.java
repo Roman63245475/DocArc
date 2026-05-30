@@ -3,13 +3,15 @@ package com.example.docarc.bll;
 import com.example.docarc.be.Document;
 import com.example.docarc.be.Profile;
 import com.example.docarc.be.Tiff;
+import com.example.docarc.be.User;
+import com.example.docarc.repo.impl.DocumentRepository;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-import javafx.embed.swing.SwingFXUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -28,6 +30,7 @@ public class ApiService {
     private final String tempZipDocuments = "zipDocuments";
     private final String destinationFolder = "unzippedFiles";
     private final String stringUrl = "https://studentiffapi-production.up.railway.app/getRandomFile";
+    private static final Logger logger = LoggerFactory.getLogger(ApiService.class);
 
     public File unzipFile(File fetchedZipFile) {
 
@@ -125,7 +128,7 @@ public class ApiService {
     }
 
 
-    public Document loadDocument(Profile profile, int boxId) {
+    public Document loadDocument(Profile profile, int boxId, User currentUser) {
         //System.out.println("I'm invoked from api");
         boolean barCodeFound = false;
         String fileName = (profile == null) ? "default" + boxId + "_" + UUID.randomUUID().toString() : profile.getName() + "_" + boxId + "_" + UUID.randomUUID().toString();
@@ -147,6 +150,7 @@ public class ApiService {
                 scanningOrderId++;
                 reference_id++;
             }
+            logger.info("User {} created a document with files.", currentUser.getUsername());
             return new Document(fileName, boxId, files);
         }
         catch (IOException ex){

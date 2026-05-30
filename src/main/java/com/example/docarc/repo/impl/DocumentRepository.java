@@ -38,7 +38,6 @@ public class DocumentRepository implements IDocumentRepository {
                 ps.setInt(i+1, boxes.get(i).getId());
             }
             ResultSet rs = ps.executeQuery();
-            logger.info("Documents successfully observed");
             while (rs.next()){
                 int document_id = rs.getInt("id");
                 String document_name = rs.getString("name");
@@ -46,6 +45,11 @@ public class DocumentRepository implements IDocumentRepository {
                 int amountOfFiles = rs.getInt("amount_of_files");
                 documents.add(new Document(document_id, document_name, box_reference, amountOfFiles));
             }
+            List<Integer> boxIds = new ArrayList<>();
+            for (Box box : boxes){
+                boxIds.add(box.getId());
+            }
+            logger.info("Successfully retrieved the documents for {} boxes with ids: {}.", boxes.size(), boxIds);
             return documents;
         }
         catch (SQLException e) {
@@ -65,10 +69,11 @@ public class DocumentRepository implements IDocumentRepository {
                 String document_name = rs.getString("document_name");
                 available_documents.add(new Document(document_id, document_name));
             }
+            logger.info("Successfully retrieved the documents for the box with id {}.", box_id);
             return available_documents;
         }
         catch (SQLException e) {
-            logger.error("Failed to observe documents due to: {}", e.getMessage());
+            logger.error("Failed to observe documents due to: {}.", e.getMessage());
             throw new MyException(e.getMessage());
         }
     }
@@ -86,13 +91,15 @@ public class DocumentRepository implements IDocumentRepository {
                 ps.executeUpdate();
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (!rs.next()) {
+                        logger.error("Failed to create the document named: {}.", document.getName());
                         throw new MyException("Failed to save document");
                     }
+                    logger.info("Successfully created the document named: {}.", document.getName());
                     int generatedDocumentId = rs.getInt(1);
                     String saveFile = "insert into files (documentId, name, reference_id, file_content, order_id) values (?,?,?,?,?)";
                     try (PreparedStatement ps2 = con.prepareStatement(saveFile)){
+                        ps2.setInt(1, generatedDocumentId);
                         for (Tiff file : document.getFiles()) {
-                            ps2.setInt(1, generatedDocumentId);
                             ps2.setString(2, file.getFileName());
                             ps2.setInt(3, file.getReference_id());
                             ps2.setBytes(4, file.getFileContent());
@@ -101,6 +108,7 @@ public class DocumentRepository implements IDocumentRepository {
                         }
                         ps2.executeBatch();
                         con.commit();
+                        logger.info("Successfully added the files to the document named: {}." , document.getName());
                     }
                 }
             }
@@ -109,10 +117,11 @@ public class DocumentRepository implements IDocumentRepository {
             if (con != null) {
                 try {
                     con.rollback();
-                    throw new MyException("Sorry document wasn't saved\n" + e.getMessage());
+                    logger.error("Failed to save the document with id: {}, named: {}.", document.getId(), document.getName());
+                    throw new MyException("Failed to save the document:\n" + e.getMessage());
                 }
                 catch (SQLException ex) {
-                    logger.error("Failed to rollback the transaction");
+                    logger.error("Failed to rollback the transaction.");
                 }
             }
             else{
@@ -132,59 +141,59 @@ public class DocumentRepository implements IDocumentRepository {
         }
     }
 
-    public int insertDocument(Connection con, Document document) throws MyException, SQLException {
-        String documentCreation = "insert into documents (name, boxId) values (?,?)";
-        try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)){
-            ps.setString(1, document.getName());
-            ps.setInt(2, document.getBoxId());
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()){
-                if (!rs.next()) {
-                    return -1;
-                }
-                return rs.getInt(1);
-            }
-            catch (SQLException e) {
-                logger.error("Failed to observe document id due to: {}", e.getMessage());
-                return -1;
-            }
-        }
-        catch (SQLException e) {
-            System.out.println("document repository " + e.getMessage());
-            e.printStackTrace();
-            logger.error("Failed to create a document due to: {}", e.getMessage());
-            throw e;
-        }
-    }
+//    public int insertDocument(Connection con, Document document) throws MyException, SQLException {
+//        String documentCreation = "insert into documents (name, boxId) values (?,?)";
+//        try (PreparedStatement ps = con.prepareStatement(documentCreation, Statement.RETURN_GENERATED_KEYS)){
+//            ps.setString(1, document.getName());
+//            ps.setInt(2, document.getBoxId());
+//            ps.executeUpdate();
+//            try (ResultSet rs = ps.getGeneratedKeys()){
+//                if (!rs.next()) {
+//                    return -1;
+//                }
+//                return rs.getInt(1);
+//            }
+//            catch (SQLException e) {
+//                logger.error("Failed to observe document id due to: {}", e.getMessage());
+//                return -1;
+//            }
+//        }
+//        catch (SQLException e) {
+//            System.out.println("document repository " + e.getMessage());
+//            e.printStackTrace();
+//            logger.error("Failed to create a document due to: {}", e.getMessage());
+//            throw e;
+//        }
+//    }
 
-    @Override
-    public void updateDocument(Document document) {
-        try(Connection con = ds.getConnection()){
-            con.setAutoCommit(false);
-            try{
-                try(PreparedStatement ps = con.prepareStatement("DELETE FROM files WHERE documentId = ?")){
-                    ps.setInt(1, document.getId());
-                    ps.executeUpdate();
-                }
-                try(PreparedStatement ps = con.prepareStatement("INSERT INTO files(documentId, name, reference_id, file_content, order_id) VALUES (?,?,?,?,?)")){
-                    ps.setInt(1, document.getId());
-                    for (Tiff t : document.getFiles()){
-                        ps.setString(2, t.getFileName());
-                        ps.setInt(3, t.getReference_id());
-                        ps.setBytes(4, t.getFileContent());
-                        ps.setInt(5, t.getOrderId());
-                        ps.addBatch();
-                        //System.out.println(t.getFileName() + " Position: " + t.getReference_id());
-                    }
-                    ps.executeBatch();
-                }
-                con.commit();
-            }catch (SQLException e){
-                con.rollback();
-                throw new RuntimeException("Transaction Failed, rolling back.." + e.getMessage(), e);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    public void updateDocument(Document document) {
+//        try(Connection con = ds.getConnection()){
+//            con.setAutoCommit(false);
+//            try{
+//                try(PreparedStatement ps = con.prepareStatement("DELETE FROM files WHERE documentId = ?")){
+//                    ps.setInt(1, document.getId());
+//                    ps.executeUpdate();
+//                }
+//                try(PreparedStatement ps = con.prepareStatement("INSERT INTO files(documentId, name, reference_id, file_content, order_id) VALUES (?,?,?,?,?)")){
+//                    ps.setInt(1, document.getId());
+//                    for (Tiff t : document.getFiles()){
+//                        ps.setString(2, t.getFileName());
+//                        ps.setInt(3, t.getReference_id());
+//                        ps.setBytes(4, t.getFileContent());
+//                        ps.setInt(5, t.getOrderId());
+//                        ps.addBatch();
+//                        //System.out.println(t.getFileName() + " Position: " + t.getReference_id());
+//                    }
+//                    ps.executeBatch();
+//                }
+//                con.commit();
+//            }catch (SQLException e){
+//                con.rollback();
+//                throw new RuntimeException("Transaction Failed, rolling back.." + e.getMessage(), e);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

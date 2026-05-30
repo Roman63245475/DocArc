@@ -43,20 +43,18 @@ public class ProfileRepository implements IProfileRepository {
             ps.setDouble(5, profile.getRotation());
             ps.executeUpdate();
             ps.close();
-            logger.info("Profile added successfully");
+            logger.info("Profile named: {} has been created successfully", profile.getName());
         }
         catch (SQLException e) {
             if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
-                logger.warn("Attempt to insert a duplicate");
-                throw new DuplicateException("Profile with the same name already exists");
+                logger.warn("Failed to create profile: Name '{}' already exists.", profile.getName());
+                throw new DuplicateException("Profile with the same name already exists.");
             }
             else{
                 logger.error("Failed to create a profile due to: {}", e.getMessage());
-                throw new MyException("Sorry something went wrong went creating a profile");
+                throw new MyException("Could not create a profile, try again later.");
             }
-
         }
-
     }
 
     @Override
@@ -68,9 +66,11 @@ public class ProfileRepository implements IProfileRepository {
             ps.setBoolean(4, profile.getGrayscale());
             ps.setInt(5, profile.getId());
             ps.executeUpdate();
+            logger.info("Profile with id: {} has been updated successfully", profile.getId());
         }
         catch (SQLException e) {
-            throw new DataBaseConnectionException("something went wrong");
+            logger.error("Failed to update the profile due to: {}", e.getMessage());
+            throw new DataBaseConnectionException("Failed to update the profile:\n" + e.getMessage());
         }
     }
 
@@ -84,11 +84,14 @@ public class ProfileRepository implements IProfileRepository {
                     ps.executeUpdate();
                 }
                 con.commit();
+                logger.info("Profile with id: {} has been deleted successfully", id);
             } catch (SQLException e) {
                 con.rollback();
+                logger.error("Failed to delete the profile with id: {}", id);
                 throw new RuntimeException(e);
             }
         } catch (SQLException e) {
+            logger.error("Database connection failed while trying to delete a profile with id: {}. {}", id, e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -107,7 +110,7 @@ public class ProfileRepository implements IProfileRepository {
                 boolean grayscale = rs.getBoolean("grayscale");
                 profiles.add(new Profile(id,  name, brightness, contrast, grayscale));
             }
-            logger.info("Profiles successfully selected");
+            logger.info("Profiles successfully retrieved.");
             return profiles;
         }
         catch (SQLException e) {
@@ -115,9 +118,6 @@ public class ProfileRepository implements IProfileRepository {
             return List.of();
         }
     }
-
-
-
 
     @Override
     public List<Profile> getProfilesByUserId(int userId) {
@@ -136,16 +136,15 @@ public class ProfileRepository implements IProfileRepository {
                 boolean grayscale = rs.getBoolean("grayscale");
                 profiles.add(new Profile(id,  name, brightness, contrast, grayscale));
             }
-            logger.info("Profiles for user {} successfully selected", userId);
         }
         catch (SQLException e) {
-            logger.error("Failed to get profiles for user {} due to: {}", userId, e.getMessage());
+            logger.error("Failed to get profiles for user {} due to: {}.", userId, e.getMessage());
         }
 
         // Всегда добавляем Default профайл в начало списка
         Profile defaultProfile = new Profile(0, "Default", 0.0, 0.0, false);
         profiles.add(0, defaultProfile);
-
+        logger.info("Successfully retrieved the profiles for user {}.", userId);
         return profiles;
     }
 
@@ -162,12 +161,12 @@ public class ProfileRepository implements IProfileRepository {
             }
             Profile defaultProfile = new Profile("Default");
             profiles.add(defaultProfile);
-            logger.info("Profiles for client {} successfully selected", clientId);
+            logger.info("Successfully retrieved the profiles for client with id: {}.", clientId);
             return profiles;
         }
         catch (SQLException e) {
-            logger.error("Failed to get profiles for client {} due to: {}", clientId, e.getMessage());
-            throw new MyException("Something went wrong when observing client's profiles");
+            logger.error("Failed to get profiles for client with id: {} due to: {}", clientId, e.getMessage());
+            throw new MyException("Could not retrieve the profiles for client:\n" + e.getMessage());
         }
     }
 }

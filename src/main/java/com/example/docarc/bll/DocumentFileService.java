@@ -2,7 +2,6 @@ package com.example.docarc.bll;
 
 import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
-import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
 import com.example.docarc.repo.impl.DocumentRepository;
@@ -14,11 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class DocumentFileService {
 
@@ -60,16 +55,16 @@ public class DocumentFileService {
         documentRepository.saveDocument(document);
     }
 
-    public void onEditDocument(Document document) throws Exception {
+    public void onEditDocument(Document document, String username) throws Exception {
         if (document == null) {
             throw new MyException("Could not find document");
         }
         setUpFiles(document);
-        fileRepository.saveFiles(document.getId(), document.getFiles());
+        fileRepository.saveFiles(document.getId(), document.getFiles(), username);
     }
 
-    public void saveChangedFiles(Document document, List<Tiff> changedFiles) throws Exception {
+    public void saveChangedFiles(Document document, List<Tiff> changedFiles, String username) throws Exception {
         setUpFiles(changedFiles);
-        this.fileRepository.saveFiles(document.getId(), changedFiles);
+        this.fileRepository.saveFiles(document.getId(), changedFiles, username);
     }
 }

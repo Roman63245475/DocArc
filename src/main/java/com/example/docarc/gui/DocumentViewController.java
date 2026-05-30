@@ -3,6 +3,7 @@ import com.example.docarc.be.*;
 import com.example.docarc.bll.DataService;
 import com.example.docarc.bll.DocumentFileService;
 import com.example.docarc.bll.ExportService;
+import com.example.docarc.repo.impl.ProfileRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -25,6 +26,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -46,6 +49,8 @@ public class DocumentViewController implements Initializable {
 
     @FXML private List<Image> currentDocumentFiles;
     @FXML private ListView<Tiff> listOfFiles;
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentViewController.class);
 
     private User user;
     private Document document;
@@ -103,6 +108,7 @@ public class DocumentViewController implements Initializable {
                     MenuItem moveItem = new MenuItem("Move selected file.\t\t[ M ]");
                     deleteItem.setOnAction(event -> {
                         listOfFiles.getItems().remove(getItem());
+                        logger.info("User deleted a {} file from the ListView.", getItem());
                     });
 
                     moveItem.setOnAction(event -> {
@@ -229,6 +235,7 @@ public class DocumentViewController implements Initializable {
                 Tiff selectedFile = listOfFiles.getSelectionModel().getSelectedItem();
                 if (selectedFile != null && event.getCode() == KeyCode.D) {
                     files.remove(selectedFile);
+                    logger.info("User deleted a {} file from the ListView.", selectedFile);
                 }
             });
         });
@@ -427,7 +434,7 @@ public class DocumentViewController implements Initializable {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                service.onEditDocument(document);
+                service.onEditDocument(document, user.getUsername());
                 return null;
             }
         };

@@ -33,11 +33,11 @@ public class ClientRepository implements IClientRepository {
             ps.setString(2, client.getCountry());
             ps.setString(3, client.getCity());
             ps.execute();
-            logger.info("User {} created client {}", responsibleAdmin.getUsername(), client.getName());
+            logger.info("Administrator {} successfully created a client {}", responsibleAdmin.getUsername(), client.getName());
         }
         catch (SQLException e) {
             logger.error("Failed to create a client due to: {}", e.getMessage());
-            throw new MyException("Sorry client was not created");
+            throw new MyException("Client could not be created.");
         }
     }
 
@@ -55,12 +55,12 @@ public class ClientRepository implements IClientRepository {
                     clients.add(new Client(id, name, country, city, amountOfEmployees));
                 }
             }
-            logger.info("clients successfully observed");
+            logger.info("Successfully fetched {} clients", clients.size());
             return clients;
         }
         catch (SQLException e) {
             logger.error("Failed to observe clients due to: {}", e.getMessage());
-            throw new MyException("Sorry client was not created");
+            throw new MyException("Could not fetch clients.");
         }
     }
 
@@ -74,8 +74,10 @@ public class ClientRepository implements IClientRepository {
                     ps.executeUpdate();
                 }
                 con.commit();
+                logger.info("Successfully deleted a client with id: {}", id);
             } catch (SQLException e) {
                 con.rollback();
+                logger.error("Failed to delete a client due to: {}", e.getMessage());
                 throw new RuntimeException("Transaction Failed, rolling back..\n", e);
             }
 
@@ -96,8 +98,9 @@ public class ClientRepository implements IClientRepository {
                 ps.setInt(4, id);
                 ps.executeUpdate();
             }
-
+            logger.info("Successfully updated a client with id: {}", id);
         } catch (SQLException e) {
+            logger.error("Failed to update a client due to: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

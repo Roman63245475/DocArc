@@ -1,24 +1,20 @@
 package com.example.docarc.repo.impl;
 
-import com.example.docarc.be.Document;
 import com.example.docarc.be.Tiff;
 import com.example.docarc.custom_exceptions.DataBaseConnectionException;
 import com.example.docarc.custom_exceptions.MyException;
 import com.example.docarc.repo.ConnectionManager;
 import com.example.docarc.repo.repositories.IFileRepository;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileRepository implements IFileRepository {
 
@@ -67,7 +63,7 @@ public class FileRepository implements IFileRepository {
 //    }
 
     @Override
-    public void saveFiles(int documentId, List<Tiff> files) throws MyException, SQLException, DataBaseConnectionException {
+    public void saveFiles(int documentId, List<Tiff> files, String username) throws DataBaseConnectionException {
         String sqlPrompt = "insert into files (documentId, name, reference_id, file_content, order_id) values (?,?,?,?,?)";
         Connection con = null;
         try {
@@ -86,18 +82,20 @@ public class FileRepository implements IFileRepository {
                 }
                 ps_save.executeBatch();
                 con.commit();
+                logger.info("User {} successfully updated the document's files, document id: {}.", username, documentId);
             }
         }
         catch (SQLException e) {
             if (con != null) {
                 try {
                     con.rollback();
+                    logger.info("Failed to update the document's files, document id: {}.", documentId);
+                    throw new MyException("Failed to update the document:\n" + e.getMessage());
                 }
-                catch (SQLException e1) {
+                catch (SQLException | MyException e1) {
                     logger.error("Failed to rollback the transaction", e1);
                     throw new DataBaseConnectionException("Connection Failed");
                 }
-                throw e;
             }
         }
         finally {
@@ -127,14 +125,13 @@ public class FileRepository implements IFileRepository {
                     int orderId = rs.getInt("order_id");
                     files.add(new Tiff(file_id, file_name, document_id, reference_id, file_content, orderId));
                 }
+                logger.info("Successfully retrieved the files from the document with id: {}.", documentId);
                 return files;
             }
         }
         catch (SQLException e) {
-            System.out.println("file repository " + e.getMessage());
-            e.printStackTrace();
-            logger.error("Failed to save files due to: {}", e.getMessage());
-            throw new MyException("soryan");
+            logger.error("Failed to retrieve the files due to: {}", e.getMessage());
+            throw new MyException("Failed to retrieve the files:\n" + e.getMessage());
         }
     }
 }
